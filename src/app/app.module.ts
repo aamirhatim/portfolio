@@ -7,6 +7,7 @@ import { PortfolioComponent } from './portfolio/portfolio.component';
 import { OmniComponent } from './projects/omni/omni.component';
 import { ArticleComponent } from './article/article.component';
 import { ArticleHeaderComponent } from './article-header/article-header.component';
+import { DayZeroComponent } from './projects/day-zero/day-zero.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ArticleHeaderComponent } from './article-header/article-header.componen
     PortfolioComponent,
     OmniComponent,
     ArticleComponent,
-    ArticleHeaderComponent
+    ArticleHeaderComponent,
+    DayZeroComponent
   ],
   imports: [
     BrowserModule,
