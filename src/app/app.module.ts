@@ -8,6 +8,7 @@ import { OmniComponent } from './projects/omni/omni.component';
 import { ArticleComponent } from './article/article.component';
 import { ArticleHeaderComponent } from './article-header/article-header.component';
 import { DayZeroComponent } from './projects/day-zero/day-zero.component';
+import { ArgoComponent } from './projects/argo/argo.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { DayZeroComponent } from './projects/day-zero/day-zero.component';
     OmniComponent,
     ArticleComponent,
     ArticleHeaderComponent,
-    DayZeroComponent
+    DayZeroComponent,
+    ArgoComponent
   ],
   imports: [
     BrowserModule,
