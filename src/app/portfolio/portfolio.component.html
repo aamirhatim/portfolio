@@ -1,0 +1,11 @@
+<p>
+  portfolio works!
+</p>
+
+<div *ngFor='let p of projects'>
+  <div [routerLink]="['/projects', p.id]">
+    <h2>{{p.title}}</h2>
+  </div>
+  <div><h3>{{p.sub_title}}</h3></div>
+  <div><h6>{{p.detail}}</h6></div>
+</div>
