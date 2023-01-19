@@ -2,8 +2,8 @@ Steps used from [this guide](https://javascript.plainenglish.io/create-a-react-a
 
 # Setup
 1. Create directory to build app in
-2. cd into the directory and then initialize the app with npm: `npm init -y`
-3. install npm dependencies:
+2. `cd` into the directory and then initialize the app with npm: `npm init -y`
+3. Install npm dependencies:
     ```
     npm i webpack \
            babel-loader \
@@ -17,19 +17,19 @@ Steps used from [this guide](https://javascript.plainenglish.io/create-a-react-a
            @babel/plugin-proposal-class-properties \
            webpack-cli \
            sass-loader
-    npm i react react-dom`
+    npm i react react-dom
     ```
-4. create `src` directory in app's root directory
-5. create `components` and `scss` directories in `src` directory from step 4
-6. create `index.js` and `index.html` in the `src` directory from step 4
-7. create `.babelrc` file in app's root directory and paste the following code:
+4. Create `src` directory in app's root directory
+5. Create `components` and `scss` directories in `src` directory from step 4
+6. Create `index.js` and `index.html` in the `src` directory from step 4
+7. Create `.babelrc` file in app's root directory and paste the following code:
     ``` bash
     {
     "presets": ["@babel/preset-react"],
     "plugins": ["@babel/plugin-proposal-class-properties"]
     }
     ```
-8. create `webpack.config.js` file in app's root directory and paste the following code:
+8. Create `webpack.config.js` file in app's root directory and paste the following code:
     ``` javascript
     const HtmlWebPackPlugin = require('html-webpack-plugin');
     const htmlPlugin = new HtmlWebPackPlugin({
