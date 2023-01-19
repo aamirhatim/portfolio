@@ -6,7 +6,7 @@ export default function About() {
         <div id='about' className='body-section'>
             <div id='about-container'>
                 <div id='about-header'>
-                    <h1>Hello.</h1>
+                    Hey, I'm Aamir.
                 </div>
                 <div id='about-img'></div>
                 <div id='about-info'></div>

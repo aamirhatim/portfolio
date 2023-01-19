@@ -1,9 +1,8 @@
 #about {
-    background-color: azure;
-    padding-top: 10rem;
+    padding-top: 6rem;
 
     * {
-        border: 1px solid black;
+        // border: 1px solid black;
     }
 }
 
@@ -14,21 +13,22 @@
 }
 
 #about-header {
+    font-size: 80pt;
     position: relative;
-    top: 2rem;
+    top: 3rem;
     left: -5rem;
 }
 
 #about-img {
     background-color: lightsalmon;
-    border-radius: 2rem;
+    border-radius: 30px;
     height: 40rem;
     width: 100%;
 }
 
 #about-info {
     background-color: lightseagreen;
-    border-radius: 2rem;
+    border-radius: 30px;
     height: 10rem;
     position: relative;
     top: -15rem;
