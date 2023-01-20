@@ -9,7 +9,9 @@ export default function About() {
                     Hey, I'm Aamir.
                 </div>
                 <div id='about-img'></div>
-                <div id='about-info'></div>
+                <div id='about-info'>
+                    I'm a robotics engineer from Florida with a dream of bringing cutting edge technology to the agricultural, utility & healthcare industries.
+                </div>
             </div>
         </div>
     )
