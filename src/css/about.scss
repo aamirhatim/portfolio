@@ -15,23 +15,24 @@
 #about-header {
     font-size: 80pt;
     position: relative;
-    top: 3rem;
+    top: 50px;
     left: -5rem;
 }
 
 #about-img {
     background-color: lightsalmon;
     border-radius: 30px;
-    height: 40rem;
+    height: 500px;
     width: 100%;
 }
 
 #about-info {
     background-color: lightseagreen;
     border-radius: 30px;
-    height: 10rem;
+    box-sizing: border-box;
+    padding: 2rem;
     position: relative;
-    top: -15rem;
-    left: 30rem;
-    width: 50rem;
+    top: -170px;
+    left: 480px;
+    max-width: 550px;
 }
