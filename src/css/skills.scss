@@ -1,20 +1,20 @@
 #skills {
+    padding-left: 10%;
+
     * {
         border: 1px solid black;
     }
 }
 
-#skills-stickers {
-    height: 500px;
-    width: 100%;
+.skills-section {
+    align-items: center;
+    display: flex;
 
-    h1 {
-        align-items: center;
-        display: flex;
-        height: 100%;
-        justify-content: center;
-        margin: 0;
-        padding: 0;
-        width: 100%;
+    .skills-stickers {
+        flex-grow: 1;
+    }
+
+    .skills-text {
+        width: 25%;
     }
 }
