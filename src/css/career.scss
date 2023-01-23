@@ -4,21 +4,21 @@
     }
 }
 
-.job-template {
+.job {
     align-items: center;
     display: flex;
     width: 100%;
+}
 
-    .spacer {
-        width: 42%;
-    }
+.spacer {
+    width: 42%;
+}
 
-    .timeline-connector {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        width: 16%;
-    }
+.timeline-connector {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 16%;
 
     .timeline-marker {
         background-color: black;
@@ -26,33 +26,33 @@
         height: 30px;
         width: 30px;
     }
+}
 
-    .job-info {
-        background-color: aliceblue;
-        border-radius: 20px;
-        box-sizing: border-box;
-        padding: 2rem;
-        width: 90%;
+.job-info {
+    background-color: aliceblue;
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 1rem;
+    width: 90%;
 
-        svg {
-            float: left;
-            height: 1rem;
-            margin-right: 10px;
-            width: 1rem;
-        }
+    svg {
+        float: left;
+        height: 1rem;
+        margin-right: 10px;
+        width: 1rem;
     }
+}
 
-    .job-info-container {
-        align-items: center;
-        display: flex;
-        margin-bottom: .5rem;
-    }
+.job-info-container {
+    align-items: center;
+    display: flex;
+    margin-bottom: .5rem;
+}
 
-    .job-info-details {
-        border: 1px solid black;
-        border-radius: 20px;
-        box-sizing: border-box;
-        margin-top: 1.5rem;
-        padding: 1rem;
-    }
+.job-info-details {
+    border: 1px solid black;
+    border-radius: 20px;
+    box-sizing: border-box;
+    margin-top: 1.5rem;
+    padding: 1rem;
 }
