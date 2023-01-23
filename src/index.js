@@ -1,4 +1,5 @@
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
+import {createRoot } from 'react-dom/client';
 import React from 'react';
 
 import About from './components/About';
@@ -11,7 +12,9 @@ import Skills from './components/Skills';
 
 import './css/index.scss';
 
-ReactDOM.render(
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(
     <React.StrictMode>
         <Nav />
         <About />
@@ -20,6 +23,18 @@ ReactDOM.render(
         <Projects />
         <Contact />
         <Footer />
-    </React.StrictMode>,
-    document.getElementById('app')
+    </React.StrictMode>
 );
+
+// ReactDOM.render(
+//     <React.StrictMode>
+//         <Nav />
+//         <About />
+//         <Skills />
+//         <Career />
+//         <Projects />
+//         <Contact />
+//         <Footer />
+//     </React.StrictMode>,
+//     document.getElementById('app')
+// );
