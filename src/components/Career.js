@@ -8,7 +8,7 @@ import JobsData from '../lib/jobs/jobs.json';
 
 function createJobTile(job, side) {
     // Get div to insert tiles into
-    var body = document.getElementById('career');
+    var timeline = document.getElementById('timeline');
 
     // Get templates
     var jobTemplate = document.getElementById('job-template');
@@ -41,11 +41,14 @@ function createJobTile(job, side) {
     }
 
     // Add to DOM
-    body.appendChild(jobElement);
+    timeline.appendChild(jobElement);
 }
 
 export default function Career() {
     useEffect( () => {
+        // Clear out career section before populating
+        document.getElementById('timeline').innerHTML = null;
+
         // Iterate through job entires
         var tileSide = true; // Start on the left side
         for ( var job in JobsData ) {
@@ -56,6 +59,7 @@ export default function Career() {
 
     return(
         <div id='career' className='body-section'>
+            <div id='timeline'></div>
             <template id='job-template'>
                 <div className='job'>
                     <div className='spacer'></div>
