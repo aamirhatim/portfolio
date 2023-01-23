@@ -72,18 +72,24 @@ export default function Career() {
 
             <template id='job-info-template'>
                 <div className='job-info'>
-                    <div className='job-info-title'>
-                        <h3 className='job-info-role'></h3>
-                        <h3 className='job-info-company'></h3>
+                    <div className='job-title-container'>
+                        <div>
+                            <div className='job-info-title'>
+                                <h3 className='job-info-role'></h3>
+                                <h3 className='job-info-company'></h3>
+                            </div>
+                            <div className='job-info-container'>
+                                <LocationIcon />
+                                <h4 className='job-info-location'></h4>
+                            </div>
+                            <div className='job-info-container'>
+                                <CalendarIcon />
+                                <h4 className='job-info-date'>DATE</h4>
+                            </div>
+                        </div>
+                        <div className='job-img'></div>
                     </div>
-                    <div className='job-info-container'>
-                        <LocationIcon />
-                        <h4 className='job-info-location'></h4>
-                    </div>
-                    <div className='job-info-container'>
-                        <CalendarIcon />
-                        <h4 className='job-info-date'>DATE</h4>
-                    </div>
+                    
                     <div className='job-info-details'></div>
                 </div>
             </template>

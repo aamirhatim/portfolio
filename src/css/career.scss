@@ -11,14 +11,14 @@
 }
 
 .spacer {
-    width: 42%;
+    width: 45%;
 }
 
 .timeline-connector {
     align-items: center;
     display: flex;
     justify-content: center;
-    width: 16%;
+    width: 10%;
 
     .timeline-marker {
         background-color: black;
@@ -32,8 +32,9 @@
     background-color: aliceblue;
     border-radius: 20px;
     box-sizing: border-box;
+    margin: -50px 0;
     padding: 1rem;
-    width: 90%;
+    width: 100%;
 
     svg {
         float: left;
@@ -41,6 +42,17 @@
         margin-right: 10px;
         width: 1rem;
     }
+}
+
+.job-title-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.job-img {
+    background-color: aqua;
+    border-radius: 20px;
+    width: 120px;
 }
 
 .job-info-container {
