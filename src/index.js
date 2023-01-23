@@ -25,16 +25,3 @@ root.render(
         <Footer />
     </React.StrictMode>
 );
-
-// ReactDOM.render(
-//     <React.StrictMode>
-//         <Nav />
-//         <About />
-//         <Skills />
-//         <Career />
-//         <Projects />
-//         <Contact />
-//         <Footer />
-//     </React.StrictMode>,
-//     document.getElementById('app')
-// );
