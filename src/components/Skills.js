@@ -7,22 +7,22 @@ export default function Skills() {
             <div id='skills-concepts' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
-                    <h1>CONCEPTS</h1>
-                    <p>I'm alwyas trying to learn new concepts and apply my skills to them while gaining new ones along the way.</p>
+                    <h2>CONCEPTS</h2>
+                    <h3>I'm alwyas trying to learn new concepts and apply my skills to them while gaining new ones along the way.</h3>
                 </div>
             </div>
             <div id='skills-code' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
-                    <h1>CODE</h1>
-                    <p>I've picked up a handful of coding languages but my most used are Python and the web development suite (HTML/CSS/JavaScipt).</p>
+                    <h2>CODE</h2>
+                    <h3>I've picked up a handful of coding languages but my most used are Python and the web development suite (HTML/CSS/JavaScipt).</h3>
                 </div>
             </div>
             <div id='skills-tools' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
-                    <h1>TOOLS</h1>
-                    <p>My favorite tools right now are OnShape for CAD design, React for web development and ROS for developing robotic applications.</p>
+                    <h2>TOOLS</h2>
+                    <h3>My favorite tools right now are OnShape for CAD design, React for web development and ROS for developing robotic applications.</h3>
                 </div>
             </div>
         </div>

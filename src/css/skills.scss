@@ -2,19 +2,20 @@
     padding-left: 10%;
 
     * {
-        border: 1px solid black;
+        // border: 1px solid black;
     }
 }
 
 .skills-section {
     align-items: center;
     display: flex;
+    margin: 4rem;
 
     .skills-stickers {
         flex-grow: 1;
     }
 
     .skills-text {
-        width: 25%;
+        width: 30%;
     }
 }
