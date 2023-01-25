@@ -5,13 +5,11 @@ export default function About() {
     return(
         <div id='about' className='body-section'>
             <div id='about-container'>
-                <div id='about-header'>
-                    Hey, I'm Aamir.
-                </div>
+                <h1 id='about-header'>Hey, I'm Aamir.</h1>
                 <div id='about-img'></div>
-                <div id='about-info'>
+                <h3 id='about-info'>
                     I'm a robotics engineer from Florida with a dream of bringing cutting edge technology to the agricultural, utility & healthcare industries.
-                </div>
+                </h3>
             </div>
         </div>
     )
