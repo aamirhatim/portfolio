@@ -1,12 +1,12 @@
 import React from 'react';
 import '../css/nav.scss';
 
+import Logo from '../assets/aamirhatim_logo.svg';
+
 export default function Nav() {
     return(
         <nav>
-            <div id='logo'>
-                <div></div>
-            </div>
+            <Logo id='logo' />
             <div id='nav-spacer'></div>
             <div className='nav-link'>Skills</div>
             <div className='nav-link'>My Path</div>
