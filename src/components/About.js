@@ -7,9 +7,9 @@ export default function About() {
             <div id='about-container'>
                 <h1 id='about-header'>Hey, I'm Aamir.</h1>
                 <div id='about-img'></div>
-                <h3 id='about-info'>
+                <h2 id='about-info'>
                     I'm a robotics engineer from Florida with a dream of bringing cutting edge technology to the agricultural, utility & healthcare industries.
-                </h3>
+                </h2>
             </div>
         </div>
     )
