@@ -2,7 +2,7 @@
     {
         "role": "Robotics Architect",
         "company": "Verizon",
-        "location": "Basking Ridge, New Jersey",
+        "location": "Basking Ridge, NJ",
         "startDate": {
             "month": "Nov",
             "year": 2019
@@ -20,7 +20,7 @@
     {
         "role": "Robotics Engineer",
         "company": "Siemens",
-        "location": "Princeton, New Jersey",
+        "location": "Princeton, NJ",
         "startDate": {
             "month": "Feb",
             "year": 2019
@@ -38,7 +38,7 @@
     {
         "role": "Robotics Intern",
         "company": "Siemens",
-        "location": "Princeton, New Jersey",
+        "location": "Princeton, NJ",
         "startDate": {
             "month": "Jul",
             "year": 2018
