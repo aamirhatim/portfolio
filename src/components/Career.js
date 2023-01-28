@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import '../css/career.scss';
 
-import JobsData from '../lib/jobs/jobs.json';
+import JobsData from '../lib/jobs.json';
+import EducationData from '../lib/education.json';
 
 function getJobDurationString(start, end) {
     var duration;
@@ -39,14 +40,37 @@ function createJobTile(job) {
     timeline.appendChild(jobElement);
 }
 
+function getEducation(edu) {
+    // Get parent div
+    var education = document.getElementById('education');
+
+    // Get template
+    var eduTemplate = document.getElementById('education-template');
+    var eduItem = eduTemplate.querySelector('.education-item', true);
+    var eduElement = document.importNode(eduItem, true);
+
+    // Populate
+    eduElement.querySelector('.degree').innerText = edu.degree;
+    eduElement.querySelector('.school').innerText = edu.school + ', Class of ' + edu.year;
+
+    // Add to DOM
+    education.appendChild(eduElement);
+}
+
 export default function Career() {
     useEffect( () => {
-        // Clear out career section before populating
+        // Clear out career sections before populating
         document.getElementById('timeline').innerHTML = null;
+        document.getElementById('education').innerHTML = null;
 
         // Iterate through job entires
         for ( var job in JobsData ) {
             createJobTile(JobsData[job]);
+        }
+
+        // Iterate through education entries
+        for ( var edu in EducationData ) {
+            getEducation(EducationData[edu]);
         }
     });
 
@@ -56,13 +80,20 @@ export default function Career() {
                 <div id='about-me'>
                     <h2>My Path</h2>
                     <p>I've come a lng way from way back when I usedto pick oranges from rotting bunnay branches in dire straights of Mo Town.</p>
+                    <div id='education'></div>
                 </div>
                 <div id='timeline'></div>
             </div>
 
+            <template id='education-template'>
+                <div className='education-item'>
+                    <h4 className='degree'></h4>
+                    <h5 className='school'></h5>
+                </div>
+            </template>
+
             <template id='job-template-2'>
                 <div className='job'>
-                    <div className='job-img'></div>
                     <div className='job-info'>
                         <h4 className='job-role'></h4>
                         <h3 className='job-company'></h3>
