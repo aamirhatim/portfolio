@@ -33,14 +33,19 @@ function getProjectTile(p) {
     }
 
     // Add links
+    var g = projElement.querySelector('.github-icon');
+    var v = projElement.querySelector('.video-icon');
     if ( p.github == null ) {
-        var g = projElement.querySelector('.github-icon');
         g.classList.add('hidden');
-
+    } else {
+        g.href = p.github;
+        g.target = '_blank';
     }
     if ( p.video == null ) {
-        var v = projElement.querySelector('.video-icon');
         v.classList.add('hidden');
+    } else {
+        v.href = p.video;
+        v.target = '_blank';
     }
 
     // Add to DOM
@@ -60,7 +65,6 @@ export default function Project() {
 
     return(
         <div id='projects' className='body-section'>
-            {/* <h1>PROJECTS</h1> */}
             <div id='proj-container'></div>
 
             <template id='project-template'>
@@ -69,8 +73,8 @@ export default function Project() {
                         <h4 className='proj-title'></h4>
                         <h5 className='proj-subtitle'></h5>
                         <div className='proj-links'>
-                            <GithubIcon className='github-icon' />
-                            <VideoIcon className='video-icon' />
+                            <a className='github-icon'><GithubIcon  /></a>
+                            <a className='video-icon'><VideoIcon  /></a>
                         </div>
                         <p className='proj-description'></p>
                         <button>Read more</button>

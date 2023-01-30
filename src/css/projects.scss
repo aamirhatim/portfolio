@@ -21,11 +21,16 @@
     max-width: calc(28% - .666rem);
     padding: 1.5rem;
 
-    svg {
+    a {
         box-sizing: border-box;
         height: 20px;
         margin-right: .5rem;
         width: 20px;
+    }
+
+    svg {
+        height: inherit;
+        width: inherit;
     }
 
     .hidden {

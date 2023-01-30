@@ -5,7 +5,8 @@
         "subtitle": "MSR Final Project (2018)",
         "description": "Simultaneous operation of three omni-directional robots used for mapping the environment and manipulating large objects",
         "github": null,
-        "video": "https://www.youtube.com/embed/xSkom9F3TOs",
+        "video": "https://www.youtube.com/watch?v=xSkom9F3TOs&ab_channel=AamirHusain",
+        "video_embed": "https://www.youtube.com/embed/xSkom9F3TOs",
         "skills": [
             "ROS", "Python", "C++", "Mechatronics", "Multi-Agent Systems", "Circuit Design"
         ]
@@ -16,7 +17,8 @@
         "subtitle": "MSR Winter Project (2018)",
         "description": "An autonomous differential drive suitcase that uses AR tags to track and follow objects in its environment",
         "github": "https://github.com/aamirhatim/argo",
-        "video": "https://www.youtube.com/embed/L7owzQ5A6ZQ",
+        "video": "https://www.youtube.com/watch?v=L7owzQ5A6ZQ&ab_channel=AamirHusain",
+        "video_embed": "https://www.youtube.com/embed/L7owzQ5A6ZQ",
         "skills": [
             "ROS", "Python", "PID Control", "Motor Control", "Mechatronics", "Computer Vision", "HRI"
         ]
@@ -28,6 +30,7 @@
         "description": "Using machine learning to predict when a country will reach \"Day Zero\" - the time when its water supply is fully depleted",
         "github": "https://github.com/aamirhatim/day_zero_predictor/tree/master/project_data",
         "video": null,
+        "video_embed": null,
         "skills": [
             "PANDAS", "Python", "Weka", "Machine Learning", "Data Analytics"
         ]
@@ -38,7 +41,8 @@
         "subtitle": "ME495 Final (2017)",
         "description": "An introductory ROS project that uses Rethink Robotics' Baxter to manipulate objects via speech commands",
         "github": "https://github.com/aamirhatim/InspectorBaxter",
-        "video": "https://youtube.com/embed/Mkh_P828sVU",
+        "video": "https://www.youtube.com/watch?v=Mkh_P828sVU&ab_channel=AamirHusain",
+        "video_embed": "https://youtube.com/embed/Mkh_P828sVU",
         "skills": [
             "ROS", "Python", "C++", "Point Clouds", "Computer Vision", "Coordinate Trasforms"
         ]
@@ -49,7 +53,8 @@
         "subtitle": "Capstone Senior Design (2015)",
         "description": "A washable, biometric shirt that measures heart rate, breathing rate, steps, distance, and energy - all sent to a mobile display",
         "github": null,
-        "video": "https://youtube.com/embed/g21bp58Fbyo",
+        "video": "https://www.youtube.com/watch?v=g21bp58Fbyo&ab_channel=AamirHusain",
+        "video_embed": "https://youtube.com/embed/g21bp58Fbyo",
         "skills": [
             "Arduino", "CAD", "PCB Design", "C/C++", "PSPICE", "Ultiboard", "Digital Signal Processing", "Filters", "Biometrics"
         ]
@@ -61,6 +66,7 @@
         "description": "A closed-loop PID DC motor controller with a MATLAB user interface for low level control",
         "github": "https://github.com/aamirhatim/motor_controller",
         "video": null,
+        "video_embed": null,
         "skills": [
             "C", "PID Control", "Circuit Design", "SPI", "UART", "MATLAB", "Mechatronics", "DC Motors", "Feedback Control"
         ]
@@ -72,6 +78,7 @@
         "description": "The current version of this site was made from scratch (and love) using the React framework",
         "github": "https://github.com/aamirhatim/aamirhatim.github.io",
         "video": null,
+        "video_embed": null,
         "skills": [
             "HTML", "CSS", "Javascript", "React", "Web Design", "Graphic Desgin", "HRI", "Adobe Illustrator"
         ]
@@ -82,7 +89,8 @@
         "subtitle": "ME449 Final (2017)",
         "description": "Using inverse kinematics and control laws to simulate the KUKA youBot, a 5R wheeled robot",
         "github": null,
-        "video": "https://www.youtube.com/embed/LQ2JJwoRYEQ",
+        "video": "https://www.youtube.com/watch?v=LQ2JJwoRYEQ&ab_channel=AamirHusain",
+        "video_embed": "https://www.youtube.com/embed/LQ2JJwoRYEQ",
         "skills": [
             "Mathematica", "Feedforward Control", "Feedback Control", "V-REP", "Coordinate Transforms", "URDF", "Forward/Inverse Kinematics"
         ]
@@ -94,6 +102,7 @@
         "description": "Learning how to build a library from scratch to implement different kinds of neural networks",
         "github": "https://github.com/aamirhatim/deep_learning",
         "video": null,
+        "video_embed": null,
         "skills": [
             "Python", "CNN", "RNN", "Regression", "Neural Networks", "Machine Learning", "Backpropagation"
         ]
@@ -105,6 +114,7 @@
         "description": "Using RRTs to explore spaces and avoid collisions from a bitmap image and from randomly generated circles",
         "github": "https://github.com/aamirhatim/rrt",
         "video": null,
+        "video_embed": null,
         "skills": [
             "Python", "Vector Geometry", "Data Structure", "Algorithms", "Path Planning", "Machine Learning", "Artificial Intelligence"
         ]
