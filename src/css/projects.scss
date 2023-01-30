@@ -1,6 +1,6 @@
 #projects {
     * {
-        border: 1px solid black;
+        // border: 1px solid black;
     }
 }
 
@@ -15,7 +15,24 @@
     border: 1px solid black;
     border-radius: 10px;
     box-sizing: border-box;
-    max-width: calc(50% - 1.5rem);
-    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: calc(28% - .666rem);
     padding: 1.5rem;
+}
+
+.select {
+    max-width: calc(42% - .5rem);
+
+    .proj-skills {
+        margin-top: 8rem;
+    }
+}
+
+.proj-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+    margin-top: 4rem;
 }
