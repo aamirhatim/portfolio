@@ -1,6 +1,10 @@
 import React from 'react';
 import '../css/skills.scss';
 
+import concepts from '../lib/concepts.html';
+import code from '../lib/code.html';
+import tools from '../lib/tools.html';
+
 export default function Skills() {
     return(
         <div id='skills' className='body-section'>
@@ -8,21 +12,21 @@ export default function Skills() {
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>CONCEPTS</h2>
-                    <h3>I'm alwyas trying to learn new concepts and apply my skills to them while gaining new ones along the way.</h3>
+                    <div dangerouslySetInnerHTML={{__html: concepts}}></div>
                 </div>
             </div>
             <div id='skills-code' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>CODE</h2>
-                    <h3>I've picked up a handful of coding languages but my most used are Python and the web development suite (HTML/CSS/JavaScipt).</h3>
+                    <div dangerouslySetInnerHTML={{__html: code}}></div>
                 </div>
             </div>
             <div id='skills-tools' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>TOOLS</h2>
-                    <h3>My favorite tools right now are OnShape for CAD design, React for web development and ROS for developing robotic applications.</h3>
+                    <div dangerouslySetInnerHTML={{__html: tools}}></div>
                 </div>
             </div>
         </div>
