@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import '../css/projects.scss';
 
 import ProjectData from '../lib/projects/project_summary.json';
-import GithubIcon from '../assets/github_icon.svg';
+import CodeIcon from '../assets/code_icon.svg';
 import VideoIcon from '../assets/video_icon.svg';
 
 function getProjectTile(p) {
@@ -33,13 +33,13 @@ function getProjectTile(p) {
     }
 
     // Add links
-    var g = projElement.querySelector('.github-icon');
+    var c = projElement.querySelector('.code-icon');
     var v = projElement.querySelector('.video-icon');
-    if ( p.github == null ) {
-        g.classList.add('hidden');
+    if ( p.code == null ) {
+        c.classList.add('hidden');
     } else {
-        g.href = p.github;
-        g.target = '_blank';
+        c.href = p.code;
+        c.target = '_blank';
     }
     if ( p.video == null ) {
         v.classList.add('hidden');
@@ -73,7 +73,7 @@ export default function Project() {
                         <h4 className='proj-title'></h4>
                         <h5 className='proj-subtitle'></h5>
                         <div className='proj-links'>
-                            <a className='github-icon'><GithubIcon  /></a>
+                            <a className='code-icon'><CodeIcon  /></a>
                             <a className='video-icon'><VideoIcon  /></a>
                         </div>
                         <p className='proj-description'></p>
