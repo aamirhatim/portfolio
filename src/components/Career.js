@@ -4,6 +4,8 @@ import '../css/career.scss';
 import JobsData from '../lib/jobs.json';
 import EducationData from '../lib/education.json';
 
+import aboutMe from '../lib/about_me.html';
+
 function getJobDurationString(start, end) {
     var duration;
     var endString;
@@ -79,7 +81,7 @@ export default function Career() {
             <div>
                 <div id='about-me'>
                     <h2>My Path</h2>
-                    <p>I've come a lng way from way back when I usedto pick oranges from rotting bunnay branches in dire straights of Mo Town.</p>
+                    <div dangerouslySetInnerHTML={{__html: aboutMe}}></div>
                     <div id='education'></div>
                 </div>
                 <div id='timeline'></div>
