@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import '../css/projects.scss';
 
 import ProjectData from '../lib/projects/project_summary.json';
+import GithubIcon from '../assets/github_icon.svg';
+import VideoIcon from '../assets/video_icon.svg';
 
 function getProjectTile(p) {
     // Get parent div
@@ -30,6 +32,17 @@ function getProjectTile(p) {
         skills.appendChild(skill);
     }
 
+    // Add links
+    if ( p.github == null ) {
+        var g = projElement.querySelector('.github-icon');
+        g.classList.add('hidden');
+
+    }
+    if ( p.video == null ) {
+        var v = projElement.querySelector('.video-icon');
+        v.classList.add('hidden');
+    }
+
     // Add to DOM
     projects.appendChild(projElement);
 }
@@ -55,12 +68,12 @@ export default function Project() {
                     <div>
                         <h4 className='proj-title'></h4>
                         <h5 className='proj-subtitle'></h5>
-                        <p className='proj-description'></p>
-                        <div>
-                            <button>Read more</button>
-                            {/* Github Icon */}
-                            {/* Video Icon */}
+                        <div className='proj-links'>
+                            <GithubIcon className='github-icon' />
+                            <VideoIcon className='video-icon' />
                         </div>
+                        <p className='proj-description'></p>
+                        <button>Read more</button>
                     </div>
                     <div className='proj-skills'></div>
                 </div>
