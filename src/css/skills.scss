@@ -11,11 +11,13 @@
     display: flex;
     margin: 4rem;
 
-    .skills-stickers {
+    svg {
         flex-grow: 1;
     }
+}
 
-    .skills-text {
-        width: 30%;
-    }
+.skills-text {
+    box-sizing: border-box;
+    margin-left: 5rem;
+    width: 40%;
 }
