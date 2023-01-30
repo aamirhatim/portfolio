@@ -26,6 +26,10 @@ module.exports = {
             {
                 test: /\.svg$/,
                 use: '@svgr/webpack'
+            },
+            {
+                test: /\.html$/i,
+                use: 'html-loader'
             }
         ]
     },
