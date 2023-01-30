@@ -12,21 +12,21 @@ export default function Skills() {
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>CONCEPTS</h2>
-                    <div dangerouslySetInnerHTML={{__html: concepts}}></div>
+                    <h3 dangerouslySetInnerHTML={{__html: concepts}}></h3>
                 </div>
             </div>
             <div id='skills-code' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>CODE</h2>
-                    <div dangerouslySetInnerHTML={{__html: code}}></div>
+                    <h3 dangerouslySetInnerHTML={{__html: code}}></h3>
                 </div>
             </div>
             <div id='skills-tools' className='skills-section'>
                 <div className='skills-stickers'></div>
                 <div className='skills-text'>
                     <h2>TOOLS</h2>
-                    <div dangerouslySetInnerHTML={{__html: tools}}></div>
+                    <h3 dangerouslySetInnerHTML={{__html: tools}}></h3>
                 </div>
             </div>
         </div>
