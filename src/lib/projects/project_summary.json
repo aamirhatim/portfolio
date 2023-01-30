@@ -1,0 +1,12 @@
+{
+    "omni": {
+        "title": "The Omni Projects",
+        "subtitle": "MSR Final Project (2018)",
+        "description": "Simultaneous operation of three omni-directional robots used for mapping the environment and manipulating large objects",
+        "github": null,
+        "video": "https://www.youtube.com/embed/xSkom9F3TOs",
+        "skills": [
+            "ROS", "Python", "C++", "Mechatronics", "Multi-Agent Systems", "Circuit Design"
+        ]
+    }
+}

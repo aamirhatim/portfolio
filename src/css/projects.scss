@@ -1,0 +1,21 @@
+#projects {
+    * {
+        border: 1px solid black;
+    }
+}
+
+#proj-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.project {
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    max-width: calc(50% - 1.5rem);
+    min-width: 400px;
+    padding: 1.5rem;
+}
