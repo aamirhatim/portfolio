@@ -15,21 +15,21 @@ export default function Skills() {
             <div className='skills-section'>
                 <ConceptsStickers />
                 <div className='skills-text'>
-                    <h2>CONCEPTS</h2>
+                    <h2>Concepts</h2>
                     <h3 dangerouslySetInnerHTML={{__html: concepts}}></h3>
                 </div>
             </div>
             <div className='skills-section'>
                 <CodeStickers />
                 <div className='skills-text'>
-                    <h2>CODE</h2>
+                    <h2>Code</h2>
                     <h3 dangerouslySetInnerHTML={{__html: code}}></h3>
                 </div>
             </div>
             <div className='skills-section'>
                 <ToolStickers />
                 <div className='skills-text'>
-                    <h2>TOOLS</h2>
+                    <h2>Tools</h2>
                     <h3 dangerouslySetInnerHTML={{__html: tools}}></h3>
                 </div>
             </div>
