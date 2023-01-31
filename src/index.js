@@ -1,4 +1,3 @@
-// import ReactDOM from 'react-dom';
 import {createRoot } from 'react-dom/client';
 import React from 'react';
 
@@ -22,6 +21,6 @@ root.render(
         <Career />
         <Projects />
         <Contact />
-        {/* <Footer /> */}
+        <Footer />
     </React.StrictMode>
 );

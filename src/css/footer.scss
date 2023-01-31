@@ -1,47 +1,13 @@
 footer {
-    // background-color: aquamarine;
+    background-color: black;
     box-sizing: border-box;
+    color: grey;
     display: flex;
-    // min-height: 10rem;
+    justify-content: center;
     padding: 2rem;
     width: 100%;
 
     * {
         // border: 1px solid black;
-    }
-
-    > div {
-        width: 50%;
-    }
-}
-
-#footer-links {
-    > div {
-        align-items: center;
-        display: flex;
-    }
-}
-
-.footer-icon {
-    height: 35px;
-    margin: .5rem;
-    width: 35px;
-}
-
-#footer-badges {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    text-align: right;
-
-    #footer-badge-icons {
-        display: flex;
-        gap: .5rem;
-        justify-content: flex-end;
-        margin-top: 10px;
-    }
-
-    .footer-icon {
-        margin: 0;
     }
 }
