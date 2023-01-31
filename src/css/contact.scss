@@ -1,0 +1,39 @@
+#contact {
+    background-color: black;
+    color: white;
+    padding: 5rem 10%;
+
+    * {
+        // border: 1px solid white;
+    }
+
+}
+
+#contact-container {
+    align-items: center;
+    display: flex;
+    gap: 2rem;
+}
+
+#resume-link {
+    box-sizing: border-box;
+    width: 140px;
+}
+
+#socials {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    svg {
+        margin-right: 1rem;
+        width: 25px;
+    }
+    
+    a {
+        align-items: center;
+        color: white;
+        display: flex;
+        text-decoration: none;
+    }
+}
