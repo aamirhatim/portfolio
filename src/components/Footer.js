@@ -9,20 +9,7 @@ import CssIcon from '../assets/css_logo.svg';
 export default function Footer() {
     return(
         <footer>
-            <div id='footer-links'>
-                <div>
-                    <div className='footer-icon'></div>
-                    <p>GitHub</p>
-                </div>
-                <div>
-                    <div className='footer-icon'></div>
-                    <p>LinkedIn</p>
-                </div>
-                <div>
-                    <div className='footer-icon'></div>
-                    <p>Instagram</p>
-                </div>
-            </div>
+            <div id='footer-links'></div>
             <div id='footer-badges'>
                 <p>Created by Aamir Husain</p>
                 <div id='footer-badge-icons'>
