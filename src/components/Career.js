@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import '../css/career.scss';
 
-import JobsData from '../lib/jobs.json';
-import EducationData from '../lib/education.json';
+import JobsData from '../lib/career/jobs.json';
+import EducationData from '../lib/career/education.json';
 
-import aboutMe from '../lib/about_me.html';
+import aboutMe from '../lib/career/about_me.html';
 
 function getJobDurationString(start, end) {
     var duration;
