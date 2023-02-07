@@ -24,6 +24,11 @@ nav {
     display: flex;
     min-width: min-content;
     padding: 0 2rem;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 }
 
 #nav-spacer {
