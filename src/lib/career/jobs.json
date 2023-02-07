@@ -15,7 +15,7 @@
             "Low level and high level development of robotic applications that leverage the power of Verizon 5G and Mobile Edge Computing (MEC) for near real-time wireless control and 'headless' computing",
             "Work with robotic manufacturers like Clearpath, Kinova, and Robotiq"
         ],
-        "description": "Robots for 5G!",
+        "description": "5G robots! Developing edge based robotic applications for Industry4.0",
         "link": "",
         "image": "verizon_sticker.svg"
     },
@@ -35,7 +35,7 @@
             "Software architect for a Python based API used to control a robot station comprised of two KUKA arms equipped with wrist cameras",
             "Lead robotics engineer for a LEGO assembly project in the Future of Automation lab at Princeton, NJ. Worked with a talented team of engineers to research concepts in automating end-to-end manufacturing process - from building a bill of processes, simulating its assembly, and then creating the final product."
         ],
-        "description": "two handed robots playing with Legos",
+        "description": "Teaching robots generative design and construction using Legos",
         "link": "",
         "image": "siemens_sticker.svg"
     },
@@ -55,7 +55,7 @@
             "Worked with a small team of engineers on a project to build a fully autonomous farming system that used robotic arms and mobile robots to water, prune and harvest plants.",
             "Developed a decentralized, multi-agent control algorithm to coordinate movement between agents operating in the farm."
         ],
-        "description": "Autonomous indoor farming",
+        "description": "Smarty-plants: Using the cloud for autonomous indoor farming",
         "link": "",
         "image": "siemens_sticker.svg"
     },
@@ -76,7 +76,7 @@
             "Responsible for the development of online tax return forms on DC’s online Taxpayer Access Portal.",
             "Worked side by side with government clients as a consultant to gather requirements and deliver a streamlined tax solution software."
         ],
-        "description": "Making the DC tax system more useful and efficient",
+        "description": "Bringing the DC tax software system out of the 90s",
         "link": "",
         "image": "fast_sticker.svg"
     }
