@@ -6,12 +6,12 @@ import Logo from '../assets/aamirhatim_logo.svg';
 export default function Nav() {
     return(
         <nav>
-            <Logo id='logo' />
+            <a href='#about'><Logo id='logo' /></a>
             <div id='nav-spacer'></div>
-            <div className='nav-link'>Skills</div>
-            <div className='nav-link'>My Path</div>
-            <div className='nav-link'>Projects</div>
-            <div className='nav-link'>Get in Touch</div>
+            <div className='nav-link'><a href='#skills'>Skills</a></div>
+            <div className='nav-link'><a href='#career'>My Path</a></div>
+            <div className='nav-link'><a href='#projects'>Projects</a></div>
+            <div className='nav-link'><a href='#contact'>Get In Touch</a></div>
         </nav>
     )
 };
