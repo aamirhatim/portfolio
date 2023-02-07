@@ -1,9 +1,9 @@
 import React from 'react';
 import '../css/skills.scss';
 
-import concepts from '../lib/concepts.html';
-import code from '../lib/code.html';
-import tools from '../lib/tools.html';
+import concepts from '../lib/skills/concepts.html';
+import code from '../lib/skills/code.html';
+import tools from '../lib/skills/tools.html';
 
 import ConceptsStickers from '../assets/concepts_stickers.svg';
 import CodeStickers from '../assets/code_stickers.svg';
