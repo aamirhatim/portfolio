@@ -8,5 +8,10 @@
         "school": "The George Washington Univeristy",
         "degree": "B.S. Biomedical Engineering",
         "year": 2015
+    },
+    {
+        "school": "Boğaziçi University, Turkey",
+        "degree": "Study Abroad",
+        "year": 2013
     }
 ]
