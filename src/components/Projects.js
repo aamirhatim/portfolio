@@ -65,6 +65,7 @@ export default function Project() {
 
     return(
         <div id='projects' className='body-section'>
+            <h2>Selected Work</h2>
             <div id='proj-container'></div>
 
             <template id='project-template'>
