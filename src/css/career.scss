@@ -11,8 +11,19 @@
 
 #about-me {
     box-sizing: border-box;
-    padding: 2rem;
+    text-align: justify;
     width: 60%;
+}
+
+#education-container {
+    position: relative;
+
+    svg {
+        height: 90px;
+        position: absolute;
+        right: -40px;
+        top: -30px;
+    }
 }
 
 #education {
@@ -28,7 +39,7 @@
 #timeline {
     box-sizing: border-box;
     flex-grow: 1;
-    padding-left: 5rem;
+    margin-left: 10rem;
 }
 
 .job {

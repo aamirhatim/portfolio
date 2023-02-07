@@ -3,8 +3,8 @@ import '../css/career.scss';
 
 import JobsData from '../lib/career/jobs.json';
 import EducationData from '../lib/career/education.json';
-
 import aboutMe from '../lib/career/about_me.html';
+import GradSticker from '../assets/grad_sticker.svg';
 
 function getJobDurationString(start, end) {
     var duration;
@@ -53,7 +53,7 @@ function getEducation(edu) {
 
     // Populate
     eduElement.querySelector('.degree').innerText = edu.degree;
-    eduElement.querySelector('.school').innerText = edu.school + ', Class of ' + edu.year;
+    eduElement.querySelector('.school').innerText = edu.school + ', ' + edu.year;
 
     // Add to DOM
     education.appendChild(eduElement);
@@ -82,7 +82,10 @@ export default function Career() {
                 <div id='about-me'>
                     <h2>My Path</h2>
                     <div dangerouslySetInnerHTML={{__html: aboutMe}}></div>
-                    <div id='education'></div>
+                    <div id='education-container'>
+                        <GradSticker />
+                        <div id='education'></div>
+                    </div>
                 </div>
                 <div id='timeline'></div>
             </div>
