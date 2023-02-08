@@ -33,16 +33,14 @@ export default function App() {
     // });
 
     return(
-        <React.StrictMode>
-            <ThemeContext.Provider value={value}>
-                <Nav />
-                <About />
-                <Skills />
-                <Career />
-                <Projects />
-                <Contact />
-                <Footer />
-            </ThemeContext.Provider>
-        </React.StrictMode>
+        <ThemeContext.Provider value={value}>
+            <Nav />
+            <About />
+            <Skills />
+            <Career />
+            <Projects />
+            <Contact />
+            <Footer />
+        </ThemeContext.Provider>
     )
 };
