@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ThemeContext from '../context/ThemeContext';
 import '../css/about.scss';
 
 import intro from '../lib/intro.html';
 
 export default function About() {
+    const {theme, setTheme, applyTheme} = React.useContext(ThemeContext);
+
+    useEffect( () => {
+        // Apply theme
+        var themeSet = [
+            document.getElementById('about')
+        ];
+        applyTheme(themeSet);
+    });
+
     return(
         <div id='about' className='body-section'>
             <div id='about-container'>

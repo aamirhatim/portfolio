@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import '../css/nav.scss';
+import ThemeContext from '../context/ThemeContext';
 
 import Logo from '../assets/aamirhatim_logo.svg';
 
 export default function Nav() {
+    const {theme, setTheme, applyTheme} = React.useContext(ThemeContext);
+
     var scrollHeight = 0;
     var navScrollStyle = false;
 
@@ -29,7 +32,22 @@ export default function Nav() {
         }
     }
 
+    const toggleTheme = () => {
+        if ( theme == 'light' ){
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+    }
+
     useEffect( () => {
+        // Apply theme
+        var themeSet = [
+            document.getElementsByTagName('nav')[0],
+            document.getElementById('logo'),
+        ];
+        applyTheme(themeSet);
+
         // Set scroll height
         scrollHeight = document.documentElement.scrollTop;
 
@@ -49,6 +67,7 @@ export default function Nav() {
             <div className='nav-link'><a href='#career'>My Path</a></div>
             <div className='nav-link'><a href='#projects'>Projects</a></div>
             <div className='nav-link'><a href='#contact'>Get In Touch</a></div>
+            <div className='nav-link' onClick={toggleTheme}>Theme</div>
         </nav>
     )
 };
