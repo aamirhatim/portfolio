@@ -1,5 +1,7 @@
+@import 'global.scss';
+
 nav {
-    background-color: white;
+    background-color: $bg-light;
     box-sizing: border-box;
     display: flex;
     padding: 0 10%;
@@ -11,12 +13,22 @@ nav {
     * {
         // border: 1px solid black;
     }
+
+    &.dark {
+        background-color: $bg-dark;
+        color: $text-color-dark;
+    }
 }
 
 .scrolled {
     background-color: rgba(255,255,255,.9);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid lightgray;
+
+    &.dark {
+        background-color: rgba(0,0,0,.9);
+        border-bottom: 1px solid darkgray;
+    }
 }
 
 .nav-link {
@@ -39,4 +51,8 @@ nav {
     height: 50px;
     margin: 2rem 0;
     width: 50px;
+
+    &.dark {
+        fill: $svg-fill-dark;
+    }
 }
