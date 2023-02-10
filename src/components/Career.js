@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import '../css/career.scss';
+import ThemeContext from '../context/ThemeContext';
 
 import JobsData from '../lib/career/jobs.json';
 import EducationData from '../lib/career/education.json';
@@ -60,10 +61,19 @@ function getEducation(edu) {
 }
 
 export default function Career() {
+    const {theme, setTheme, applyTheme} = React.useContext(ThemeContext);
     useEffect( () => {
         // Clear out career sections before populating
         document.getElementById('timeline').innerHTML = null;
         document.getElementById('education').innerHTML = null;
+
+        // Apply theme
+        var themeSet = [
+            document.getElementById('career'),
+            Array.from(document.getElementsByClassName('skills-stickers')),
+            document.getElementById('education')
+        ];
+        applyTheme(themeSet.flat(Infinity));
 
         // Iterate through job entires
         for ( var job in JobsData ) {
