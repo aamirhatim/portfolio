@@ -1,3 +1,5 @@
+@import './global.scss';
+
 #about {
     padding-top: 6rem;
 
@@ -19,7 +21,7 @@
 }
 
 #about-img {
-    background-color: #90d5b7;
+    background-color: $highlight-dark;
     border-radius: 30px;
     height: 500px;
     width: 100%;
