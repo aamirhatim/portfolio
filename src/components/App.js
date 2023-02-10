@@ -25,14 +25,19 @@ export default function App() {
 
     const value = {theme, setTheme, applyTheme};
 
-    // useEffect( () => {
+    useEffect( () => {
+        // Apply theme
+        var themeSet = [
+            Array.from(document.getElementsByTagName('h2'))
+        ];
+        applyTheme(themeSet.flat());
     //     var d = new Date();
     //     var h = d.getHours();
     //     if ( h >= 17 || h <= 5 ) {
     //         setTheme('dark');
     //         console.log(theme);
     //     }
-    // });
+    });
 
     return(
         <ThemeContext.Provider value={value}>
