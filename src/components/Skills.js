@@ -16,7 +16,7 @@ export default function Skills() {
         // Apply theme
         var themeSet = [
             document.getElementById('skills'),
-            Array.from(document.getElementsByClassName('skills-stickers'))
+            Array.from(document.getElementById('skills').getElementsByTagName('svg'))
         ];
         applyTheme(themeSet.flat());
     });
@@ -24,21 +24,21 @@ export default function Skills() {
     return(
         <div id='skills' className='body-section'>
             <div className='skills-section'>
-                <ConceptsStickers className='skills-stickers' />
+                <ConceptsStickers />
                 <div className='skills-text'>
                     <h2>Concepts</h2>
                     <h3 dangerouslySetInnerHTML={{__html: concepts}}></h3>
                 </div>
             </div>
             <div className='skills-section'>
-                <CodeStickers className='skills-stickers' />
+                <CodeStickers />
                 <div className='skills-text'>
                     <h2>Code</h2>
                     <h3 dangerouslySetInnerHTML={{__html: code}}></h3>
                 </div>
             </div>
             <div className='skills-section'>
-                <ToolStickers className='skills-stickers' />
+                <ToolStickers />
                 <div className='skills-text'>
                     <h2>Tools</h2>
                     <h3 dangerouslySetInnerHTML={{__html: tools}}></h3>
