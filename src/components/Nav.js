@@ -46,7 +46,7 @@ export default function Nav() {
             document.getElementsByTagName('nav')[0],
             document.getElementById('logo'),
         ];
-        applyTheme(themeSet);
+        applyTheme(themeSet.flat());
 
         // Set scroll height
         scrollHeight = document.documentElement.scrollTop;

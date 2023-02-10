@@ -71,7 +71,7 @@ export default function Project() {
             Array.from(document.getElementsByClassName('skill')),
             Array.from(document.getElementsByTagName('svg'))
         ];
-        applyTheme(themeSet.flat(Infinity));
+        applyTheme(themeSet.flat());
     });
 
     return(

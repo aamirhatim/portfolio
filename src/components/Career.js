@@ -67,14 +67,6 @@ export default function Career() {
         document.getElementById('timeline').innerHTML = null;
         document.getElementById('education').innerHTML = null;
 
-        // Apply theme
-        var themeSet = [
-            document.getElementById('career'),
-            Array.from(document.getElementsByClassName('skills-stickers')),
-            document.getElementById('education')
-        ];
-        applyTheme(themeSet.flat(Infinity));
-
         // Iterate through job entires
         for ( var job in JobsData ) {
             createJobTile(JobsData[job]);
@@ -84,6 +76,14 @@ export default function Career() {
         for ( var edu in EducationData ) {
             getEducation(EducationData[edu]);
         }
+
+        // Apply theme
+        var themeSet = [
+            document.getElementById('career'),
+            Array.from(document.getElementsByClassName('skills-stickers')),
+            document.getElementById('education')
+        ];
+        applyTheme(themeSet.flat());
     });
 
     return(

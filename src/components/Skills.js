@@ -18,7 +18,7 @@ export default function Skills() {
             document.getElementById('skills'),
             Array.from(document.getElementsByClassName('skills-stickers'))
         ];
-        applyTheme(themeSet.flat(Infinity));
+        applyTheme(themeSet.flat());
     });
 
     return(
