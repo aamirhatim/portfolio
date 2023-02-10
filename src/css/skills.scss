@@ -13,6 +13,10 @@
 
     svg {
         flex-grow: 1;
+
+        &.dark {
+            opacity: .7;
+        }
     }
 }
 
