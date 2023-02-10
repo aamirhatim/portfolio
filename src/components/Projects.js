@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import '../css/projects.scss';
+import ThemeContext from '../context/ThemeContext';
 
 import ProjectData from '../lib/projects/project_summary.json';
 import CodeIcon from '../assets/code_icon.svg';
@@ -53,6 +54,7 @@ function getProjectTile(p) {
 }
 
 export default function Project() {
+    const {theme, setTheme, applyTheme} = React.useContext(ThemeContext);
     useEffect( () => {
         // Clear out projects section before populating
         document.getElementById('proj-container').innerHTML= null;
@@ -61,6 +63,15 @@ export default function Project() {
         for (var p in ProjectData) {
             getProjectTile(ProjectData[p]);
         }
+
+        // Apply theme
+        var themeSet = [
+            document.getElementById('projects'),
+            Array.from(document.getElementsByClassName('project')),
+            Array.from(document.getElementsByClassName('skill')),
+            Array.from(document.getElementsByTagName('svg'))
+        ];
+        applyTheme(themeSet.flat(Infinity));
     });
 
     return(

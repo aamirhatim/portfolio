@@ -65,6 +65,10 @@ button {
     font-weight: 400;
     padding: .2rem;
     width: max-content;
+
+    &.dark {
+        border-color: $border-dark;
+    }
 }
 
 body {
