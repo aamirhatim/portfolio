@@ -69,7 +69,7 @@ export default function Project() {
             document.getElementById('projects'),
             Array.from(document.getElementsByClassName('project')),
             Array.from(document.getElementsByClassName('skill')),
-            Array.from(document.getElementsByTagName('svg'))
+            Array.from(document.getElementById('projects').getElementsByTagName('svg'))
         ];
         applyTheme(themeSet.flat());
     });
