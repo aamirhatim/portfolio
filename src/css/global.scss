@@ -3,12 +3,17 @@ $radius: 10px;
 
 // Light mode
 $bg-light: white;
-$bg-text-color-lite: black;
+$bg-light-nav: rgba(255,255,255,.9);
+$text-color-lite: black;
+$text-color-highlight-lite: black;
 $svg-fill-light: black;
 $border-lite: black;
 
 // Dark mode
-$bg-dark: black;
+$bg-dark: rgba(34,40,49,1);
+$bg-dark-nav: rgba(34,40,49,.9);
+$bg-tile-dark: #404258;
 $text-color-dark: white;
+$text-color-highlight-dark: white;
 $svg-fill-dark: white;
 $border-dark: white;

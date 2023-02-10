@@ -21,12 +21,12 @@ nav {
 }
 
 .scrolled {
-    background-color: rgba(255,255,255,.9);
+    background-color: $bg-light-nav;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid lightgray;
 
     &.dark {
-        background-color: rgba(0,0,0,.9);
+        background-color: $bg-dark-nav;
         border-bottom: 1px solid darkgray;
     }
 }
