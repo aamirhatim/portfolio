@@ -24,11 +24,13 @@ export default function App() {
     }
 
     const value = {theme, setTheme, applyTheme};
+
     // useEffect( () => {
     //     var d = new Date();
-    //     if ( d.getHours() >= 17 ) {
-    //         setDarkMode(true);
-    //         console.log(darkMode);
+    //     var h = d.getHours();
+    //     if ( h >= 17 || h <= 5 ) {
+    //         setTheme('dark');
+    //         console.log(theme);
     //     }
     // });
 
