@@ -10,10 +10,11 @@ $svg-fill-light: black;
 $border-lite: black;
 
 // Dark mode
-$bg-dark: rgba(34,40,49,1);
-$bg-dark-nav: rgba(34,40,49,.9);
-$bg-tile-dark: #404258;
+$bg-dark: rgb(56, 57, 77);
+$bg-dark-nav: rgba(56, 57, 77,.9);
+$bg-tile-dark: #404559;
+$bg-footer-dark: #1d1e28;
 $text-color-dark: white;
-$text-color-highlight-dark: white;
+$text-color-highlight-dark: #90d5b7; //708ebe
 $svg-fill-dark: white;
-$border-dark: white;
+$border-dark: #979db0;

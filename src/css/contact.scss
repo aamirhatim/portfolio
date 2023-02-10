@@ -1,5 +1,7 @@
+@import './global.scss';
+
 #contact {
-    background-color: black;
+    background-color: $bg-footer-dark;
     color: white;
     padding: 5rem 10%;
 

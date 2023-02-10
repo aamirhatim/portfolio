@@ -27,7 +27,7 @@ nav {
 
     &.dark {
         background-color: $bg-dark-nav;
-        border-bottom: 1px solid darkgray;
+        border-bottom: 1px solid $border-dark;
     }
 }
 
@@ -49,7 +49,7 @@ nav {
 
 #logo {
     height: 50px;
-    margin: 2rem 0;
+    margin: 1.5rem 0;
     width: 50px;
 
     &.dark {

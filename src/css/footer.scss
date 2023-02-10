@@ -1,5 +1,7 @@
+@import './global.scss';
+
 footer {
-    background-color: black;
+    background-color: $bg-footer-dark;
     box-sizing: border-box;
     color: grey;
     display: flex;

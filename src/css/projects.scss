@@ -47,7 +47,8 @@
 
     &.dark {
         background-color: $bg-tile-dark;
-        border-color: $border-dark;
+        // border-color: $border-dark;
+        border: none;
     }
 }
 
