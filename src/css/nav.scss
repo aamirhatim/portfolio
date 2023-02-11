@@ -1,6 +1,7 @@
 @import 'global.scss';
 
 nav {
+    align-items: center;
     background-color: $bg-light;
     box-sizing: border-box;
     display: flex;
@@ -15,8 +16,8 @@ nav {
     }
 
     &.dark {
-        background-color: $bg-dark;
-        color: $text-color-dark;
+        background-color: $dark-layer-1;
+        color: $dark-text-color;
     }
 }
 
@@ -27,7 +28,7 @@ nav {
 
     &.dark {
         background-color: $bg-dark-nav;
-        border-bottom: 1px solid $border-dark;
+        border-bottom: 1px solid $dark-layer-3;
     }
 }
 
@@ -36,15 +37,18 @@ nav {
     display: flex;
     min-width: min-content;
     padding: 0 2rem;
+    transition: border-bottom .15s;
 
     a {
         color: inherit;
         text-decoration: none;
+        transition: border-width .15s;
     }
 
     :hover {
-        // border-bottom: 5px solid $highlight-dark;
+        border-bottom: 5px solid $highlight-dark;
         color: $highlight-dark;
+        transition: border-bottom .15s;
     }
 }
 
