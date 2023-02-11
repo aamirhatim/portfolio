@@ -22,6 +22,7 @@
     justify-content: space-between;
     max-width: calc(33.3% - .666rem);
     padding: 1.5rem;
+    transition: border-color 1s;
 
     a {
         box-sizing: border-box;
@@ -48,6 +49,11 @@
     &.dark {
         background-color: $dark-layer-2;
         border-color: $dark-layer-3;
+
+        &:hover {
+            border-color: $highlight-dark;
+            transition: border-color 1s;
+        }
     }
 }
 
