@@ -4,6 +4,10 @@
     cursor: pointer;
     margin-left: 3rem;
 
+    :hover {
+        fill: $dark-highlight;
+    }
+
     svg {
         width: 30px;
 
