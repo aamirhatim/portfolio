@@ -72,8 +72,8 @@ button {
     width: max-content;
 
     &.dark {
-        color: $border-dark;
-        border-color: $border-dark;
+        color: $dark-layer-4;
+        border-color: $dark-layer-4;
     }
 }
 
@@ -94,7 +94,7 @@ body {
     width: 100%;
 
     &.dark {
-        background-color: $bg-dark;
-        color: $text-color-dark;
+        background-color: $dark-layer-1;
+        color: $dark-text-color;
     }
 }

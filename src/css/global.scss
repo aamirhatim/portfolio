@@ -10,11 +10,19 @@ $svg-fill-light: black;
 $border-lite: black;
 
 // Dark mode
-$bg-dark: rgb(56, 57, 77);
-$bg-dark-nav: rgba(56, 57, 77,.9);
-$bg-tile-dark: #404559;
+$dark-layer-0: rgb(20, 20, 22);
+$dark-layer-1: rgb(33, 33, 41);
+$dark-layer-2: #282a33;
+$dark-layer-3: #353947;
+$dark-layer-4: #676d87;
+$dark-highlight: #90d5b7;
+$dark-text-color: rgb(200, 200, 200);
+
+$bg-dark: $dark-layer-1;
+$bg-dark-nav: rgba(33, 33, 41,.9);
+$bg-tile-dark: #2f604b;
 $bg-footer-dark: #1d1e28;
 $text-color-dark: white;
 $highlight-dark: #90d5b7; //708ebe
-$svg-fill-dark: white;
+$svg-fill-dark: $dark-text-color;
 $border-dark: #979db0;

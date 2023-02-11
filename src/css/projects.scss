@@ -46,9 +46,8 @@
     }
 
     &.dark {
-        background-color: $bg-tile-dark;
-        // border-color: $border-dark;
-        border: none;
+        background-color: $dark-layer-2;
+        border-color: $dark-layer-3;
     }
 }
 
