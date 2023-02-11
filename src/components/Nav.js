@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import '../css/nav.scss';
 import ThemeContext from '../context/ThemeContext';
+import ThemeToggle from '../components/ThemeToggle';
 
 import Logo from '../assets/aamirhatim_logo.svg';
+
 
 export default function Nav() {
     const {theme, setTheme, applyTheme} = React.useContext(ThemeContext);
@@ -29,14 +31,6 @@ export default function Nav() {
                 nav.classList.remove('scrolled');
                 navScrollStyle = false;
             }
-        }
-    }
-
-    const toggleTheme = () => {
-        if ( theme == 'light' ){
-            setTheme('dark');
-        } else {
-            setTheme('light');
         }
     }
 
@@ -67,7 +61,7 @@ export default function Nav() {
             <div className='nav-link'><a href='#career'>My Path</a></div>
             <div className='nav-link'><a href='#projects'>Projects</a></div>
             <div className='nav-link'><a href='#contact'>Get In Touch</a></div>
-            <div className='nav-link' onClick={toggleTheme}>Theme</div>
+            <ThemeToggle />
         </nav>
     )
 };
