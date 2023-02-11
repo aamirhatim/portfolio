@@ -59,7 +59,7 @@ export default function Nav() {
             <div id='nav-spacer'></div>
             <div className='nav-link'><a href='#skills'>Skills</a></div>
             <div className='nav-link'><a href='#career'>My Path</a></div>
-            <div className='nav-link'><a href='#projects'>Projects</a></div>
+            <div className='nav-link'><a href='#projects'>Selected Work</a></div>
             <div className='nav-link'><a href='#contact'>Get In Touch</a></div>
             <ThemeToggle />
         </nav>
