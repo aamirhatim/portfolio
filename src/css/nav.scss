@@ -2,7 +2,7 @@
 
 nav {
     align-items: center;
-    background-color: $bg-light;
+    background-color: $lite-layer-0;
     box-sizing: border-box;
     display: flex;
     padding: 0 10%;
@@ -22,13 +22,14 @@ nav {
 }
 
 .scrolled {
-    background-color: $bg-light-nav;
+    // TODO: create variable for lite border color
+    background-color: $lite-nav;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid lightgray;
+    border-bottom: $border-size lightgray;
 
     &.dark {
-        background-color: $bg-dark-nav;
-        border-bottom: 1px solid $dark-layer-3;
+        background-color: $dark-nav;
+        border-bottom: $border-size $dark-layer-3;
     }
 }
 
@@ -45,9 +46,9 @@ nav {
         transition: border-width .15s;
     }
 
-    :hover {
-        border-bottom: 5px solid $highlight-dark;
-        color: $highlight-dark;
+    &.dark:hover {
+        border-bottom: 5px solid $dark-highlight;
+        color: $dark-highlight;
         transition: border-bottom .15s;
     }
 }
@@ -62,6 +63,6 @@ nav {
     width: 50px;
 
     &.dark {
-        fill: $svg-fill-dark;
+        fill: $dark-svg-fill;
     }
 }

@@ -2,7 +2,7 @@
 
 #contact {
     background-color: $dark-layer-0;
-    color: white;
+    color: $dark-text-color;
     padding: 5rem 10%;
 
     * {
@@ -35,7 +35,7 @@
     
     a {
         align-items: center;
-        color: white;
+        color: $dark-text-color;
         display: flex;
         text-decoration: none;
     }

@@ -14,8 +14,9 @@
 }
 
 .project {
-    border: 1px solid black;
-    border-radius: 10px;
+    // TODO: Add border color as variable
+    border: $border-size black;
+    border-radius: $radius;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -36,7 +37,7 @@
         width: inherit;
 
         &.dark {
-            fill: $svg-fill-dark;
+            fill: $dark-svg-fill;
         }
     }
 
@@ -51,7 +52,7 @@
         border-color: $dark-layer-3;
 
         &:hover {
-            border-color: $highlight-dark;
+            border-color: $dark-highlight;
             transition: border-color 1s;
         }
     }

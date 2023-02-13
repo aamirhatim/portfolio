@@ -19,14 +19,14 @@
 }
 
 #about-img {
-    background-color: $highlight-dark;
-    border-radius: 30px;
+    background-color: $dark-highlight;
+    border-radius: $radius;
     height: 500px;
     width: 100%;
 }
 
 #about-info {
-    color: lightgray;
+    color: $dark-text-color;
     margin-top: 3rem;
     text-align: justify;
 }

@@ -29,8 +29,9 @@
 }
 
 #education {
-    border: 1px solid black;
-    border-radius: 10px;
+    // TODO: Add light border color
+    border: $border-size black;
+    border-radius: $radius;
     display: flex;
     flex-direction: column;
     gap: 1rem;
