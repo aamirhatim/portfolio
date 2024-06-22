@@ -8,7 +8,7 @@ function About() {
         <section id='about'>
             <img id="person-pic" src={PersonPic} />
             <div id='title'>Hi, I'm Aamir.</div>
-            <Intro />
+            {/* <Intro /> */}
             <img className="separator" src={Squiggle} />
         </section>
     )
