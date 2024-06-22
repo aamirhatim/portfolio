@@ -1,0 +1,27 @@
+.project-tile {
+    position: relative;
+
+    background-color: beige;
+    border-radius: 8px;
+
+    padding: 2rem;
+
+    height: 500px;
+    width: 400px;
+    max-width: 400px;
+
+    .proj-links {
+        background-color: black;
+        border-top-left-radius: 9999px;
+        border-bottom-left-radius: 9999px;
+        color: white;
+
+        padding: .25rem;
+        padding-left: 1rem;
+        padding-right: 2rem;
+
+        position: absolute;
+        bottom: 2rem;
+        right: 0;
+    }
+}

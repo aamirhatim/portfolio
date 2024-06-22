@@ -1,0 +1,15 @@
+#projects {
+    // * {
+    //     border: 1px solid blue;
+    // }
+
+    #proj-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+        margin: 5rem 0;
+    }
+}
