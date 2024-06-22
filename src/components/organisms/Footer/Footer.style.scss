@@ -8,9 +8,9 @@ footer {
 
     padding: 5rem 10rem;
 
-    * {
-        // border: 1px solid white;
-    }
+    // * {
+    //     border: 1px solid white;
+    // }
 
     h1 {
         margin-bottom: 2rem;
@@ -32,5 +32,6 @@ footer {
         align-items: center;
         justify-content: flex-end;
         gap: .5rem;
+        opacity: 40%
     }
 }
