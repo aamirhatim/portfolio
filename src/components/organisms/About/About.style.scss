@@ -1,23 +1,23 @@
 #about {
+    background-color: #D6CAAB;
+    color: yellow;
     display: flex;
     align-items: center;
     flex-direction: column;
-    position: relative;
-    overflow: hidden;
     gap: 3rem;
 
-    margin-top: 3rem;
     height: 100vh;
     width: 100%;
 
-    * {
-        // border: 1px solid blue;
-    }
+    position: relative;
+    overflow: hidden;
+
+    // * {
+    //     border: 1px solid blue;
+    // }
 
     #title {
-        background-color: white;
         font-size: 5rem;
-
         margin-top: 25vh;
     }
 
@@ -25,8 +25,8 @@
         height: 120%;
         min-height: 1000px;
         
-        opacity: 80%;
+        opacity: 60%;
         position: absolute;
-        z-index: -1;
+        z-index: 0;
     }
 }
