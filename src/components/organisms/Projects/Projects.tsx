@@ -3,7 +3,7 @@ import "./Projects.style.scss"
 function Projects() {
     return (
         <section id="projects">
-            <h1>Projects</h1>
+            <h1>Selected work.</h1>
         </section>
     )
 }
