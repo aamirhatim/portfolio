@@ -8,6 +8,7 @@ function Footer() {
     return (
         <footer>
             <div>
+                <h1>Connect.</h1>
                 <FooterLink icon={faGithub} text="Check out my work on GitHub" />
                 <FooterLink icon={faLinkedin} text="The best way to reach me is through LinkedIn" />
                 <FooterLink icon={faBlog} text="Read my blog from my time abroad in Turkey" />
