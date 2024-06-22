@@ -1,7 +1,7 @@
+@import "../../../global.style.scss";
+
 #navpill {
-    // background-color: grey;
-    // border: 1px solid grey;
-    border-radius: 9999px;
+    border-radius: $round-border;
 
     display: flex;
     align-items: center;

@@ -1,3 +1,5 @@
+@import "../../../global.style.scss";
+
 .project-tile {
     position: relative;
 
@@ -12,8 +14,8 @@
 
     .proj-links {
         background-color: black;
-        border-top-left-radius: 9999px;
-        border-bottom-left-radius: 9999px;
+        border-top-left-radius: $round-border;
+        border-bottom-left-radius: $round-border;
         color: white;
 
         padding: .5rem;

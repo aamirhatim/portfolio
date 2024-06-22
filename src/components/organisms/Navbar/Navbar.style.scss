@@ -1,5 +1,7 @@
+@import "../../../global.style.scss";
+
 nav {
-    background-color: #D6CAAB;
+    background-color: $title-color;
     display: flex;
     justify-content: center;
     

@@ -1,5 +1,7 @@
+@import "../../../global.style.scss";
+
 #about {
-    background-color: #D6CAAB;
+    background-color: $title-color;
     color: yellow;
     display: flex;
     align-items: center;
