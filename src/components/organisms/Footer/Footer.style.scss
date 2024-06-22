@@ -1,0 +1,32 @@
+footer {
+    background-color: black;
+    color: white;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    padding: 5rem 10rem;
+
+    * {
+        // border: 1px solid white;
+    }
+
+    .footer-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    svg {
+        font-size: 1.5rem;
+        width: 2rem;
+    }
+
+    #signoff {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: .5rem;
+    }
+}
