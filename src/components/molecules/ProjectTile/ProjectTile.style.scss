@@ -1,7 +1,7 @@
 .project-tile {
     position: relative;
 
-    background-color: beige;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
     border-radius: 8px;
 
     padding: 2rem;
@@ -16,8 +16,8 @@
         border-bottom-left-radius: 9999px;
         color: white;
 
-        padding: .25rem;
-        padding-left: 1rem;
+        padding: .5rem;
+        padding-left: 1.5rem;
         padding-right: 2rem;
 
         position: absolute;
