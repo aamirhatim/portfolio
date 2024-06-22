@@ -18,11 +18,13 @@
         background-color: white;
         font-size: 5rem;
 
-        margin-top: 12rem;
+        margin-top: 25vh;
     }
 
     #person-pic {
         height: 120%;
+        min-height: 1000px;
+        
         opacity: 80%;
         position: absolute;
         z-index: -1;
