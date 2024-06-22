@@ -68,9 +68,6 @@ function Skills() {
             
             <div id="skills-descriptions">
                 <div id="title">Always learning new skills.</div>
-                {/* <p>{descriptions.concepts}</p>
-                <p>{descriptions.code}</p>
-                <p>{descriptions.tools}</p> */}
                 <SkillSection icons={faLightbulb} desc={descriptions.concepts} />
                 <SkillSection icons={faCode} desc={descriptions.code} />
                 <SkillSection icons={faToolbox} desc={descriptions.tools} />
