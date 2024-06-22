@@ -1,0 +1,25 @@
+#navpill {
+    // background-color: grey;
+    border: 1px solid grey;
+    border-radius: 9999px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 2rem;
+    min-width: min-content;
+    height: max-content;
+    width: 50%;
+
+    #logo {
+        fill: white;
+
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+
+    #nav-links {
+        display: flex;
+    }
+}

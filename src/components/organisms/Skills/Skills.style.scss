@@ -1,0 +1,41 @@
+#skills {
+    display: flex;
+    align-items: center;
+    gap: 7rem;
+
+    height: 100vh;
+
+    // * {
+    //     border: 1px solid blue;
+    // }
+
+    #sticker-grid {
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: wrap;
+        flex: 0 0 38rem;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .sticker {
+        opacity: 80%;
+        height: 3rem;
+        transition: opacity .3s;
+    }
+
+    .sticker:hover {
+        opacity: 100%;
+    }
+
+    #title {
+        font-family: "Tiny5", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 2.2rem;
+
+        margin: 0;
+        padding: 0;
+    }
+}
