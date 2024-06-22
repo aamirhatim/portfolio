@@ -67,7 +67,7 @@ function Skills() {
             <div id="sticker-grid"></div>
             
             <div id="skills-descriptions">
-                <div id="title">Always learning new skills.</div>
+                <h1 id="title">Always learning new skills.</h1>
                 <SkillSection icons={faLightbulb} desc={descriptions.concepts} />
                 <SkillSection icons={faCode} desc={descriptions.code} />
                 <SkillSection icons={faToolbox} desc={descriptions.tools} />

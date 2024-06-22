@@ -7,7 +7,7 @@ function About() {
     return (
         <section id='about'>
             <img id="person-pic" src={PersonPic} />
-            <div id='title'>Hi, I'm Aamir.</div>
+            <h1 id='title'>Hi, I'm Aamir.</h1>
             {/* <Intro /> */}
             <img className="separator" src={Squiggle} />
         </section>
