@@ -8,10 +8,10 @@ function Navpill() {
         <div id='navpill'>
             <img id='logo' src={Logo}></img>
             <div id='nav-links'>
-                <Navbutton label='About' />
-                <Navbutton label='Skills' />
-                <Navbutton label='Projects' />
-                <Navbutton label='Connect' />
+                <Navbutton label='About' anchor="intro" />
+                <Navbutton label='Skills' anchor="skills" />
+                <Navbutton label='Projects' anchor="projects" />
+                <Navbutton label='Connect' anchor="connect" />
             </div>
         </div>
     )

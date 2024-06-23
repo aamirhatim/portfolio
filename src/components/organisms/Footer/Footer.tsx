@@ -6,7 +6,7 @@ import { faBlog } from '@fortawesome/free-solid-svg-icons'
 
 function Footer() {
     return (
-        <footer>
+        <footer id="connect">
             <div className="content">
                 <div>
                     <h1>Connect.</h1>

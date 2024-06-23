@@ -1,12 +1,15 @@
 import './Navbutton.scss'
 
-function nav_to_link() {
-    console.log('Clicked a nav link')
+function scrollToAnchor(anchor:string) {
+    let e = document.getElementById(anchor)
+    if (e) {
+        e.scrollIntoView({behavior: "smooth"})
+    }
 }
 
-function Navbutton( { label } : { label:string } ) {
+function Navbutton( { label, anchor } : { label:string, anchor:string } ) {
     return (
-        <div className='nav-button' onClick={nav_to_link}><p>{label}</p></div>
+        <div className='nav-button' onClick={() => {scrollToAnchor(anchor)}}><p>{label}</p></div>
     )
 }
 
