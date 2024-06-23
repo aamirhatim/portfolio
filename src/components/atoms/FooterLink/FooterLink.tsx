@@ -6,7 +6,7 @@ function FooterLink( {icon, url, text}:{icon:IconDefinition, url:string, text:st
     return (
         <div className="footer-link">
             <FontAwesomeIcon icon={icon} />
-            <p><a href={url}>{text}</a></p>
+            <a href={url}><p>{text}</p></a>
         </div>
     )
 }
