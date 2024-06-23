@@ -17,11 +17,13 @@ const projects = [
 function Projects() {
     return (
         <section id="projects">
-            <h1>Selected work.</h1>
-            <div id="proj-grid">
-                {projects.map( p => {
-                    return(<ProjectTile proj={p} />)
-                })}
+            <div className="content">
+                <h1>Selected work.</h1>
+                <div id="proj-grid">
+                    {projects.map( p => {
+                        return(<ProjectTile proj={p} />)
+                    })}
+                </div>
             </div>
         </section>
     )

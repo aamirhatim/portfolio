@@ -1,13 +1,5 @@
+@import "../../../global.style.scss";
+
 #intro {
-    background-color: white;
-    border: 1px solid lightgray;
-    border-radius: 12px;
-    text-align: justify;
-
-    padding: 1.5rem;
-    width: 70%;
-    min-width: 20rem;
-    max-width: 55rem;
-
-    font-weight: 400;
+    color: $title-font-color;
 }

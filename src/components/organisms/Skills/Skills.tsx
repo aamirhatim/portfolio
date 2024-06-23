@@ -1,6 +1,5 @@
 import './Skills.style.scss'
 import { useEffect } from 'react'
-import { faLightbulb, faCode, faToolbox } from '@fortawesome/free-solid-svg-icons'
 
 import SkillSection from '../../molecules/SkillSection/SkillSection'
 
@@ -64,13 +63,15 @@ function Skills() {
 
     return (
         <section id='skills'>
-            <div id="sticker-grid"></div>
-            
-            <div id="skills-descriptions">
-                <h1 id="title">Always learning new skills.</h1>
-                <SkillSection icons={faLightbulb} desc={descriptions.concepts} />
-                <SkillSection icons={faCode} desc={descriptions.code} />
-                <SkillSection icons={faToolbox} desc={descriptions.tools} />
+            <div className="content">
+                <div id="sticker-grid"></div>
+                
+                <div id="skills-descriptions">
+                    <h2 id="title"><b>I'm always learning new skills.</b></h2>
+                    <SkillSection desc={descriptions.concepts} />
+                    <SkillSection desc={descriptions.code} />
+                    <SkillSection desc={descriptions.tools} />
+                </div>
             </div>
         </section>
     )

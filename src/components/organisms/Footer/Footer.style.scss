@@ -1,16 +1,19 @@
 footer {
     background-color: black;
     color: white;
-
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-
-    padding: 5rem 10rem;
+    width: 100%;
+    padding: 6rem 10rem;
 
     // * {
     //     border: 1px solid white;
     // }
+
+    .content {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        min-width: 50rem;
+    }
 
     h1 {
         margin-bottom: 2rem;

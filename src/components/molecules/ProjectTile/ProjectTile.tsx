@@ -6,8 +6,8 @@ import SkillChips from "../../molecules/SkillChips/SkillChips"
 function ProjectTile( {proj}:{proj:ProjectType} ) {
     return (
         <div className="project-tile">
-            <h2>{proj.title}</h2>
-            <h3>{proj.subtitle}</h3>
+            <h3><b>{proj.title}</b></h3>
+            <h4>{proj.subtitle}</h4>
             <p>{proj.description}</p>
             <SkillChips chips={proj.skills} />
             <ProjectLinks props={{codeUrl: proj.code, videoUrl: proj.video}} />

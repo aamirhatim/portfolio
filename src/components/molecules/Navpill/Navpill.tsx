@@ -8,9 +8,8 @@ function Navpill() {
         <div id='navpill'>
             <img id='logo' src={Logo}></img>
             <div id='nav-links'>
-                <Navbutton label='Me' />
+                <Navbutton label='About' />
                 <Navbutton label='Skills' />
-                <Navbutton label='My Journey' />
                 <Navbutton label='Projects' />
                 <Navbutton label='Connect' />
             </div>

@@ -1,0 +1,35 @@
+@import "../../../global.style.scss";
+
+#cover {
+    background-color: $title-bg-color;
+    color: $title-font-color;
+    height: 90vh;
+    overflow: hidden;
+
+    // * {
+    //     border: 1px solid blue;
+    // }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        position: relative;
+    }
+
+    #title {
+        font-size: 6rem;
+        margin-top: 25vh;
+        z-index: 1;
+    }
+
+    #person-pic {
+        height: 130%;
+        min-height: 1000px;
+        
+        opacity: 60%;
+        position: absolute;
+        z-index: 0;
+    }
+}

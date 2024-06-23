@@ -2,7 +2,7 @@ import "./SkillChip.scss"
 
 function SkillChip( {value}:{value:string} ) {
     return (
-        <h4>{value}</h4>
+        <h5 className="skill-chip">{value}</h5>
     )
 }
 

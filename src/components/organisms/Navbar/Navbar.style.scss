@@ -1,12 +1,12 @@
 @import "../../../global.style.scss";
 
 nav {
-    background-color: $title-color;
-    display: flex;
-    justify-content: center;
-    
-    padding: 2rem;
-    padding-bottom: 5rem;
-    height: 15vh;
-    width: 100%;
+    // border: 1px solid green;
+
+    // * {
+    //     border: 1px solid blue;
+    // }
+
+    background-color: $title-bg-color;
+    padding: 1rem 0;
 }
