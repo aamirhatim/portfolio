@@ -22,14 +22,14 @@
         box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
-        flex: 0 0 30rem;
+        flex: 0 0 31rem;
         justify-content: space-between;
         align-items: center;
         gap: 1rem;
     }
 
     .sticker {
-        height: 3rem;
+        height: 3.5rem;
         transition: opacity .3s;
     }
 }
