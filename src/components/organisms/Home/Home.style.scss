@@ -1,0 +1,48 @@
+@import '../../../global.style.scss';
+
+#home {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    height: 100%;
+    width: 100%;
+}
+
+.content::-webkit-scrollbar { //Chrome
+    display: none;
+}
+
+.content {
+    box-sizing: border-box;
+
+    padding: 2rem;
+    width: 100%;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+@media (min-width: 600px) {
+    #home {
+        border: 2px solid $global-border-color;
+        border-radius: .5rem;
+    }
+
+    .content {
+        padding: 5rem 3rem;
+        margin: 2rem 0;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    #home {
+        padding: 0;
+    }
+
+    .content {
+        padding: 5rem 2rem 10rem;
+        margin-top: 5rem;
+    }
+}

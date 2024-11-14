@@ -1,15 +1,39 @@
+@import '../../../global.style.scss';
+
 #projects {
-    // * {
-    //     border: 1px solid blue;
-    // }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6rem;
+}
 
-    #proj-grid {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
+#proj-header {
+    background-color: #1f2038;
+    border-radius: 1rem;
 
-        margin: 5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    font-size: 1.5rem;
+    font-weight: bold;
+
+    margin-bottom: 4rem;
+    padding: 1rem 2rem;
+
+    a {
+        color: $global-txt-color;
+    }
+}
+
+@media (max-width: 600px) {
+    #proj-header {
+        font-size: 1rem;
+        gap: 0;
+        margin-bottom: 0;
+
+        svg {
+            width: 0;
+        }
     }
 }

@@ -1,0 +1,38 @@
+.skill-type {
+    width: 25%;
+    max-width: 25rem;
+    min-width: 15rem;
+
+    .skill-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: .5rem;
+
+        background-clip: text;
+        color: transparent;
+    }
+
+    .code {
+        background-image: linear-gradient(170deg, #5fd9a4 0%, #5fd9d3 100%);
+    }
+
+    .concepts {
+        background-image: linear-gradient(170deg, #5f65d9 0%, #9a5fd9 100%);
+    }
+
+    .tools {
+        background-image: linear-gradient(170deg, #d97b5f 0%, #d9b65f 100%);
+    }
+
+    .skill-description {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .skill-type {
+        max-width: none;
+        min-width: none;
+        width: 100%;
+    }
+}

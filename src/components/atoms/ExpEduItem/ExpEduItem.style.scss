@@ -1,0 +1,22 @@
+.exp-edu-item {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+
+    img {
+        height: 2rem;
+    }
+}
+
+.exp-edu-degree {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.exp-edu-degree {
+    color: #516ef0;
+}
+
+.edu-major {
+    color: #f0e351;
+}

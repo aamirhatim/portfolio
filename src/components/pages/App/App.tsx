@@ -1,24 +1,11 @@
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import './App.style.scss'
 
-import Navbar from '../../organisms/Navbar/Navbar'
-import Footer from '../../organisms/Footer/Footer'
-import Cover from '../../organisms/Cover/Cover'
-import Skills from '../../organisms/Skills/Skills'
-import Projects from '../../organisms/Projects/Projects'
-import Intro from '../../atoms/Intro/Intro'
+import Home from '../../organisms/Home/Home'
 
-function App() {
-
-  return (
-    <>
-      <Navbar />
-      <Cover />
-      <Intro />
-      <Skills />
-      <Projects />
-      <Footer />
-    </>
-  )
-}
-
-export default App
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Home />
+  </React.StrictMode>
+)

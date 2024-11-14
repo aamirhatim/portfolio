@@ -1,8 +1,35 @@
-section {
-    padding: 5rem 10rem;
+@import '../../../global.style.scss';
+
+:root {
+//   color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    font-family: "Red Hat Text", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
-.content {
-    max-width: 1500px;
-    margin: 0 auto;
+body {
+    background-color: $global-bg;
+    box-sizing: border-box;
+    color: $global-txt-color;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 2rem;
+}
+
+#root {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
 }

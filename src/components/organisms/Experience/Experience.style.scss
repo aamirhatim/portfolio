@@ -1,0 +1,47 @@
+#experience {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5rem;
+}
+
+#current-work {
+    background-color: #1f2038;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    font-weight: bold;
+    padding: 2rem;
+    width: 100%;
+    max-width: 100rem;
+
+    #current-work-txt {
+        font-size: 1.25rem;
+        width: 100%;
+    }
+}
+
+.exp-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+#exp-edu {
+    display: flex;
+    flex-wrap: wrap;    
+    column-gap: 4rem;
+    row-gap: 2rem;
+    width: 100%;
+}
+
+#exp-job-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 600px) {
+    #exp-edu-box, #prev-work {
+        padding: 0 2rem;
+    }
+}
