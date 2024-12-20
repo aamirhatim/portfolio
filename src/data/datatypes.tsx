@@ -31,3 +31,10 @@ export type Education = {
     yearStart: number,
     yearEnd: number
 }
+
+export type Patent = {
+    id: string,
+    title: string,
+    description: string,
+    status: string
+}
