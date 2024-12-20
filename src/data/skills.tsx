@@ -35,5 +35,6 @@ export const Skillset: Array<Skill> = [
     { value: 'Full Stack Development', type: 'concepts' },
     { value: 'Websockets', type: 'code' },
     { value: 'Communication', type: 'concepts' },
-    { value: 'Figma', type: 'tools' }
+    { value: 'Figma', type: 'tools' },
+    { value: 'Rapid Prototyping', type: 'concepts' }
 ]
