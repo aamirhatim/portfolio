@@ -2,8 +2,10 @@ import './Experience.style.scss'
 import ExpEduItem from '../../atoms/ExpEduItem/ExpEduItem'
 import { jobs } from '../../../data/jobs'
 import ExpJobItem from '../../atoms/ExpJobItem/ExpJobItem'
-import { Education, Job } from '../../../data/datatypes'
+import ExpPatentItem from '../../atoms/ExpPatentItem/ExpPatentItem'
+import { Education, Job, Patent } from '../../../data/datatypes'
 import { educationList } from '../../../data/education'
+import { patents } from '../../../data/patentList'
 
 const currentWork = "I'm a software developer \
                     primarily researching novel applications that use or enable 5G, edge compute, \
@@ -24,6 +26,11 @@ function Experience() {
         return <ExpEduItem key={key} item={edu} />
     }
 
+    function createPatentItem(patent:Patent) {
+        const key = 'patent-' + patent.id
+        return <ExpPatentItem key={key} item={patent} />
+    }
+
     return (
         <div id='experience' className='content'>
             <div id='current-work'>
@@ -35,6 +42,13 @@ function Experience() {
                 <div className='exp-title'>Previous Roles</div>
                 <div id='exp-job-box'>
                     {jobs.slice(1).map( (j) => createJobItem(j) )}
+                </div>
+            </div>
+
+            <div id='patents'>
+                <div className='exp-title'>Patents</div>
+                <div id='exp-patent-box'>
+                    {patents.map( (p) => createPatentItem(p) )}
                 </div>
             </div>
 

@@ -34,14 +34,14 @@
     width: 100%;
 }
 
-#exp-job-box {
+#exp-job-box, #exp-patent-box {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
 @media (min-width: 600px) {
-    #exp-edu-box, #prev-work {
+    #exp-edu-box, #prev-work, #patents {
         padding: 0 2rem;
     }
 }
