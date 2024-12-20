@@ -6,7 +6,7 @@ export const Skillset: Array<Skill> = [
     { value: 'HTML', type: 'code' },
     { value: 'JavaScript', type: 'code' },
     { value: 'TypeScript', type: 'code' },
-    { value: 'CSS/SCSS', type: 'code' },
+    { value: 'CSS', type: 'code' },
     { value: 'LaTEX', type: 'code' },
     { value: 'Solidworks', type: 'tools' },
     { value: 'OnShape', type: 'tools' },
@@ -33,5 +33,7 @@ export const Skillset: Array<Skill> = [
     { value: 'Autoware', type: 'tools' },
     { value: 'MQTT', type: 'code' },
     { value: 'Full Stack Development', type: 'concepts' },
-    { value: 'Websockets', type: 'code' }
+    { value: 'Websockets', type: 'code' },
+    { value: 'Communication', type: 'concepts' },
+    { value: 'Figma', type: 'tools' }
 ]
