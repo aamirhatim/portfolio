@@ -1,5 +1,20 @@
+@import '../../../global.style.scss';
+
 .patent-title {
     color: #d97b5f;
     font-weight: bold;
     margin-bottom: .25rem;
+
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+}
+
+.patent-status {
+    background-color: #9a5fd9;
+    border-radius: 99rem;
+    color: $global-bg;
+    font-size: .75rem;
+    padding: .25rem .5rem;
+    width: max-content;
 }
