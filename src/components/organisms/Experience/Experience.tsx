@@ -35,6 +35,7 @@ function Experience() {
         <div id='experience' className='content'>
             <div id='current-work'>
                 <div className='exp-title'>Current Work - {jobs[0].title} <span className='job-company'>@{jobs[0].company}</span></div>
+                <div id='current-work-time'>{jobs[0].start} - Present</div>
                 <div id='current-work-txt'>{currentWork}</div>
             </div>
 
