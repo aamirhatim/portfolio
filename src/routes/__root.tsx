@@ -1,4 +1,5 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
+import Navbar from '../components/molecules/Navbar/navbar'
 
 export const Route = createRootRoute({
     component: () => (
@@ -6,6 +7,7 @@ export const Route = createRootRoute({
             <div id="route-outlet">
                 <Outlet />
             </div>
+            <Navbar />
         </>
     )
 })
