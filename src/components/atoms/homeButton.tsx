@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import Logo from '../../../assets/aamirhatim_logo.svg'
+import Logo from '../../assets/aamirhatim_logo.svg'
 
 export default function HomeButton() {
     return (
