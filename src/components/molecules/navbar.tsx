@@ -1,14 +1,8 @@
-import { Link } from '@tanstack/react-router';
-import HomeButton from '../atoms/homeButton';
+import { Link } from '@tanstack/react-router'
+import HomeButton from '../atoms/homeButton'
+import { navItems } from '../../data/navItems'
 
 export default function Navbar() {
-    const navItems = [
-        'skills',
-        'experience',
-        'projects',
-        'connect'
-    ]
-    
     return (
         <nav className='fixed top-0 left-0 box-border w-dvw p-5'>
             <div className='w-full box-border px-6 py-3 flex border rounded-full bg-black text-l text-white'>
