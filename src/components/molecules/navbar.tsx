@@ -8,6 +8,7 @@ export default function Navbar() {
         'projects',
         'connect'
     ]
+    
     return (
         <nav className='fixed top-0 left-0 box-border w-dvw p-5'>
             <div className='w-full box-border px-6 py-3 flex border rounded-full bg-black text-l text-white'>
