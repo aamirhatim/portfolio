@@ -1,6 +1,12 @@
 import { Skill } from "./datatypes";
 
-export const Skillset: Array<Skill> = [
+export const skillDescriptions = {
+    concepts: "My current areas of focus are in human-machine interfaces, autonomous navigation and multi-agent control.",
+    code: "In my day to day work I mostly use Python, and JavaScipt. I dabble in a little C++ as well.",
+    tools: "My favorite tools are OnShape for CAD design, React for web development and ROS 2 for robotic applications."
+}
+
+export const skillSet: Array<Skill> = [
     { value: 'Python', type: 'code' },
     { value: 'C/C++', type: 'code' },
     { value: 'HTML', type: 'code' },
@@ -36,5 +42,6 @@ export const Skillset: Array<Skill> = [
     { value: 'Websockets', type: 'code' },
     { value: 'Communication', type: 'concepts' },
     { value: 'Figma', type: 'tools' },
-    { value: 'Rapid Prototyping', type: 'concepts' }
+    { value: 'Rapid Prototyping', type: 'concepts' },
+    { value: 'Firebase', type: 'tools' }
 ]
