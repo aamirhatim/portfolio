@@ -10,7 +10,7 @@ function createEduItem(edu:Education) {
 export default function Schooling() {
     return (
         <div className='box-border p-5'>
-            <div className='text-4xl font-bold'>Education</div>
+            <div className='text-4xl font-bold mb-6'>Education</div>
             <div id='exp-edu'>
                 {educationList.map( (edu) => createEduItem(edu) )}
             </div>
