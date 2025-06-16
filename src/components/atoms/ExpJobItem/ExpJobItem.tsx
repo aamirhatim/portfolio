@@ -1,6 +1,6 @@
 import { Job } from '../../../data/datatypes'
 
-function ExpJobItem(props: {job: Job}) {
+export default function ExpJobItem(props: {job: Job}) {
     return (
         <div>
            <div className='text-2xl font-bold'>{props.job.title} <span>@{props.job.company}</span></div>
@@ -9,5 +9,3 @@ function ExpJobItem(props: {job: Job}) {
         </div> 
     )
 }
-
-export default ExpJobItem
