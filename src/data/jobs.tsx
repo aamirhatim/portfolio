@@ -14,15 +14,17 @@ export const jobs: Array<Job> = [
         company: "Verizon",
         description: "Research novel robotic applications using 5G, edge compute and AI",
         start: "Nov 2019",
-        id: "verizon"
+        id: "verizon",
+        skills: ["Firebase", "Full stack", "React", "Edge robotics"]
     },
     {
-        title: "Software Engineer",
+        title: "Robotics Engineer",
         company: "Siemens",
         description: "Autonomous indoor vertical farming, end-effector tooling design, robot arm dexterity research",
         start: "Jul 2018",
         end: "Jul 2019",
-        id: "siemens"
+        id: "siemens",
+        skills: ["CAD", "Python", "Robotic manipulation", "Algorithms"]
     },
     {
         title: "Software Implementation Consultant",
@@ -30,6 +32,7 @@ export const jobs: Array<Job> = [
         description: "Developing online tax return forms for Washington DC using SQL and Visual Basic",
         start: "Jul 2015",
         end: "Jul 2017",
-        id: "fast"
+        id: "fast",
+        skills: ["BASIC", "SQL"]
     }
 ]
