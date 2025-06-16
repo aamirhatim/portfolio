@@ -12,10 +12,19 @@ export const jobs: Array<Job> = [
     {
         title: "Distinguished Engineer",
         company: "Verizon",
-        description: "Research novel robotic applications using 5G, edge compute and AI",
+        description: "Developing 5G applications for industrial robotics and autonomous vehicles, lab lead for consumer innovation",
+        start: "Feb 2023",
+        id: "verizon-dmts",
+        skills: ["AMRs", "Autonomous vehicles", "Firebase", "Full stack", "React", "Edge robotics"]
+    },
+    {
+        title: "Principal Engineer",
+        company: "Verizon",
+        description: "Researching novel robotic applications using 5G, edge compute and AI",
         start: "Nov 2019",
-        id: "verizon",
-        skills: ["Firebase", "Full stack", "React", "Edge robotics"]
+        end: "Feb 2023",
+        id: "verizon-pmts",
+        skills: ["ROS", "Python", "Frontend", "5G mmWave", "Mobile Edge Compute", "Edge robotics"]
     },
     {
         title: "Robotics Engineer",
