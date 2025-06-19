@@ -1,13 +1,8 @@
-import './SkillType.style.scss'
-
-function SkillType(props: {title: string, description: string}) {
-
+export default function SkillType(props: {title: string, description: string}) {
     return (
-        <div className='skill-type'>
-            <div className={'skill-title ' + props.title.toLowerCase()}>{props.title}</div>
-            <div className='skill-description'>{props.description}</div>
+        <div className='box-border w-80 border rounded-xl p-10'>
+            <div className={'mb-4 font-bold text-3xl'}>{props.title}</div>
+            <div className='text-xl'>{props.description}</div>
         </div>
     )
 }
-
-export default SkillType
