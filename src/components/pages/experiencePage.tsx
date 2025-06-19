@@ -5,7 +5,7 @@ import Schooling from "../molecules/schooling";
 
 export default function ExperiencePage() {
     return (
-        <div className='flex flex-col gap-10'>
+        <div className='flex flex-col gap-30'>
             <CurrentWork />
             <PrevWork />
             <Patents />
