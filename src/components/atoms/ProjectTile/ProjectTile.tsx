@@ -2,7 +2,7 @@ import { ProjectType } from '../../../data/datatypes'
 import ProjLinkChip from '../ProjLinkChip/ProjLinkChip'
 import ProjSkill from '../ProjSkill/ProjSkill'
 
-function ProjectTile(props: {project:ProjectType, color:string, highlight?:boolean}) {
+function ProjectTile(props: {project:ProjectType, highlight?:boolean}) {
 
     function createProjSkill(skill:string) {
         const key = 'proj-skill-'+skill.toLowerCase().replace(' ', '-')
@@ -15,8 +15,8 @@ function ProjectTile(props: {project:ProjectType, color:string, highlight?:boole
             <div>
                 <div className='proj-title-box'>
                     <div className={`font-bold ${props.highlight ? 'text-3xl' : 'text-xl'}`}>{props.project.title}</div>
-                    {props.project.code && <ProjLinkChip value='Code' url={props.project.code} color={props.color} />}
-                    {props.project.video && <ProjLinkChip value='Video' url={props.project.video} color={props.color} />}
+                    {props.project.code && <ProjLinkChip value='Code' url={props.project.code} />}
+                    {props.project.video && <ProjLinkChip value='Video' url={props.project.video} />}
                 </div>
                 
                 <div className='text-lg mt-4'>{props.project.description}</div>

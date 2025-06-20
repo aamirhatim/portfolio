@@ -9,7 +9,7 @@ export default function ProjectsPage() {
             {/* Highlights */}
             <section className="box-border flex flex-wrap justify-center gap-5">
                 {projects.slice(0, numHighlights).map( (p, idx) => (
-                    <ProjectTile key={idx} project={p} color={"#000000"} highlight={true} />
+                    <ProjectTile key={idx} project={p} highlight={true} />
                 ))}
             </section>
 
@@ -18,7 +18,7 @@ export default function ProjectsPage() {
             {/* Other projects */}
             <section className="box-border flex flex-wrap justify-center gap-5">
                 {projects.slice(numHighlights + 1).map( (p, idx) => (
-                    <ProjectTile key={idx} project={p} color={"#000000"} />
+                    <ProjectTile key={idx} project={p} />
                 ))}
             </section>
         </div>
