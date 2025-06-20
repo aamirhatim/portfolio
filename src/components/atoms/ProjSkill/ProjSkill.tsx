@@ -1,9 +1,5 @@
-import './ProjSkill.style.scss'
-
-function ProjSkill(props: {value:string}) {
+export default function ProjSkill(props: {value:string}) {
     return (
-        <div className='proj-skill'>{props.value}</div>
+        <div className='box-border border rounded-full px-3 text-sm'>{props.value}</div>
     )
 }
-
-export default ProjSkill
