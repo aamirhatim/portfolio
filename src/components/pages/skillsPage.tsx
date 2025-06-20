@@ -18,15 +18,15 @@ export default function SkillsPage() {
 
     return (
         <>
-            <div className='mb-15 flex flex-wrap justify-center gap-8'>
+            <section className='mb-15 flex flex-wrap justify-center gap-8'>
                 <SkillType title='Code' description={skillDescriptions.code} />
                 <SkillType title='Concepts' description={skillDescriptions.concepts} />
                 <SkillType title='Tools' description={skillDescriptions.tools} />
-            </div>
+            </section>
             
-            <div className='flex flex-wrap justify-center gap-2'>
+            <section className='flex flex-wrap justify-center gap-2'>
                 { skillsShuffle.map( (s) => createSkill(s) ) }
-            </div>
+            </section>
         </>
     )
 }
