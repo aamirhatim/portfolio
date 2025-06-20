@@ -1,9 +1,8 @@
 import { ProjectType } from '../../../data/datatypes'
 import ProjLinkChip from '../ProjLinkChip/ProjLinkChip'
 import ProjSkill from '../ProjSkill/ProjSkill'
-import './ProjectTile.style.scss'
 
-function ProjectTile(props: {project:ProjectType, color:string}) {
+function ProjectTile(props: {project:ProjectType, color:string, highlight?:boolean}) {
 
     function createProjSkill(skill:string) {
         const key = 'proj-skill-'+skill.toLowerCase().replace(' ', '-')
@@ -12,16 +11,18 @@ function ProjectTile(props: {project:ProjectType, color:string}) {
     }
 
     return (
-        <div className='project-tile'>
-            <div className='proj-title-box'>
-                <div className='proj-title' style={{ color: props.color }}>{props.project.title}</div>
-                {props.project.code && <ProjLinkChip value='Code' url={props.project.code} color={props.color} />}
-                {props.project.video && <ProjLinkChip value='Video' url={props.project.video} color={props.color} />}
+        <div className={`box-border border rounded-xl p-8 flex flex-col justify-between min-w-100 ${props.highlight ? ' h-70 w-full' : 'h-90 basis-[49%]'}`}>
+            <div>
+                <div className='proj-title-box'>
+                    <div className={`font-bold ${props.highlight ? 'text-3xl' : 'text-xl'}`}>{props.project.title}</div>
+                    {props.project.code && <ProjLinkChip value='Code' url={props.project.code} color={props.color} />}
+                    {props.project.video && <ProjLinkChip value='Video' url={props.project.video} color={props.color} />}
+                </div>
+                
+                <div className='text-lg mt-4'>{props.project.description}</div>
             </div>
-            
-            <div className='proj-desc'>{props.project.description}</div>
 
-            <div className='proj-skill-box'>
+            <div className='flex flex-wrap gap-2'>
                 {props.project.skills.map( (s) => createProjSkill(s) )}
             </div>
         </div>
