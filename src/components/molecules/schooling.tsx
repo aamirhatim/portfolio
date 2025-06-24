@@ -9,11 +9,11 @@ function createEduItem(edu:Education) {
 
 export default function Schooling() {
     return (
-        <div>
+        <section>
             <div className='text-4xl font-bold mb-6'>Education</div>
             <div className='flex flex-col gap-6'>
                 {educationList.map( (edu) => createEduItem(edu) )}
             </div>
-        </div>
+        </section>
     )
 }
