@@ -1,8 +1,6 @@
-import './SkillItem.style.scss'
-
 function SkillItem(props: {value: string, type: string}) {
     return (
-        <div className={'skill-item ' + props.type }>{props.value}</div>
+        <div className={`box-border px-3 py-1 border rounded-full font-bold text-lg`}>{props.value}</div>
     )
 }
 
