@@ -1,5 +1,6 @@
 export const navItems = [
+    'me',
     'skills',
-    'experience',
+    'resume',
     'projects',
 ]
