@@ -1,20 +1,34 @@
 import { Link } from '@tanstack/react-router'
-import HomeButton from '../atoms/homeButton'
+import Logo from '../../assets/aamirhatim_logo.svg'
 import { navItems } from '../../data/navItems'
+import SocialsBar from './socialsBar'
 
-export default function Navbar() {
+export default function Navbar(props: {setNav:any, setSidebarViz:any}) {
+    const handleHomeClick = () => {
+        props.setNav('')
+        props.setSidebarViz(false)
+    }
+
+    const handleNavClick = (title:string) => {
+        props.setNav(title)
+        props.setSidebarViz(true)
+    }
+
     return (
-        <nav className='fixed top-0 left-0 box-border w-dvw p-5'>
-            <div className='w-full box-border px-6 py-3 flex border rounded-full text-l text-white backdrop-blur-md backdrop-brightness-70'>
-                <HomeButton />
+        <div className='box-border w-dvw p-5'>
+            <div className='w-full box-border px-10 py-3 flex items-center gap-8 rounded-full text-l text-white backdrop-blur-md backdrop-brightness-99 shadow-[0_0_8px_rgba(0,0,0,0.1)]'>
+                <Link to='/' onClick={handleHomeClick}><img id='logo' className='size-[22px]' src={Logo} alt='logo' /></Link>
+                
                 <div className='flex grow justify-end gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <Link key={idx} to={n} className='content-center'>{n}</Link>
+                            <Link key={idx} to={n} className='content-center' onClick={() => handleNavClick(n)}>{n}</Link>
                         ))
                     }
                 </div>
+
+                <SocialsBar />
             </div>
-        </nav>
+        </div>
     )
 }
