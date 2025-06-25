@@ -7,7 +7,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => {
         // Get route context
         const routeContext = Route.useRouteContext()
-        console.log(routeContext)
 
         return (
         <div className='h-dvh w-dvw box-border flex flex-col'>
