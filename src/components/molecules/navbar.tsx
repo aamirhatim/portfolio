@@ -2,18 +2,18 @@ import { Link } from '@tanstack/react-router'
 import Logo from '../../assets/aamirhatim_logo.svg'
 import { navItems } from '../../data/navItems'
 import SocialsBar from './socialsBar'
+import { Route } from '../../routes/__root'
 
-export default function Navbar(props: {setNav:any, setSidebarViz:any}) {
+export default function Navbar() {
+    // Get context
+    const routeContext = Route.useRouteContext()
+
     const handleHomeClick = () => {
-        props.setNav('')
-        props.setSidebarViz(false)
-        sessionStorage.removeItem('navSelection')
+        routeContext.setNav('')
     }
 
     const handleNavClick = (title:string) => {
-        props.setNav(title)
-        props.setSidebarViz(true)
-        sessionStorage.setItem('navSelection', title)
+        routeContext.setNav(title)
     }
 
     return (

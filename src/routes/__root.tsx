@@ -1,30 +1,19 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import Navbar from '../components/molecules/navbar'
 import Sidebar from '../components/molecules/sidebar'
-import { useEffect, useState } from 'react'
+import { RouterContext } from '../context/routerContext'
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     component: () => {
-        // Get session storage
-        const navSS = sessionStorage.getItem('navSelection')
-        const currentNav = navSS ? navSS : ''
-
-        const [nav, setNav] = useState<string>(currentNav)
-        const [sidebarViz, setSidebarViz] = useState<boolean>(false)
-
-        useEffect( () => {
-            setNav(nav)
-
-            if ( nav != '' ) {
-                setSidebarViz(true)
-            }
-        }, [nav])
+        // Get route context
+        const routeContext = Route.useRouteContext()
+        console.log(routeContext)
 
         return (
         <div className='h-dvh w-dvw box-border flex flex-col'>
-            <nav className='fixed top-0 left-0'><Navbar setNav={setNav} setSidebarViz={setSidebarViz}/></nav>
+            <nav className='fixed top-0 left-0'><Navbar /></nav>
             <div className='flex gap-20 h-full bg-amber-400'>
-                {sidebarViz && <Sidebar title={nav} setViz={setSidebarViz} /> }
+                {routeContext.nav != '' && <Sidebar title={routeContext.nav} /> }
                 <div className='box-border pr-[12%] py-40 grow overflow-y-scroll'>
                     <Outlet />
                 </div>
