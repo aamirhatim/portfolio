@@ -10,7 +10,7 @@ function createJobItem(job:Job) {
 export default function PrevWork() {
     return (
         <section>
-            <div className='text-4xl font-bold mb-6'>Previous Roles</div>
+            <div className='text-4xl font-bold mb-6'>previous roles.</div>
             <div className='flex flex-col gap-6'>
                 {jobs.slice(1).map( (j) => createJobItem(j) )}
             </div>

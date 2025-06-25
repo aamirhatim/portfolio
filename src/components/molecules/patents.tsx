@@ -10,7 +10,7 @@ function createPatentItem(patent:Patent) {
 export default function Patents() {
     return (
         <section>
-            <div className='text-4xl font-bold mb-6'>Patents</div>
+            <div className='text-4xl font-bold mb-6'>patents.</div>
             <div className='flex flex-col gap-6'>
                 {patents.map( (p) => createPatentItem(p) )}
             </div>
