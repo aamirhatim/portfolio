@@ -26,7 +26,7 @@ export default function MePage() {
             </section>
 
             <section className='flex flex-col'>
-                <div className='text-3xl font-bold mb-7'>My expertise</div>
+                <div className='text-3xl font-bold mb-7'>my expertise.</div>
                 <div className='flex flex-wrap gap-2'>
                     { skillsShuffle.map( (s) => createSkill(s) ) }
                 </div>
