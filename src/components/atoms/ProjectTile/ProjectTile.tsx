@@ -11,8 +11,8 @@ function ProjectTile(props: {project:ProjectType}) {
     }
 
     return (
-        <div className={'box-border border rounded-xl p-4 flex gap-4'}>
-            <div className='box-border border h-50 min-w-60 rounded-xl'></div>
+        <div className={'box-border rounded-xl p-4 flex gap-4'}>
+            <div className='box-border border min-h-50 min-w-60 rounded-xl'></div>
 
             <div className='flex flex-col gap-2'>
                 
