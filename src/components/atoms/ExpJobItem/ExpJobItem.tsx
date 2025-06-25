@@ -8,7 +8,7 @@ export default function ExpJobItem(props: {job: Job}) {
             <div className='text-lg'>{props.job.description}</div>
             {props.job.skills &&
                 <div className='flex flex-wrap gap-1 mt-2'>
-                    {props.job.skills.map( (s) => (<div className='box-border px-2 border rounded-full text-xs'>{s}</div>))}
+                    {props.job.skills.map( (s, idx) => (<div key={idx} className='box-border px-2 border rounded-full text-xs'>{s}</div>))}
                 </div>
             }
         </div> 
