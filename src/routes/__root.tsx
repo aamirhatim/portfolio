@@ -1,12 +1,24 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import Navbar from '../components/molecules/navbar'
 import Sidebar from '../components/molecules/sidebar'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Route = createRootRoute({
     component: () => {
-        const [nav, setNav] = useState<string>('')
+        // Get session storage
+        const navSS = sessionStorage.getItem('navSelection')
+        const currentNav = navSS ? navSS : ''
+
+        const [nav, setNav] = useState<string>(currentNav)
         const [sidebarViz, setSidebarViz] = useState<boolean>(false)
+
+        useEffect( () => {
+            setNav(nav)
+
+            if ( nav != '' ) {
+                setSidebarViz(true)
+            }
+        }, [nav])
 
         return (
         <div className='h-dvh w-dvw box-border flex flex-col'>

@@ -7,11 +7,13 @@ export default function Navbar(props: {setNav:any, setSidebarViz:any}) {
     const handleHomeClick = () => {
         props.setNav('')
         props.setSidebarViz(false)
+        sessionStorage.removeItem('navSelection')
     }
 
     const handleNavClick = (title:string) => {
         props.setNav(title)
         props.setSidebarViz(true)
+        sessionStorage.setItem('navSelection', title)
     }
 
     return (
