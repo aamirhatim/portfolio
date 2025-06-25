@@ -15,8 +15,6 @@ function ProjectTile(props: {project:ProjectType}) {
             <div className='box-border border min-h-50 min-w-60 rounded-xl'></div>
 
             <div className='flex flex-col gap-2'>
-                
-
                 <div className='flex flex-wrap items-center gap-2'>
                     <div className={'font-bold text-xl'}>{props.project.title}</div>
                     {props.project.code && <ProjLinkChip value='{ Code }' url={props.project.code} />}
