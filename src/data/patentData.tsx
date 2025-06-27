@@ -20,7 +20,9 @@ export const patents: Array<Patent> = [
         title: 'Systems & Methods for Indoor Positioning of Uncrewed Aerial Vehicles',
         description: 'Indoor localization and navigation of drones that require an outdoor GPS signal',
         status: 'GRANTED',
-        year: 2022
+        year: 2025,
+        number: '12243433',
+        url: 'https://ppubs.uspto.gov/api/pdf/downloadPdf/12243433?requestToken=eyJzdWIiOiI4N2ZiODY3Ni03YWQ5LTQzZTAtYjczOS1mZjE4OTk4ZjZhMjciLCJ2ZXIiOiI2ZDhjMDZkYS1lNzgxLTRlMzktODAwOS04NWFiNTE4ZDRmODciLCJleHAiOjB9'
     },
     {
         id: '20200482',
