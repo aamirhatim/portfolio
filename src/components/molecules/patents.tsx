@@ -8,11 +8,15 @@ function createPatentItem(patent:Patent) {
     }
 
 export default function Patents() {
+    const granted = patents.filter(p => p.status === "GRANTED")
+    const submitted = patents.filter(p => p.status === "SUBMITTED")
+    
     return (
         <section>
             <div className='text-4xl font-bold mb-6'>patents.</div>
             <div className='flex flex-col gap-6'>
-                {patents.map( (p) => createPatentItem(p) )}
+                {granted.map( (p) => createPatentItem(p) )}
+                {submitted.map( (p) => createPatentItem(p) )}
             </div>
         </section>
     )
