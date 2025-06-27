@@ -38,5 +38,7 @@ export type Patent = {
     title: string,
     description: string,
     status: string,
-    year: number
+    year: number,
+    number?: string,
+    url?: string
 }
