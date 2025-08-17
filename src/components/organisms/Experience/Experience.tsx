@@ -5,7 +5,7 @@ import ExpJobItem from '../../atoms/ExpJobItem/ExpJobItem'
 import ExpPatentItem from '../../atoms/ExpPatentItem/ExpPatentItem'
 import { Education, Job, Patent } from '../../../data/datatypes'
 import { educationList } from '../../../data/education'
-import { patents } from '../../../data/patentList'
+import { patents } from '../../../data/patentData'
 
 const currentWork = "I'm a software developer \
                     primarily researching novel applications that use or enable 5G, edge compute, \
