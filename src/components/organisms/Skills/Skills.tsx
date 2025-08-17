@@ -1,5 +1,5 @@
 import './Skills.stye.scss'
-import { Skillset } from '../../../data/skills'
+import { skillSet } from '../../../data/skillsData'
 import shuffle from 'lodash/shuffle'
 import { Skill } from '../../../data/datatypes'
 import SkillItem from '../../atoms/SkillItem/SkillItem'
@@ -20,7 +20,7 @@ function createSkill(skill: Skill) {
 }
 
 function Skills() {
-    const skillset = shuffle(Skillset)
+    const skills = shuffle(skillSet)
 
     return (
         <div id='skills' className='content'>
@@ -31,7 +31,7 @@ function Skills() {
             </div>
 
             <div id='skill-item-box'>
-                { skillset.map( (skill) => createSkill(skill) ) }
+                { skills.map( (s) => createSkill(s) ) }
             </div>
         </div>
     )
