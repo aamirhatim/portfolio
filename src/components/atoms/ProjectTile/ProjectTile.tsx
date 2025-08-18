@@ -2,7 +2,7 @@ import { ProjectType } from '../../../data/datatypes'
 import ProjLinkChip from '../ProjLinkChip/ProjLinkChip'
 import ProjSkill from '../ProjSkill/ProjSkill'
 
-function ProjectTile(props: {project:ProjectType}) {
+export default function ProjectTile(props: {project:ProjectType}) {
 
     function createProjSkill(skill:string) {
         const key = 'proj-skill-'+skill.toLowerCase().replace(' ', '-')
@@ -30,5 +30,3 @@ function ProjectTile(props: {project:ProjectType}) {
         </div>
     )
 }
-
-export default ProjectTile
