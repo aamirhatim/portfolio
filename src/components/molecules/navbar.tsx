@@ -9,7 +9,7 @@ export default function Navbar() {
     const routeContext = Route.useRouteContext()
 
     const handleHomeClick = () => {
-        routeContext.setNav('')
+        routeContext.setNav('home')
     }
 
     const handleNavClick = (title:string) => {
@@ -21,7 +21,7 @@ export default function Navbar() {
             <div className='w-full box-border px-10 py-3 flex items-center gap-8 rounded-full text-l backdrop-blur-md backdrop-brightness-99 border-3 border-violet-950 shadow-[0_0_8px_rgba(0,0,0,0.2)]'>
                 <Link to='/' onClick={handleHomeClick}><img id='logo' className='size-[22px]' src={Logo} alt='logo' /></Link>
                 
-                <div className='flex grow justify-end gap-8 h-full'>
+                <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
                             <Link key={idx} to={n} className={`content-center font-bold ${routeContext.nav !== n && 'text-violet-500'}`} onClick={() => handleNavClick(n)}>{n}</Link>
