@@ -8,7 +8,7 @@ export default function Sidebar(props: {title:string}) {
     const routeContext = Route.useRouteContext()
 
     const handleClose = () => {
-        routeContext.setNav('')
+        routeContext.setNav('home')
     }
     
     return (
