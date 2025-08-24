@@ -1,4 +1,6 @@
+import { SetStateAction } from "react";
+
 export interface RouterContext {
-    nav: any,
-    setNav: any
+    navSelect?: string,
+    setNavSelect?: React.Dispatch<SetStateAction<any>>
 }
