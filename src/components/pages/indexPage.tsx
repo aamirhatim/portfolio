@@ -10,7 +10,8 @@ export default function IndexPage() {
     const routeContext = Route.useRouteContext()
 
     const handleClick = () => {
-        routeContext.setNav('projects')
+        if (!routeContext.setNavSelect) return
+        routeContext.setNavSelect('projects')
     }
 
     return (

@@ -32,6 +32,6 @@ export default function App() {
     }, [nav])
 
     return (
-        <RouterProvider router={router} context={{nav: nav, setNav: setNav}} />
+        <RouterProvider router={router} context={{navSelect: nav, setNavSelect: setNav}} />
     )
 }

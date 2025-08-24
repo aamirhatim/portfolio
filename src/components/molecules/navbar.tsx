@@ -9,11 +9,13 @@ export default function Navbar() {
     const routeContext = Route.useRouteContext()
 
     const handleHomeClick = () => {
-        routeContext.setNav('home')
+        if (!routeContext.setNavSelect) return
+        routeContext.setNavSelect('home')
     }
 
     const handleNavClick = (title:string) => {
-        routeContext.setNav(title)
+        if (!routeContext.setNavSelect) return
+        routeContext.setNavSelect(title)
     }
 
     return (
@@ -24,7 +26,7 @@ export default function Navbar() {
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <Link key={idx} to={n} className={`content-center font-bold ${routeContext.nav !== n && 'text-violet-500'}`} onClick={() => handleNavClick(n)}>{n}</Link>
+                            <Link key={idx} to={n} className={`content-center font-bold ${routeContext.navSelect !== n && 'text-violet-500'}`} onClick={() => handleNavClick(n)}>{n}</Link>
                         ))
                     }
                 </div>

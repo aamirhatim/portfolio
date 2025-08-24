@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "@tanstack/react-router"
 import { Route } from "../../routes/__root"
 
-export default function Sidebar(props: {title:string}) {
+export default function Sidebar(props: {title:string|undefined}) {
     // Get context
     const routeContext = Route.useRouteContext()
 
     const handleClose = () => {
-        routeContext.setNav('home')
+        if (!routeContext.setNavSelect) return
+        routeContext.setNavSelect('home')
     }
     
     return (
