@@ -12,7 +12,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
             <div className='h-dvh w-dvw box-border flex flex-col bg-violet-950 text-violet-100'>
                 <nav className='fixed top-0 left-0'><Navbar /></nav>
                 <div className='flex gap-20 h-full'>
-                    {routeContext.nav != 'home' && <Sidebar title={routeContext.nav} /> }
+                    {routeContext.navSelect != 'home' && <Sidebar title={routeContext.navSelect} /> }
                     <div className='box-border pr-[12%] py-40 grow overflow-y-scroll'>
                         <Outlet />
                     </div>
