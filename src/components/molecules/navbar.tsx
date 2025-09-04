@@ -1,21 +1,24 @@
-import { Link } from '@tanstack/react-router'
 import Logo from '../../assets/aamirhatim_logo.svg'
-import { navItems } from '../../data/navItems'
+import { useAppContext } from '../../context/appContext'
 import SocialsBar from './socialsBar'
-import { Route } from '../../routes/__root'
+import { Link } from 'react-router'
+
+const navItems:Array<string> = [
+    "about",
+    "resume",
+    "projects"
+]
 
 export default function Navbar() {
     // Get context
-    const routeContext = Route.useRouteContext()
+    const appContext = useAppContext()
 
     const handleHomeClick = () => {
-        if (!routeContext.setNavSelect) return
-        routeContext.setNavSelect('home')
+        appContext.setNavSelect("home")
     }
 
     const handleNavClick = (title:string) => {
-        if (!routeContext.setNavSelect) return
-        routeContext.setNavSelect(title)
+        appContext.setNavSelect(title)
     }
 
     return (
@@ -26,7 +29,7 @@ export default function Navbar() {
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <Link key={idx} to={n} className={`content-center font-bold ${routeContext.navSelect !== n && 'text-violet-500'}`} onClick={() => handleNavClick(n)}>{n}</Link>
+                            <Link key={idx} to={n} className={`content-center font-bold`} onClick={() => handleNavClick(n)}>{n}</Link>
                         ))
                     }
                 </div>

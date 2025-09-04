@@ -1,6 +1,6 @@
-import { Job } from '../../../data/datatypes'
+import { JobType } from '../../../data/datatypes'
 
-export default function ExpJobItem(props: {job: Job}) {
+export default function ExpJobItem(props: {job: JobType}) {
     return (
         <div>
             <div className='text-md text-violet-400'>{props.job.start} - {props.job.end}</div>

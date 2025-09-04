@@ -8,12 +8,12 @@ export type ProjectType = {
     video?:string
 }
 
-export type Skill = {
+export type SkillType = {
     value: string,
     type: string
 }
 
-export type Job = {
+export type JobType = {
     title: string,
     company: string,
     description: string,
@@ -23,7 +23,7 @@ export type Job = {
     skills?: Array<string>
 }
 
-export type Education = {
+export type EducationType = {
     id: string,
     degree: string,
     degreeShort?: string,
@@ -33,7 +33,7 @@ export type Education = {
     yearEnd: number
 }
 
-export type Patent = {
+export type PatentType = {
     id: string,
     title: string,
     description: string,

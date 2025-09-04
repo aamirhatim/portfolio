@@ -3,7 +3,9 @@ import { faGithubAlt, faInstagram, faLinkedinIn } from '@fortawesome/free-brands
 import { faPencil } from '@fortawesome/free-solid-svg-icons'
 
 export default function SocialsBar() {
-    const iconColor = 'black'
+    // Set icon color to color palette
+    const rootStyles = window.getComputedStyle(document.documentElement)
+    const iconColor = rootStyles.getPropertyValue('--txt-color-primary').trim()
 
     return (
         <div className="flex justify-center gap-6">

@@ -1,17 +1,16 @@
-import { Link } from "@tanstack/react-router"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAnglesRight } from "@fortawesome/free-solid-svg-icons"
 import projects from "../../data/projectData"
 import ProjectHighlight from "../molecules/projectHighlight"
-import { Route } from "../../routes/__root"
+import { Link } from 'react-router'
+import { useAppContext } from '../../context/appContext'
 
-export default function IndexPage() {
+export default function HomePage() {
     // Get context
-    const routeContext = Route.useRouteContext()
+    const appContext = useAppContext()
 
     const handleClick = () => {
-        if (!routeContext.setNavSelect) return
-        routeContext.setNavSelect('projects')
+        appContext.setNavSelect("projects")
     }
 
     return (
@@ -27,7 +26,7 @@ export default function IndexPage() {
                 <div className="flex flex-wrap gap-5">
                     {projects.slice(0,4).map( (p, idx) => (<ProjectHighlight key={idx} project={p}/>))}
                 </div>
-                <Link to='/projects' onClick={handleClick} className="flex items-center gap-2 text-xl mt-5 w-max">
+                <Link to="/projects" onClick={handleClick} className="flex items-center gap-2 text-xl mt-5 w-max">
                     <div>See more</div>
                     <FontAwesomeIcon icon={faAnglesRight} size='sm' />
                 </Link>

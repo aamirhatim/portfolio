@@ -1,6 +1,6 @@
-import { Patent } from '../../../data/datatypes'
+import { PatentType } from '../../../data/datatypes'
 
-export default function ExpPatentItem(props: {item: Patent}) {
+export default function ExpPatentItem(props: {item: PatentType}) {
     return (
         <div className='box-border p-5 border border-violet-700 rounded-xl flex flex-col justify-start w-[80%] min-w-100 gap-4'>
             <div className='flex gap-2 items-center'>

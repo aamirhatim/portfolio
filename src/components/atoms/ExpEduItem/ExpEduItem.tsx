@@ -1,6 +1,6 @@
-import { Education } from '../../../data/datatypes'
+import { EducationType } from '../../../data/datatypes'
 
-export default function ExpEduItem(props: {item:Education}){
+export default function ExpEduItem(props: {item:EducationType}){
     return (
         <div>
             <div className='text-lg text-violet-400'>{props.item.school} - {props.item.yearEnd}</div>

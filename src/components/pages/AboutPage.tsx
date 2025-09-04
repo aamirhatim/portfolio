@@ -11,7 +11,7 @@ function createSkill(skill: Skill) {
     )
 }
 
-export default function MePage() {
+export default function AboutPage() {
     // Shuffle skills
     const skillsShuffle = shuffle(skillSet)
 

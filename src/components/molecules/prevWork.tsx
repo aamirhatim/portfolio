@@ -1,8 +1,8 @@
-import { Job } from "../../data/datatypes"
+import { JobType } from "../../data/datatypes"
 import { jobs } from "../../data/jobs"
 import ExpJobItem from "../atoms/ExpJobItem/ExpJobItem"
 
-function createJobItem(job:Job) {
+function createJobItem(job:JobType) {
     const key = 'job-' + job.id
     return <ExpJobItem key={key} job={job} />
 }
