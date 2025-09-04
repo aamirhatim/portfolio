@@ -1,6 +1,6 @@
 import { ProjectType } from '../../../data/datatypes'
 import ProjLinkChip from '../ProjLinkChip/ProjLinkChip'
-import ProjSkill from '../ProjSkill/ProjSkill'
+import ProjSkill from '../ProjSkill'
 
 export default function ProjectTile(props: {project:ProjectType}) {
 

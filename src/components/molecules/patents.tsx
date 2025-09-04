@@ -1,6 +1,6 @@
 import { PatentType } from '../../data/datatypes'
 import { patents } from '../../data/patentData'
-import ExpPatentItem from '../atoms/ExpPatentItem/ExpPatentItem'
+import ExpPatentItem from '../atoms/ExpPatentItem'
 
 function createPatentItem(patent:PatentType) {
         const key = 'patent-' + patent.id

@@ -1,6 +1,6 @@
 import { educationList } from '../../data/education'
 import { EducationType } from '../../data/datatypes'
-import ExpEduItem from '../atoms/ExpEduItem/ExpEduItem'
+import ExpEduItem from '../atoms/ExpEduItem'
 
 function createEduItem(edu:EducationType) {
         const key = 'edu-' + edu.id

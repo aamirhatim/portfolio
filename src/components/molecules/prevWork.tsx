@@ -1,6 +1,6 @@
 import { JobType } from "../../data/datatypes"
 import { jobs } from "../../data/jobs"
-import ExpJobItem from "../atoms/ExpJobItem/ExpJobItem"
+import ExpJobItem from "../atoms/ExpJobItem"
 
 function createJobItem(job:JobType) {
     const key = 'job-' + job.id

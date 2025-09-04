@@ -1,9 +1,9 @@
 import { shuffle } from 'lodash'
 import { skillSet } from '../../data/skillsData'
-import { Skill } from "../../data/datatypes"
-import SkillItem from "../atoms/SkillItem/SkillItem"
+import { SkillType } from "../../data/datatypes"
+import SkillItem from "../atoms/SkillItem"
 
-function createSkill(skill: Skill) {
+function createSkill(skill: SkillType) {
     const key = 'skill-' + skill.value.toLowerCase().replace(' ', '-')
 
     return(
