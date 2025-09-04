@@ -1,4 +1,4 @@
-import { Job } from './datatypes'
+import { JobType } from './datatypes'
 
 export const currentWorkDesc = 
     "I'm a software developer \
@@ -8,7 +8,7 @@ export const currentWorkDesc =
     telepresence AMRs, quadrupeds, arms, drones, educational robots \
     and autonomous vehicles."
 
-export const jobs: Array<Job> = [
+export const jobs: Array<JobType> = [
     {
         title: "Distinguished Engineer",
         company: "Verizon",

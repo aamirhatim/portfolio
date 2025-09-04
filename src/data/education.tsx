@@ -1,6 +1,6 @@
-import { Education } from "./datatypes";
+import { EducationType } from "./datatypes";
 
-export const educationList: Array<Education> = [
+export const educationList: Array<EducationType> = [
     {
         id: 'northwestern',
         degree: 'Master of Science',

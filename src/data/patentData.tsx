@@ -1,6 +1,6 @@
-import { Patent } from "./datatypes"
+import { PatentType } from "./datatypes"
 
-export const patents: Array<Patent> = [
+export const patents: Array<PatentType> = [
     {
         id: '20240253',
         title: 'System & Method for Unified Map Alignment and Coordinate Transformation Across Multiple Data Formats',

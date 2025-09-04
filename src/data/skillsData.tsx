@@ -1,4 +1,4 @@
-import { Skill } from "./datatypes";
+import { SkillType } from "./datatypes";
 
 export const skillDescriptions = {
     concepts: "My current areas of focus are in human-machine interfaces, autonomous navigation and multi-agent control.",
@@ -6,7 +6,7 @@ export const skillDescriptions = {
     tools: "My favorite tools are OnShape for CAD design, React for web development and ROS 2 for robotic applications."
 }
 
-export const skillSet: Array<Skill> = [
+export const skillSet: Array<SkillType> = [
     { value: 'Python', type: 'code' },
     { value: 'C/C++', type: 'code' },
     { value: 'HTML', type: 'code' },
