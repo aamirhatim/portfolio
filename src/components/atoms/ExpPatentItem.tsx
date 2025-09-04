@@ -1,4 +1,4 @@
-import { PatentType } from '../../../data/datatypes'
+import { PatentType } from '../../data/datatypes'
 
 export default function ExpPatentItem(props: {item: PatentType}) {
     return (

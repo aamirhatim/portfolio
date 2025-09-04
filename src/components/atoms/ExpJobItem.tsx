@@ -1,4 +1,4 @@
-import { JobType } from '../../../data/datatypes'
+import { JobType } from '../../data/datatypes'
 
 export default function ExpJobItem(props: {job: JobType}) {
     return (

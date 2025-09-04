@@ -1,4 +1,4 @@
-import { EducationType } from '../../../data/datatypes'
+import { EducationType } from '../../data/datatypes'
 
 export default function ExpEduItem(props: {item:EducationType}){
     return (
