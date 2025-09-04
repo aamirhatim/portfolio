@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router'
-import Sidebar from '../molecules/Sidebar'
-import Navbar from '../molecules/Navbar'
-import { AppContext, AppContextInterface } from '../../context/appContext'
+import { useEffect, useState } from "react"
+import { Outlet } from "react-router"
+import Sidebar from "../molecules/Sidebar"
+import Navbar from "../molecules/Navbar"
+import { AppContext, AppContextInterface } from "../../context/appContext"
 
 export default function AppLayout() {
     // Init state
@@ -22,8 +22,12 @@ export default function AppLayout() {
     return (
         <AppContext.Provider value={initContext}>
             <Navbar />
-            <Sidebar title={initContext.navSelect} />
-            <Outlet />
+            <div id="main" className="h-full w-full inline">
+                <Sidebar title={initContext.navSelect} />
+                <div id="content" className="box-border pt-40 pb-20 pr-20 h-full overflow-y-scroll">
+                    <Outlet />
+                </div>
+            </div>
         </AppContext.Provider>
     )
 }
