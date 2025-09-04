@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import HomePage from './components/pages/HomePage'
 import AboutPage from './components/pages/AboutPage'
-import ResumePage from './components/pages/resumePage'
-import ProjectsPage from './components/pages/projectsPage'
+import ResumePage from './components/pages/ResumePage'
+import ProjectsPage from './components/pages/ProjectsPage'
 import AppLayout from './components/pages/AppLayout'
 
 // Render the app
