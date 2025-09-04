@@ -27,7 +27,7 @@ export default function Sidebar(props: {title:string|undefined}) {
     return (
         <>
         {showSidebar &&
-            <div className="box-border pt-40 pl-[12%] py-20 flex flex-col justify-between items-start h-full min-w-[25%]">
+            <div id="sidebar" className="box-border pt-40 pl-[12%] py-20 flex flex-col justify-between items-start h-full min-w-[25%]">
                 <div className="text-5xl font-bold text-violet-900">{props.title}.</div>
                 <Link to="/" onClick={handleClose} className="hover:scale-130 transition duration-100"><FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" /></Link>
             </div>
