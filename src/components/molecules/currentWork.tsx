@@ -1,15 +1,16 @@
-import { currentWorkDesc, jobs } from "../../data/jobs";
+import { currentWorkDesc, jobs } from "../../data/jobs"
+import ChipGroup from "./ChipGroup"
 
 export default function CurrentWork() {
     return (
-        <section className='box-border border border-violet-700 rounded-xl p-10'>
-            <div className='text-lg text-violet-400'>{jobs[0].start} - Present</div>
-            <div className='text-3xl font-bold text-blue-400'>{jobs[0].title} <span className='text-red-500'>@{jobs[0].company}</span></div>
+        <section className='box-border border border-[var(--border-color)] rounded-xl p-10'>
+            <div className='text-lg text-[var(--txt-subtitle-color)]'>{jobs[0].start} - Present</div>
+            <div className='text-3xl font-bold text-[var(--txt-title-color)]'>{jobs[0].title} <span className='text-[var(--txt-accent-color)]'>@{jobs[0].company}</span></div>
             <div className='box-border mt-4 text-xl'>{currentWorkDesc}</div>
             {jobs[0].skills &&
-                <div className='flex flex-wrap gap-1 mt-8'>
-                    {jobs[0].skills.map( (s, idx) => (<div key={idx} className='box-border px-2 border border-violet-400 text-violet-400 rounded-full text-xs'>{s}</div>))}
-                </div>
+            <div className='mt-8'>
+                <ChipGroup list={jobs[0].skills} />
+            </div>
             }
         </section>
     )
