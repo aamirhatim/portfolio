@@ -1,0 +1,23 @@
+import { ProjectType } from '../../data/datatypes'
+import ChipGroup from '../molecules/ChipGroup'
+import ProjectLink from './ProjectLink'
+
+export default function ProjectItem(props: {project:ProjectType}) {
+    return (
+        <div className={'box-border rounded-xl p-4 flex gap-4'}>
+            <div className='box-border border border-[var(--border-color)] min-h-50 min-w-60 rounded-xl'></div>
+
+            <div className='flex flex-col gap-2'>
+                <div className='flex flex-wrap items-center gap-2'>
+                    <div className={'font-bold text-xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
+                    {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
+                    {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
+                </div>
+
+                <ChipGroup list={props.project.skills} />
+                
+                <div className='text-md mt-4'>{props.project.description}</div>
+            </div>
+        </div>
+    )
+}
