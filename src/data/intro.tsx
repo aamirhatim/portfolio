@@ -1,0 +1,2 @@
+const introTxt:string = "I'm a software developer currently working at Verizon with a focus in robotics, edge computing, human-machine interfaces and AI enablement. I strive to turn thoughts and ideas into something real."
+export default introTxt
