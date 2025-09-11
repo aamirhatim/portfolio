@@ -1,6 +1,25 @@
 @import "tailwindcss";
 
+:root {
+    --bg-color: var(--color-violet-950);
+    --txt-body-color: var(--color-violet-200);
+    --txt-feature-color: var(--color-violet-400);
+    --txt-title-color: var(--color-emerald-400);
+    --txt-subtitle-color: var(--color-violet-400);
+    --txt-accent-color: var(--color-blue-500);
+    --txt-link-color: var(--color-orange-600);
+    --border-color: var(--color-violet-700);
+}
+
+h1 {
+    font-size: var(--text-5xl);
+    line-height: var(--tw-leading, var(--text-5xl--line-height));
+    color: var(--color-violet-400);
+}
+
 body {
+    background-color: var(--bg-color);
+    color: var(--txt-body-color);
     height: 100dvh;
     width: 100dvw;
 }
