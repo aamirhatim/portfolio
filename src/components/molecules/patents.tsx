@@ -1,22 +1,30 @@
-import { PatentType } from '../../data/datatypes'
-import { patents } from '../../data/patentData'
+import { useEffect, useState } from 'react'
+import { useFirebaseAppContext } from '../../context/firebaseAppContext'
+import { FirestoreDocType, PatentType } from '../../data/datatypes'
 import ExpPatentItem from '../atoms/ExpPatentItem'
-
-function createPatentItem(patent:PatentType) {
-        const key = 'patent-' + patent.id
-        return <ExpPatentItem key={key} item={patent} />
-    }
+import { getAllDocumentsFromCollection } from '../../lib/firestoreLib'
 
 export default function Patents() {
-    const granted = patents.filter(p => p.status === "GRANTED")
-    const submitted = patents.filter(p => p.status === "SUBMITTED")
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+
+    // Init state
+    const [patentList, setPatentList] = useState<FirestoreDocType[]>([]);
+
+    // Get list of patents
+    useEffect( () => {
+        const getPatents = async () => {
+            const patents = await getAllDocumentsFromCollection(firebaseAppContext, "patents");
+            setPatentList(patents);
+        };
+        getPatents();
+    }, []);
     
     return (
         <section>
             <div className='text-4xl font-bold mb-6'>patents.</div>
             <div className='flex flex-col gap-6'>
-                {granted.map( (p) => createPatentItem(p) )}
-                {submitted.map( (p) => createPatentItem(p) )}
+                {patentList.map((p, idx) => <ExpPatentItem key={idx} item={p.data as PatentType} />)}
             </div>
         </section>
     )
