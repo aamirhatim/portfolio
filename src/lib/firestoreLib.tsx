@@ -23,7 +23,7 @@ export async function getAllDocumentsFromCollection(firebaseApp:FirebaseApp, col
  * @param firebaseApp - Firebase app object
  * @param collectionName - Collection name
  * @param queryProps - Query props of type FirestoreQueryProps
- * @returns List of Firestore documents
+ * @returns List of Firestore documents that match query
  */
 export async function queryDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string, queryProps:FirestoreQueryProps): Promise<FirestoreDocType[]> {
     const db = getFirestore(firebaseApp);
