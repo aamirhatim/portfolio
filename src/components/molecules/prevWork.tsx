@@ -1,18 +1,36 @@
-import { JobType } from "../../data/datatypes"
-import { jobs } from "../../data/jobs"
+import { useEffect, useState } from "react"
+import { useFirebaseAppContext } from "../../context/firebaseAppContext"
+import { FirestoreDocType, FirestoreQueryProps, JobType } from "../../data/datatypes"
 import ExpJobItem from "../atoms/ExpJobItem"
-
-function createJobItem(job:JobType) {
-    const key = 'job-' + job.id
-    return <ExpJobItem key={key} job={job} />
-}
+import { queryDocumentsFromCollection } from "../../lib/firestoreLib"
 
 export default function PrevWork() {
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+
+    // Init state
+    const [prevWorkList, setPrevWorkList] = useState<FirestoreDocType[]>([]);
+
+    // Get list of previous jobs
+    useEffect( () => {
+        const queryProps:FirestoreQueryProps = {
+            fieldName: "endDate",
+            comparison: "!=",
+            value: null,
+        }
+
+        const getPrevWork = async () => {
+            const prevWork = await queryDocumentsFromCollection(firebaseAppContext, "jobs", queryProps);
+            setPrevWorkList(prevWork);
+        };
+        getPrevWork();
+    }, []);
+
     return (
         <section>
             <div className='text-4xl font-bold mb-6'>previous roles.</div>
             <div className='flex flex-col gap-10'>
-                {jobs.slice(1).map( (j) => createJobItem(j) )}
+                {prevWorkList.map((job, idx) => <ExpJobItem key={idx} job={job.data as JobType} />)}
             </div>
         </section>
     )
