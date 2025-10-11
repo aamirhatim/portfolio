@@ -1,7 +1,7 @@
 import { FirebaseApp } from "firebase/app";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
-interface FirebaseConfig {
+interface FirebaseAppConfig {
     apiKey: string,
     authDomain: string,
     projectId: string,
@@ -11,7 +11,7 @@ interface FirebaseConfig {
     measurementId: string,
 }
 
-export const firebaseConfig:FirebaseConfig = {
+export const firebaseConfig:FirebaseAppConfig = {
     apiKey: "AIzaSyBa1a1s7nHc82L6yWJ1mjnH8_eam56hEQw",
     authDomain: "aamirhatim-website.firebaseapp.com",
     projectId: "aamirhatim-website",
@@ -21,11 +21,12 @@ export const firebaseConfig:FirebaseConfig = {
     measurementId: "G-FY5N0RV03J"
 };
 
-export const FirebaseContext = createContext<FirebaseApp|null>(null);
+export const FirebaseAppContext = createContext<FirebaseApp|null>(null);
 
-export function useFirebaseContext() {
-    if (FirebaseContext === null) {
-        throw new Error("Trying to access Firebase context before it is initialized");
+export function useFirebaseAppContext() {
+    const context = useContext(FirebaseAppContext);
+    if (context === null) {
+        throw new Error("Trying to access Firebase app context before it is initialized");
     }
-    return FirebaseContext;
+    return context;
 }
