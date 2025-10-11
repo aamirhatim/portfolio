@@ -1,3 +1,5 @@
+import { DocumentData } from "firebase/firestore"
+
 export type ProjectType = {
     id: string,
     title: string,
@@ -45,5 +47,5 @@ export type PatentType = {
 
 export type FirestoreDocType = {
     id: string,
-    data: ProjectType,
+    data: DocumentData,
 }
