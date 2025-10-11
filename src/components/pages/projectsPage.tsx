@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getAllDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../atoms/ProjectItem"
-import { FirestoreDocType } from "../../data/datatypes";
+import { FirestoreDocType, ProjectType } from "../../data/datatypes";
 
 export default function ProjectsPage() {
     // Get context
@@ -24,7 +24,7 @@ export default function ProjectsPage() {
     return (
         <div className="flex flex-col gap-30">
             <section className="box-border flex flex-col gap-8">
-                {projectList.map( (p, idx) => <ProjectItem key={idx} project={p.data} /> )}
+                {projectList.map( (p, idx) => <ProjectItem key={idx} project={p.data as ProjectType} /> )}
             </section>
         </div>
     )
