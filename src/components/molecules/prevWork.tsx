@@ -14,9 +14,9 @@ export default function PrevWork() {
     // Get list of previous jobs
     useEffect( () => {
         const queryProps:FirestoreQueryProps = {
-            fieldName: "endDate",
-            comparison: "!=",
-            value: null,
+            fieldName: "isCurrent",
+            comparison: "==",
+            value: false,
         }
 
         const getPrevWork = async () => {
