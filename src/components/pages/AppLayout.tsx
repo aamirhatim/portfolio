@@ -4,6 +4,7 @@ import Sidebar from "../molecules/Sidebar"
 import Navbar from "../molecules/Navbar"
 import { AppContext, AppContextInterface } from "../../context/appContext"
 import { initializeApp } from "firebase/app";
+import firebaseConfig from "../../firebaseConfig";
 
 export default function AppLayout() {
     // Init state
