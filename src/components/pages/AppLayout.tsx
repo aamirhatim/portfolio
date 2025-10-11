@@ -3,8 +3,8 @@ import { Outlet } from "react-router"
 import Sidebar from "../molecules/Sidebar"
 import Navbar from "../molecules/Navbar"
 import { AppContext, AppContextInterface } from "../../context/appContext"
-import { initializeApp } from "firebase/app";
-import firebaseConfig from "../../firebaseConfig";
+import { FirebaseApp, initializeApp } from "firebase/app";
+import { firebaseConfig, FirebaseContext } from "../../context/firebaseContext"
 
 export default function AppLayout() {
     // Init state
@@ -16,8 +16,8 @@ export default function AppLayout() {
         setNavSelect: setNav
     }
 
-    // Init Firebase
-    initializeApp(firebaseConfig);
+    // Init Firebase app
+    const firebaseApp:FirebaseApp = initializeApp(firebaseConfig);
 
     // Update sessionStorage whenever navSelect changes
     useEffect( () => {
@@ -25,14 +25,16 @@ export default function AppLayout() {
     }, [initContext.navSelect])
 
     return (
-        <AppContext.Provider value={initContext}>
-            <Navbar />
-            <div id="main" className="h-full w-full inline">
-                <Sidebar title={initContext.navSelect} />
-                <div id="content" className="box-border pt-40 pb-20 pr-20 h-full overflow-y-scroll">
-                    <Outlet />
+        <FirebaseContext.Provider value={firebaseApp}>
+            <AppContext.Provider value={initContext}>
+                <Navbar />
+                <div id="main" className="h-full w-full inline">
+                    <Sidebar title={initContext.navSelect} />
+                    <div id="content" className="box-border pt-40 pb-20 pr-20 h-full overflow-y-scroll">
+                        <Outlet />
+                    </div>
                 </div>
-            </div>
-        </AppContext.Provider>
+            </AppContext.Provider>
+        </FirebaseContext.Provider>
     )
 }
