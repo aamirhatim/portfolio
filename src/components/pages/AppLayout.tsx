@@ -3,6 +3,7 @@ import { Outlet } from "react-router"
 import Sidebar from "../molecules/Sidebar"
 import Navbar from "../molecules/Navbar"
 import { AppContext, AppContextInterface } from "../../context/appContext"
+import { initializeApp } from "firebase/app";
 
 export default function AppLayout() {
     // Init state
@@ -13,6 +14,9 @@ export default function AppLayout() {
         navSelect: nav,
         setNavSelect: setNav
     }
+
+    // Init Firebase
+    initializeApp(firebaseConfig);
 
     // Update sessionStorage whenever navSelect changes
     useEffect( () => {
