@@ -1,9 +1,33 @@
-import projects from "../../data/projectData"
 import ProjectHighlight from "../molecules/projectHighlight"
 import introTxt from '../../data/intro'
 import ArrowBtn from '../atoms/ArrowBtn'
+import { useFirebaseAppContext } from "../../context/firebaseAppContext"
+import { useEffect, useState } from "react"
+import { FirestoreDocType, FirestoreQueryProps, ProjectType } from "../../data/datatypes"
+import { queryDocumentsFromCollection } from "../../lib/firestoreLib"
 
 export default function HomePage() {
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+
+    // Init state
+    const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
+
+    // Get list of spotlight projects
+    useEffect( () => {
+        const getSpotlights = async () => {
+            const filter:FirestoreQueryProps = {
+                fieldName: "spotlight",
+                comparison: "==",
+                value: true
+            };
+
+            const spotlights = await queryDocumentsFromCollection(firebaseAppContext, "projects", filter);
+            setProjSpotlightList(spotlights);
+        };
+        getSpotlights();
+    }, []);
+
     return (
         <div className="box-border pl-[12%] flex flex-col w-full gap-40">
             <div className="flex w-[55%] text-5xl font-bold text-[var(--txt-feature-color)]">{introTxt}</div>
@@ -11,7 +35,7 @@ export default function HomePage() {
             <section>
                 <div className="text-4xl font-bold mb-10">Featured work</div>
                 <div className="flex flex-wrap gap-5">
-                    {projects.slice(0,4).map( (p, idx) => (<ProjectHighlight key={idx} project={p}/>))}
+                    {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={p.data as ProjectType} />)}
                 </div>
                 
                 <ArrowBtn text="See more" link="projects" />
