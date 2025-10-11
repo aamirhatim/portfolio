@@ -42,3 +42,8 @@ export type PatentType = {
     number?: string,
     url?: string
 }
+
+export type FirestoreDocType = {
+    id: string,
+    data: {},
+}
