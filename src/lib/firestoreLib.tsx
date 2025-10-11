@@ -8,7 +8,7 @@ import { FirestoreDocType } from "../data/datatypes";
  * @param collectionName - Collection name
  * @returns List of Firestore documents
  */
-export async function getItemsFromCollection(firebaseApp:FirebaseApp, collectionName:string): Promise<FirestoreDocType[]> {
+export async function getAllDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string): Promise<FirestoreDocType[]> {
     const db = getFirestore(firebaseApp);
     const querySnapshot = await getDocs(collection(db, collectionName));
     const items:FirestoreDocType[] = querySnapshot.docs.map((doc) => ({
