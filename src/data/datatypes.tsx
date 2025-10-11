@@ -1,4 +1,4 @@
-import { DocumentData } from "firebase/firestore"
+import { DocumentData, WhereFilterOp } from "firebase/firestore"
 
 export type ProjectType = {
     id: string,
@@ -19,10 +19,9 @@ export type JobType = {
     title: string,
     company: string,
     description: string,
-    start: string,
-    end?: string,
-    id: string,
-    skills?: Array<string>
+    startDate: string,
+    endDate?: string,
+    skills?: Array<string>,
 }
 
 export type EducationType = {
@@ -50,4 +49,10 @@ export type PatentType = {
 export type FirestoreDocType = {
     id: string,
     data: DocumentData,
+}
+
+export type FirestoreQueryProps = {
+    fieldName: string,
+    comparison: WhereFilterOp,
+    value: any,
 }
