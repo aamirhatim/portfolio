@@ -1,16 +1,42 @@
-import { currentWorkDesc, jobs } from "../../data/jobs"
+import { useEffect, useState } from "react";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext"
+import { currentWorkDesc } from "../../data/jobs"
 import ChipGroup from "./ChipGroup"
+import { FirestoreDocType, FirestoreQueryProps } from "../../data/datatypes";
+import { queryDocumentsFromCollection } from "../../lib/firestoreLib";
 
 export default function CurrentWork() {
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+
+    // Init state
+    const [currentWork, setCurrentWork] = useState<FirestoreDocType>();
+
+    // Get current work
+    useEffect( () => {
+        const filter:FirestoreQueryProps = {
+            fieldName: "isCurrent",
+            comparison: "==",
+            value: true,
+        }
+
+        const getCurrentJob = async () => {
+            const currentJob = await queryDocumentsFromCollection(firebaseAppContext, "jobs", filter);
+            console.log("CURRENT", currentJob);
+            setCurrentWork(currentJob[0]);
+        };
+        getCurrentJob();
+    }, []);
+
     return (
         <section className='box-border border border-[var(--border-color)] rounded-xl p-10'>
-            <div className='text-lg text-[var(--txt-subtitle-color)]'>{jobs[0].start} - Present</div>
-            <div className='text-3xl font-bold text-[var(--txt-title-color)]'>{jobs[0].title} <span className='text-[var(--txt-accent-color)]'>@{jobs[0].company}</span></div>
+            <div className='text-lg text-[var(--txt-subtitle-color)]'>{currentWork?.data.startDate} - Present</div>
+            <div className='text-3xl font-bold text-[var(--txt-title-color)]'>{currentWork?.data.title} <span className='text-[var(--txt-accent-color)]'>@{currentWork?.data.company}</span></div>
             <div className='box-border mt-4 text-xl'>{currentWorkDesc}</div>
-            {jobs[0].skills &&
-            <div className='mt-8'>
-                <ChipGroup list={jobs[0].skills} />
-            </div>
+            {currentWork?.data.skills &&
+                <div className='mt-8'>
+                    <ChipGroup list={currentWork?.data.skills} />
+                </div>
             }
         </section>
     )
