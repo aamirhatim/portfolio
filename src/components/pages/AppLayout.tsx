@@ -4,7 +4,7 @@ import Sidebar from "../molecules/Sidebar"
 import Navbar from "../molecules/Navbar"
 import { AppContext, AppContextInterface } from "../../context/appContext"
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { firebaseConfig, FirebaseContext } from "../../context/firebaseContext"
+import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
 
 export default function AppLayout() {
     // Init state
@@ -25,7 +25,7 @@ export default function AppLayout() {
     }, [initContext.navSelect])
 
     return (
-        <FirebaseContext.Provider value={firebaseApp}>
+        <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
                 <Navbar />
                 <div id="main" className="h-full w-full inline">
@@ -35,6 +35,6 @@ export default function AppLayout() {
                     </div>
                 </div>
             </AppContext.Provider>
-        </FirebaseContext.Provider>
+        </FirebaseAppContext.Provider>
     )
 }
