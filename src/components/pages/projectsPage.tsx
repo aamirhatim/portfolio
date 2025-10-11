@@ -1,11 +1,30 @@
-import projects from "../../data/projectData"
+import { useEffect, useState } from "react";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext";
+import { getAllDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../atoms/ProjectItem"
+import { FirestoreDocType } from "../../data/datatypes";
 
 export default function ProjectsPage() {
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+
+    // Init state
+    const [projectList, setProjectList] = useState<FirestoreDocType[]>([]);
+
+    // Get list of projects
+    useEffect( () => {
+        const getProjects = async () => {
+            const projectList = await getAllDocumentsFromCollection(firebaseAppContext, "projects");
+            console.log(projectList);
+            setProjectList(projectList);
+        };
+        getProjects();
+    }, []);
+
     return (
         <div className="flex flex-col gap-30">
             <section className="box-border flex flex-col gap-8">
-                {projects.map( (p, idx) => <ProjectItem key={idx} project={p} /> )}
+                {projectList.map( (p, idx) => <ProjectItem key={idx} project={p.data} /> )}
             </section>
         </div>
     )
