@@ -45,5 +45,5 @@ export type PatentType = {
 
 export type FirestoreDocType = {
     id: string,
-    data: {},
+    data: ProjectType,
 }
