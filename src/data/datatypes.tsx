@@ -27,9 +27,11 @@ export type JobType = {
 
 export type EducationType = {
     id: string,
-    degree: string,
-    degreeShort?: string,
-    major: string,
+    degree: {
+        short:string,
+        long: string,
+    },
+    field: string,
     school: string,
     yearStart: number,
     yearEnd: number
