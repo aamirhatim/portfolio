@@ -6,8 +6,9 @@ export type ProjectType = {
     subtitle: string,
     description: string,
     skills: string[],
-    code?:string,
-    video?:string
+    code?: string,
+    video?: string,
+    img?: string,
 }
 
 export type SkillType = {
