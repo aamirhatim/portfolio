@@ -1,11 +1,26 @@
+import { useEffect, useRef } from 'react'
 import { ProjectType } from '../../data/datatypes'
 import ChipGroup from '../molecules/ChipGroup'
 import ProjectLink from './ProjectLink'
 
 export default function ProjectItem(props: {project:ProjectType}) {
+    // Create refs
+    const imgRef = useRef<HTMLDivElement>(null);
+
+    // Set project bg image
+    useEffect( () => {
+        if (!imgRef.current || !props.project.img) return;
+
+        const img = imgRef.current;
+        const imgPath = `/project_img/${props.project.img}`;
+        img.style.backgroundImage = `url(${imgPath})`;
+        img.style.backgroundSize = "cover";
+        img.style.backgroundPosition = "center";
+    }, []);
+
     return (
         <div className={'box-border rounded-xl p-4 flex gap-4'}>
-            <div className='box-border border border-[var(--border-color)] min-h-50 min-w-60 rounded-xl'></div>
+            <div ref={imgRef} className='box-border border border-[var(--border-color)] min-h-50 min-w-60 rounded-xl'></div>
 
             <div className='flex flex-col gap-2'>
                 <div className='flex flex-wrap items-center gap-2'>
