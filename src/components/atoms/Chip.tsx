@@ -11,7 +11,7 @@ export default function Chip(props:ChipProps) {
     )
 
     const largeChip = (
-        <div className="box-border px-2 border border-[var(--txt-subtitle-color)] text-[var(--txt-subtitle-color)] rounded-full text-xl">
+        <div className="box-border px-4 py-1 border border-[var(--txt-subtitle-color)] text-[var(--txt-subtitle-color)] rounded-full text-xl">
             {props.text}
         </div>
     )
