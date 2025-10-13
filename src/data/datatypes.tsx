@@ -12,8 +12,9 @@ export type ProjectType = {
 }
 
 export type SkillType = {
-    value: string,
-    type: string
+    name: string,
+    type: string,
+    level: number,
 }
 
 export type JobType = {
