@@ -24,9 +24,10 @@ export default function LazyImg(props:LazyImgProps) {
 
     // Image loader helper
     const loadImage = async () => {
+        setIsLoading(true);
+        setError(false);
+        
         try {
-            setIsLoading(true);
-            setError(false);
             const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
             const url = await getDownloadURL(imgRefFromStorage);
             setImgUrl(url);
