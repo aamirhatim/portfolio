@@ -29,7 +29,7 @@ export default function CurrentWork() {
 
     return (
         <section className='box-border border border-[var(--border-color)] rounded-xl p-10'>
-            <div className='text-lg text-[var(--txt-subtitle-color)]'>{currentWork?.data.startDate} - Present</div>
+            <div className='text-lg text-[var(--txt-subtitle-color)]'>{currentWork?.data.start} - Present</div>
             <div className='text-3xl font-bold text-[var(--txt-title-color)]'>{currentWork?.data.title} <span className='text-[var(--txt-accent-color)]'>@{currentWork?.data.company}</span></div>
             <div className='box-border mt-4 text-xl'>{currentWorkDesc}</div>
             {currentWork?.data.skills &&

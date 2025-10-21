@@ -22,8 +22,8 @@ export type JobType = {
     company: string,
     description: string,
     isCurrent: boolean,
-    startDate: string,
-    endDate?: string,
+    start: string,
+    end?: string,
     skills?: Array<string>,
 }
 
@@ -35,8 +35,8 @@ export type EducationType = {
     },
     field: string,
     school: string,
-    yearStart: number,
-    yearEnd: number
+    start: number,
+    end: number
 }
 
 export type PatentType = {
