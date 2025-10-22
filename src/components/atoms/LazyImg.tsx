@@ -5,8 +5,8 @@ import { getDownloadURL, getStorage, ref } from "firebase/storage";
 interface LazyImgProps {
     imgPath: string,
     alt: string,
-    className?: string,
-    placeholderSrc: string,
+    className: string,
+    placeholderPath: string,
 }
 
 export default function LazyImg(props:LazyImgProps) {
@@ -15,28 +15,24 @@ export default function LazyImg(props:LazyImgProps) {
     const firebaseStorage = getStorage(fireBaseAppContext);
 
     // Init state
-    const [imgUrl, setImgUrl] = useState<string>(props.placeholderSrc);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<boolean>(false);
+    const [imgUrl, setImgUrl] = useState<string>(props.placeholderPath);
+    const [imgLoaded, setImgLoaded] = useState<boolean>(false);
 
-    // Create img ref
-    const imgRef = useRef(null);
+    // Create refs
+    const imgRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
 
     // Image loader helper
     const loadImage = async () => {
-        setIsLoading(true);
-        setError(false);
-        
         try {
             const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
             const url = await getDownloadURL(imgRefFromStorage);
             setImgUrl(url);
         } catch (error) {
             console.error("Failed to load image:", error);
-            setError(true);
-            setImgUrl(props.placeholderSrc);
+            setImgUrl(props.placeholderPath);
         } finally {
-            setIsLoading(false);
+            setImgLoaded(true);
         }
     };
 
@@ -71,14 +67,26 @@ export default function LazyImg(props:LazyImgProps) {
             }
             observer.disconnect();
         }
-    }, [props.imgPath, props.placeholderSrc]);
+    }, [props.imgPath, props.placeholderPath]);
+
+    // useEffect for updating bg image
+    useEffect(() => {
+        if (!imgRef.current || !overlayRef.current) return;
+
+        imgRef.current.style.backgroundImage = `url(${imgUrl})`;
+        imgRef.current.style.backgroundPosition = "center";
+        imgRef.current.style.backgroundSize = "cover";
+
+        if (imgLoaded) {
+            overlayRef.current.style.opacity = "0";
+        } else {
+            overlayRef.current.style.opacity = "1";
+        }
+    }, [imgUrl, imgLoaded]);
 
     return (
-        <img
-            ref={imgRef}
-            src={imgUrl}
-            alt={props.alt}
-            className={props.className}
-        />
+        <div ref={imgRef} className={`relative ${props.className}`}>
+            <div ref={overlayRef} className="absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500"></div>
+        </div>
     )
 }
