@@ -4,7 +4,7 @@ import ProjectLink from './ProjectLink'
 import LazyImg from './LazyImg';
 
 export default function ProjectItem(props: {project:ProjectType}) {
-    // Create refs
+    // Define image paths
     const imgPath = `/proj_img/${props.project.imgPath}`;
     const placeholderPath = `/proj_thumbs/${props.project.imgPath}`;
 
