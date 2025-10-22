@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { ProjectType } from '../../data/datatypes'
 import ChipGroup from '../molecules/ChipGroup'
 import ProjectLink from './ProjectLink'
@@ -6,26 +5,16 @@ import LazyImg from './LazyImg';
 
 export default function ProjectItem(props: {project:ProjectType}) {
     // Create refs
-    const imgRef = useRef<HTMLDivElement>(null);
-
-    // Set project bg image
-    useEffect( () => {
-        if (!imgRef.current || !props.project.img) return;
-
-        const img = imgRef.current;
-        const imgPath = `/project_img/${props.project.img}`;
-        img.style.backgroundImage = `url(${imgPath})`;
-        img.style.backgroundSize = "cover";
-        img.style.backgroundPosition = "center";
-    }, []);
+    const imgPath = `/proj_img/${props.project.imgPath}`;
+    const placeholderPath = `/proj_thumbs/${props.project.imgPath}`;
 
     return (
         <div className={'box-border rounded-xl p-4 flex gap-4'}>
             <LazyImg
-                imgPath={`/proj_img/baxter.jpg`}
+                imgPath={imgPath}
                 alt={'Project image'}
-                placeholderSrc={'/project_img/teleops.jpg'}
-                className='box-border border border-[var(--border-color)] min-h-50 min-w-60 rounded-xl'
+                placeholderPath={placeholderPath}
+                className='box-border border border-[var(--border-color)] rounded-xl overflow-hidden h-50 w-60'
             />
 
             <div className='flex flex-col gap-2'>
