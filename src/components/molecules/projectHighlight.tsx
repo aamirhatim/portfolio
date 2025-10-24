@@ -2,8 +2,8 @@ import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
-    const imgPath = `/proj_img/${props.project.imgPath}`;
-    const placeholderPath = `/proj_thumbs/${props.project.imgPath}`;
+    const imgPath = `/proj_img/${props.project.img}`;
+    const placeholderPath = `/proj_thumbs/${props.project.img}`;
     
     return (
         <div className="flex">
