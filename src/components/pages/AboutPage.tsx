@@ -3,15 +3,31 @@ import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import { useEffect, useState } from 'react'
 import { getAllDocumentsFromCollection } from '../../lib/firestoreLib'
 import ChipGroup from "../molecules/ChipGroup"
+import LazyImg from "../atoms/LazyImg"
+import { orderBy } from "firebase/firestore"
 
 export default function AboutPage() {
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
 
     // Init state
+    const [aboutTxt, setAboutTxt] = useState<string[]>([]);
     const [topSkills, setTopSkills] = useState<SkillType[]>([]);
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
     const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
+
+    // Get about me text
+    useEffect(() => {
+        const getAboutTxt = async () => {
+            let aboutTxtRaw:string[] = [];
+            const aboutDocs = await getAllDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("section")]);
+            aboutDocs.forEach(doc => {
+                aboutTxtRaw.push(doc.data.text);
+            });
+            setAboutTxt(aboutTxtRaw);
+        };
+        getAboutTxt();
+    }, []);
 
     // Get skills
     useEffect( () => {
@@ -43,12 +59,17 @@ export default function AboutPage() {
 
     return (
         <div className="flex flex-col gap-20">
-            <section>
-                <div className='rounded-xl bg-amber-600 w-[30%] min-w-60 h-40'></div>
-            </section>
+            <section className="box-border flex gap-10 w-full px-10">
+                <div className="flex flex-col gap-5 grow-1 text-xl">
+                    {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
+                </div>
 
-            <section className='text-lg'>
-                About me
+                <LazyImg
+                    imgPath="/aboutme.jpg"
+                    className="rounded-xl w-100 h-150 border border-[var(--border-color)]"
+                    placeholderPath="/proj_thumbs/aboutme.jpg"
+                    alt={"This is me"}
+                />
             </section>
 
             <section className='flex flex-col'>
