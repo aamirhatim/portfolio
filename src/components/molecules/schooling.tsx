@@ -3,6 +3,7 @@ import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import ExpEduItem from '../atoms/ExpEduItem'
 import { EducationType, FirestoreDocType } from '../../data/datatypes';
 import { getAllDocumentsFromCollection } from '../../lib/firestoreLib';
+import { orderBy } from 'firebase/firestore';
 
 export default function Schooling() {
     // Get context
@@ -14,7 +15,7 @@ export default function Schooling() {
     // Get list of education
     useEffect( () => {
         const getEdu = async () => {
-            const edu = await getAllDocumentsFromCollection(firebaseAppContext, "education");
+            const edu = await getAllDocumentsFromCollection(firebaseAppContext, "education", [orderBy("end", "desc")]);
             setEduList(edu);
         };
         getEdu();

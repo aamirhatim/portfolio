@@ -1,5 +1,5 @@
 import { FirebaseApp } from "firebase/app";
-import { collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { collection, getDocs, getFirestore, query, QueryConstraint, where } from "firebase/firestore";
 import { FirestoreDocType, FirestoreQueryProps } from "../data/datatypes";
 
 /**
@@ -8,9 +8,13 @@ import { FirestoreDocType, FirestoreQueryProps } from "../data/datatypes";
  * @param collectionName - Collection name
  * @returns List of Firestore documents
  */
-export async function getAllDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string): Promise<FirestoreDocType[]> {
+export async function getAllDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string, queryOptions?:QueryConstraint[]): Promise<FirestoreDocType[]> {
     const db = getFirestore(firebaseApp);
-    const querySnapshot = await getDocs(collection(db, collectionName));
+    const q = query(
+        collection(db, collectionName),
+        ...(queryOptions ? queryOptions : []),
+    );
+    const querySnapshot = await getDocs(q);
     const items:FirestoreDocType[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         data: doc.data(),

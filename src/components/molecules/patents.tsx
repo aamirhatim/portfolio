@@ -3,6 +3,7 @@ import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import { FirestoreDocType, PatentType } from '../../data/datatypes'
 import ExpPatentItem from '../atoms/ExpPatentItem'
 import { getAllDocumentsFromCollection } from '../../lib/firestoreLib'
+import { orderBy } from 'firebase/firestore'
 
 export default function Patents() {
     // Get context
@@ -14,7 +15,7 @@ export default function Patents() {
     // Get list of patents
     useEffect( () => {
         const getPatents = async () => {
-            const patents = await getAllDocumentsFromCollection(firebaseAppContext, "patents");
+            const patents = await getAllDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]);
             setPatentList(patents);
         };
         getPatents();
