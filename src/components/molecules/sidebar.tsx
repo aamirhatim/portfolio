@@ -27,7 +27,7 @@ export default function Sidebar(props: {title:string}) {
     return (
         <>
         {showSidebar &&
-            <div id="sidebar" className="float-left box-border px-12 pt-40 pb-20 flex flex-col justify-between items-start h-full w-[300px]">
+            <div id="sidebar" className="float-left box-border px-12 pt-40 pb-20 flex flex-col justify-between items-start h-full w-[300px] grow-0 shrink-0">
                 <div className="text-5xl font-bold text-violet-900">{props.title}.</div>
                 <Link to="/" onClick={handleClose} className="hover:scale-130 transition duration-100"><FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" /></Link>
             </div>
