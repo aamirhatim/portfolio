@@ -36,10 +36,12 @@ export default function AppLayout() {
         <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
                 <Navbar />
-                <div id="main" className="h-full w-full inline">
-                    <Sidebar title={initContext.navSelect} />
-                    <div id="content" className="box-border pt-40 pb-20 pr-20 h-full overflow-y-scroll">
-                        <Outlet />
+                <div className="h-full w-full w-max-view mx-auto">
+                    <div className="h-full w-full flex">
+                        <Sidebar title={initContext.navSelect} />
+                        <div className="box-border pt-40 pb-20 pr-10 h-full overflow-y-scroll grow-1">
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
             </AppContext.Provider>
