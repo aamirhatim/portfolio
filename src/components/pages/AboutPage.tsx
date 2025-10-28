@@ -59,7 +59,7 @@ export default function AboutPage() {
 
     return (
         <div className="flex flex-col gap-20">
-            <section className="box-border flex gap-10 w-full px-10">
+            <section className="box-border flex gap-10 w-full">
                 <div className="flex flex-col gap-5 grow-1 text-xl">
                     {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
