@@ -9,7 +9,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
 
     return (
-        <div className={'box-border p-4 flex gap-4'}>
+        <div className={'box-border flex gap-4'}>
             <LazyImg
                 imgPath={imgPath}
                 alt={'Project image'}
