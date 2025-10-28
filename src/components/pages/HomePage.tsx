@@ -1,5 +1,4 @@
 import ProjectHighlight from "../molecules/projectHighlight"
-// import introTxt from '../../data/intro'
 import ArrowBtn from '../atoms/ArrowBtn'
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
