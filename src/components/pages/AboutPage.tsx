@@ -66,7 +66,7 @@ export default function AboutPage() {
 
                 <LazyImg
                     imgPath="/aboutme.jpg"
-                    className="rounded-xl w-100 h-150 border border-[var(--border-color)]"
+                    className="rounded-xl w-[40%] h-150 border border-[var(--border-color)]"
                     placeholderPath="/proj_thumbs/aboutme.jpg"
                     alt={"This is me"}
                 />
