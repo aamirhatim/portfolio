@@ -11,6 +11,10 @@
     --border-color: var(--color-violet-700);
 }
 
+.w-max-view {
+    max-width: 1440px;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--txt-body-color);
