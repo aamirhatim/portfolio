@@ -26,8 +26,8 @@ export default function HomePage() {
     }, []);
 
     return (
-        <div className="box-border pl-[12%] flex flex-col w-full gap-40">
-            <div className="flex w-[55%] text-5xl font-bold text-[var(--txt-feature-color)]">{introTxt}</div>
+        <div className="box-border flex flex-col w-full gap-40">
+            <div className="flex w-[65%] text-5xl font-bold text-[var(--txt-feature-color)]">{introTxt}</div>
 
             <section>
                 <div className="text-4xl font-bold mb-10">Featured work</div>
