@@ -29,7 +29,7 @@ export default function Navbar() {
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <Link key={idx} to={n} className={`content-center font-bold`} onClick={() => handleNavClick(n)}>{n}</Link>
+                            <Link key={idx} to={n} className={`content-center font-bold hover:text-[var(--txt-accent-color)] transition-colors ${appContext.navSelect === n ? 'text-[var(--txt-accent-color)]' : ''}`} onClick={() => handleNavClick(n)}>{n}</Link>
                         ))
                     }
                 </div>
