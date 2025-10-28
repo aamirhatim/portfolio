@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { FirestoreDocType, JobType } from "../../data/datatypes"
 import ExpJobItem from "../atoms/ExpJobItem"
-import { getAllDocumentsFromCollection } from "../../lib/firestoreLib"
+import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 
 export default function PrevWork() {
@@ -20,7 +20,7 @@ export default function PrevWork() {
         ]
 
         const getPrevWork = async () => {
-            const prevWork = await getAllDocumentsFromCollection(firebaseAppContext, "jobs", queryOptions);
+            const prevWork = await getDocumentsFromCollection(firebaseAppContext, "jobs", queryOptions);
             setPrevWorkList(prevWork);
         };
         getPrevWork();

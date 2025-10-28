@@ -1,7 +1,7 @@
 import { SkillType } from "../../data/datatypes"
 import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import { useEffect, useState } from 'react'
-import { getAllDocumentsFromCollection } from '../../lib/firestoreLib'
+import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import ChipGroup from "../molecules/ChipGroup"
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
@@ -20,7 +20,7 @@ export default function AboutPage() {
     useEffect(() => {
         const getAboutTxt = async () => {
             let aboutTxtRaw:string[] = [];
-            const aboutDocs = await getAllDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("section")]);
+            const aboutDocs = await getDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("section")]);
             aboutDocs.forEach(doc => {
                 aboutTxtRaw.push(doc.data.text);
             });
@@ -32,7 +32,7 @@ export default function AboutPage() {
     // Get skills
     useEffect( () => {
         const getSkills = async () => {
-            const skills = await getAllDocumentsFromCollection(firebaseAppContext, "skills");
+            const skills = await getDocumentsFromCollection(firebaseAppContext, "skills");
 
             // Categorize skills
             const tops:SkillType[] = [];

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
-import { getAllDocumentsFromCollection } from "../../lib/firestoreLib"
+import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../atoms/ProjectItem"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes";
 
@@ -14,7 +14,7 @@ export default function ProjectsPage() {
     // Get list of projects
     useEffect( () => {
         const getProjects = async () => {
-            const projectList = await getAllDocumentsFromCollection(firebaseAppContext, "projects");
+            const projectList = await getDocumentsFromCollection(firebaseAppContext, "projects");
             setProjectList(projectList);
         };
         getProjects();

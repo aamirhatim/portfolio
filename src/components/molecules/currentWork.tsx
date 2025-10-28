@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { currentWorkDesc } from "../../data/jobs"
 import ChipGroup from "./ChipGroup"
-import { FirestoreDocType, FirestoreQueryProps } from "../../data/datatypes";
-import { queryDocumentsFromCollection } from "../../lib/firestoreLib";
+import { FirestoreDocType } from "../../data/datatypes";
+import { getDocumentsFromCollection } from "../../lib/firestoreLib";
+import { where } from "firebase/firestore";
 
 export default function CurrentWork() {
     // Get context
@@ -14,14 +15,10 @@ export default function CurrentWork() {
 
     // Get current work
     useEffect( () => {
-        const filter:FirestoreQueryProps = {
-            fieldName: "isCurrent",
-            comparison: "==",
-            value: true,
-        }
+        const filter = where("isCurrent", "==", true);
 
         const getCurrentJob = async () => {
-            const currentJob = await queryDocumentsFromCollection(firebaseAppContext, "jobs", filter);
+            const currentJob = await getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]);
             setCurrentWork(currentJob[0]);
         };
         getCurrentJob();

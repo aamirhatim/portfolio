@@ -3,8 +3,9 @@ import introTxt from '../../data/intro'
 import ArrowBtn from '../atoms/ArrowBtn'
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
-import { FirestoreDocType, FirestoreQueryProps, ProjectType } from "../../data/datatypes"
-import { queryDocumentsFromCollection } from "../../lib/firestoreLib"
+import { FirestoreDocType, ProjectType } from "../../data/datatypes"
+import { getDocumentsFromCollection } from "../../lib/firestoreLib"
+import { where } from "firebase/firestore"
 
 export default function HomePage() {
     // Get context
@@ -16,13 +17,9 @@ export default function HomePage() {
     // Get list of spotlight projects
     useEffect( () => {
         const getSpotlights = async () => {
-            const filter:FirestoreQueryProps = {
-                fieldName: "spotlight",
-                comparison: "==",
-                value: true
-            };
+            const filter = where("spotlight", "==", true);
 
-            const spotlights = await queryDocumentsFromCollection(firebaseAppContext, "projects", filter);
+            const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
             setProjSpotlightList(spotlights);
         };
         getSpotlights();
