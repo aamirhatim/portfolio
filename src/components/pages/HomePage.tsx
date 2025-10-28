@@ -1,5 +1,5 @@
 import ProjectHighlight from "../molecules/projectHighlight"
-import introTxt from '../../data/intro'
+// import introTxt from '../../data/intro'
 import ArrowBtn from '../atoms/ArrowBtn'
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
@@ -12,7 +12,17 @@ export default function HomePage() {
     const firebaseAppContext = useFirebaseAppContext();
 
     // Init state
+    const [introTxt, setIntroTxt] = useState<string>("");
     const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
+
+    // Get intro text
+    useEffect(() => {
+        const getIntroTxt = async () => {
+            const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
+            setIntroTxt(txt[0].data.text);
+        };
+        getIntroTxt();
+    }, []);
 
     // Get list of spotlight projects
     useEffect( () => {
