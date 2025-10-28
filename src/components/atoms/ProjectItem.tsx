@@ -14,7 +14,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
                 imgPath={imgPath}
                 alt={'Project image'}
                 placeholderPath={placeholderPath}
-                className='box-border border border-[var(--border-color)] rounded-xl overflow-hidden h-50 w-60 grow-0 shrink-0'
+                className='box-border border border-[var(--border-color)] rounded-xl overflow-hidden h-60 w-60 grow-0 shrink-0'
             />
 
             <div className='flex flex-col gap-2'>
