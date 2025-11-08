@@ -33,5 +33,5 @@ dist-ssr
 .firebase
 backups
 emulators_data
-storage.rules
+*.rules
 serviceAccountKey.json
