@@ -66,12 +66,29 @@ export default function AboutPage() {
                     {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
 
-                <LazyImg
-                    imgPath="/aboutme.jpg"
-                    className={`rounded-xl border border-[var(--border-color)] ${isMobile ? 'w-full h-80' : 'w-[40%] h-150'}`}
-                    placeholderPath="/proj_thumbs/aboutme.jpg"
-                    alt={"This is me"}
-                />
+                <div className={`flex border border-[var(--border-color)] rounded-xl overflow-hidden opacity-75 ${isMobile ? 'w-full h-80' : 'flex-col w-100 h-150'}`}>
+                    <LazyImg
+                        imgPath="/aboutme1.jpg"
+                        className={`w-full grow-1`}
+                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        position="15% 20%"
+                        alt={"This is me"}
+                    />
+                    <LazyImg
+                        imgPath="/aboutme2.jpg"
+                        className={`w-full grow-1`}
+                        position="15% 20%"
+                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        alt={"This is me"}
+                    />
+                    <LazyImg
+                        imgPath="/aboutme3.jpg"
+                        className={`w-full grow-1`}
+                        position="15% 20%"
+                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        alt={"This is me"}
+                    />
+                </div>
             </section>
 
             <section className='flex flex-col'>
