@@ -1,12 +1,14 @@
 import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
+import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
+    const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
     
     return (
-        <div className="flex">
+        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer ${hoverClasses}`}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
