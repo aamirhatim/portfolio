@@ -1,6 +1,5 @@
 import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link } from "react-router"
 import { useAppContext } from "../../context/appContext"
 import { useEffect, useState } from "react"
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout"
