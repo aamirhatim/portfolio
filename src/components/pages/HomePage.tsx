@@ -40,7 +40,7 @@ export default function HomePage() {
 
             <section className="flex flex-col gap-8">
                 <div className="text-4xl font-bold">Featured work</div>
-                <div className="flex flex-wrap gap-5">
+                <div className="flex flex-wrap">
                     {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={p.data as ProjectType} />)}
                 </div>
                 
