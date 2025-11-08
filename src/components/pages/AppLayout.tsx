@@ -54,7 +54,7 @@ export default function AppLayout() {
                 <div className="box-border h-full w-full w-max-view mx-auto">
                     <div className="h-full w-full flex">
                         {showSidebar && <Sidebar title={initContext.navSelect} />}
-                        <div className={`box-border pt-40 pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${!isMobile && 'pr-10'}`}>
+                        <div className={`box-border pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${isMobile ? 'pt-25' : 'pr-10 pt-40'}`}>
                             <Outlet />
                         </div>
                     </div>
