@@ -3,15 +3,18 @@ import ChipGroup from '../molecules/ChipGroup'
 import ProjectLink from './ProjectLink'
 import LazyImg from './LazyImg';
 import { ANIMATION_DURATION_MS } from '../pages/AppLayout';
+import useIsMobile from '../hooks';
 
 export default function ProjectItem(props: {project:ProjectType}) {
+    const isMobile = useIsMobile();
+
     // Define image paths
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
 
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
 
-    return (
+    const desktopLayout = (
         <div className={`box-border flex gap-6 px-10 cursor-pointer ${hoverClasses}`}>
             <LazyImg
                 imgPath={imgPath}
@@ -32,5 +35,36 @@ export default function ProjectItem(props: {project:ProjectType}) {
                 <div className='text-md mt-4'>{props.project.description}</div>
             </div>
         </div>
+    );
+
+    const mobileLayout = (
+        <div className='px-6 flex flex-col gap-4'>
+            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full'>
+                <LazyImg
+                    imgPath={imgPath}
+                    alt={'Project image'}
+                    placeholderPath={placeholderPath}
+                    className='box-border border border-[var(--border-color)] h-full w-full'
+                />
+                <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.85)] from-25% to-[rgba(0,0,0,0)] to-80% flex flex-col gap-3 justify-end'>
+                    <div className={'font-bold text-2xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
+                    <div className='flex gap-3'>
+                        {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
+                        {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
+                    </div>
+                </div>
+            </div>
+
+            <div className='px-3 flex flex-col gap-4'>
+                <div className='text-lg'>{props.project.description}</div>
+                <ChipGroup list={props.project.skills} />
+            </div>
+        </div>
+    );
+
+    return (
+        <>
+        {isMobile ? mobileLayout : desktopLayout}
+        </>
     )
 }

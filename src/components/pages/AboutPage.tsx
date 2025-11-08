@@ -5,12 +5,14 @@ import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import ChipGroup from "../molecules/ChipGroup"
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
+import useIsMobile from "../hooks"
 
 export default function AboutPage() {
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
 
     // Init state
+    const isMobile = useIsMobile();
     const [aboutTxt, setAboutTxt] = useState<string[]>([]);
     const [topSkills, setTopSkills] = useState<SkillType[]>([]);
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
@@ -58,15 +60,15 @@ export default function AboutPage() {
     }, []);
 
     return (
-        <div className="flex flex-col gap-20">
-            <section className="box-border flex gap-10 w-full">
+        <div className="px-6 flex flex-col gap-20">
+            <section className={`box-border flex gap-10 w-full ${isMobile ? 'flex-col-reverse' : ''}`}>
                 <div className="flex flex-col gap-5 grow-1 text-xl">
                     {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
 
                 <LazyImg
                     imgPath="/aboutme.jpg"
-                    className="rounded-xl w-[40%] h-150 border border-[var(--border-color)]"
+                    className={`rounded-xl border border-[var(--border-color)] ${isMobile ? 'w-full h-80' : 'w-[40%] h-150'}`}
                     placeholderPath="/proj_thumbs/aboutme.jpg"
                     alt={"This is me"}
                 />

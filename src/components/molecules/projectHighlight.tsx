@@ -1,13 +1,15 @@
 import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
+import useIsMobile from "../hooks";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
+    const isMobile = useIsMobile();
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
-    
-    return (
+
+    const desktopLayout = (
         <div className={`box-border flex px-6 max-w-[45%] cursor-pointer h-40 ${hoverClasses}`}>
             <LazyImg
                 imgPath={imgPath}
@@ -20,5 +22,27 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
                 <div className="text-sm">{props.project.description}</div>
             </div>
         </div>
+    );
+
+    const mobileLayout = (
+        <div className="relative w-full h-75">
+            <LazyImg
+                imgPath={imgPath}
+                alt="Project Image"
+                className="h-full w-full"
+                placeholderPath={placeholderPath}                
+            />
+
+            <div className="absolute top-0 left-0 p-10 h-full w-full flex flex-col justify-between gap-4 bg-gradient-to-t from-[rgba(0,0,0,.85)] from-40% to-[rgba(0,0,0,.5)] to-90%">
+                <div className="text-3xl font-bold text-[var(--txt-title-color)]">{props.project.title}</div>
+                <div className="text-lg">{props.project.description}</div>
+            </div>
+        </div>
+    )
+    
+    return (
+        <>
+        {isMobile ? mobileLayout : desktopLayout}
+        </>
     )
 }

@@ -22,8 +22,8 @@ export default function Schooling() {
     }, []);
 
     return (
-        <section>
-            <div className='text-4xl font-bold mb-6'>education.</div>
+        <section className='flex flex-col gap-6 px-6'>
+            <div className='text-4xl font-bold'>education.</div>
             <div className='flex flex-col gap-6'>
                 {eduList.map( (edu, idx) => <ExpEduItem key={idx} item={edu.data as EducationType} /> )}
             </div>

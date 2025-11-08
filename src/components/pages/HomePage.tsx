@@ -5,12 +5,14 @@ import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { where } from "firebase/firestore"
+import useIsMobile from "../hooks"
 
 export default function HomePage() {
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
 
     // Init state
+    const isMobile = useIsMobile();
     const [introTxt, setIntroTxt] = useState<string>("");
     const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
 
@@ -36,15 +38,17 @@ export default function HomePage() {
 
     return (
         <div className="box-border flex flex-col w-full gap-40">
-            <div className="flex w-[65%] text-5xl font-bold text-[var(--txt-feature-color)]">{introTxt}</div>
+            <div className={`px-6 flex font-bold text-[var(--txt-feature-color)] ${isMobile ? 'text-4xl' : 'text-5xl w-[65%]'}`}>{introTxt}</div>
 
             <section className="flex flex-col gap-8">
-                <div className="text-4xl font-bold">Featured work</div>
-                <div className="flex flex-wrap">
+                <div className="text-4xl font-bold px-6">Featured work</div>
+                <div className={`flex flex-wrap`}>
                     {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={p.data as ProjectType} />)}
                 </div>
                 
-                <ArrowBtn text="See more" link="projects" />
+                <div className={`w-full px-6 flex ${isMobile && 'justify-center'}`}>
+                    <ArrowBtn text="See more" link="projects" />
+                </div>
             </section>
         </div>
     )

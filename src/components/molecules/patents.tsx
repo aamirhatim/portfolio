@@ -22,8 +22,8 @@ export default function Patents() {
     }, []);
     
     return (
-        <section>
-            <div className='text-4xl font-bold mb-6'>patents.</div>
+        <section className='box-border flex flex-col gap-6 px-6'>
+            <div className='text-4xl font-bold'>patents.</div>
             <div className='flex flex-col gap-6'>
                 {patentList.map((p, idx) => <ExpPatentItem key={idx} item={p.data as PatentType} />)}
             </div>
