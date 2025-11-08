@@ -21,7 +21,7 @@ export default function ProjectsPage() {
     }, []);
 
     return (
-        <div className="flex flex-col gap-30">
+        <div className={`flex flex-col gap-30`}>
             <section className="box-border flex flex-col gap-12">
                 {projectList.map( (p, idx) => <ProjectItem key={idx} project={p.data as ProjectType} /> )}
             </section>
