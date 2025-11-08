@@ -7,11 +7,14 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
+import useIsMobile from "../hooks"
 
 export const ANIMATION_DURATION_MS = 300;
 
 export default function AppLayout() {
     // Init state
+    const isMobile = useIsMobile();
+    const showSidebar = !isMobile;
     const navigate = useNavigate()
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [isAnimating, setIsAnimating] = useState<boolean>(true);
@@ -50,7 +53,7 @@ export default function AppLayout() {
                 <Navbar />
                 <div className="box-border px-6 h-full w-full w-max-view mx-auto">
                     <div className="h-full w-full flex">
-                        <Sidebar title={initContext.navSelect} />
+                        {showSidebar && <Sidebar title={initContext.navSelect} />}
                         <div className={`box-border pt-40 pb-20 pr-10 h-full overflow-y-scroll grow-1 ${animationClasses}`}>
                             <Outlet />
                         </div>
