@@ -38,8 +38,8 @@ export default function HomePage() {
         <div className="box-border flex flex-col w-full gap-40">
             <div className="flex w-[65%] text-5xl font-bold text-[var(--txt-feature-color)]">{introTxt}</div>
 
-            <section>
-                <div className="text-4xl font-bold mb-10">Featured work</div>
+            <section className="flex flex-col gap-8">
+                <div className="text-4xl font-bold">Featured work</div>
                 <div className="flex flex-wrap gap-5">
                     {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={p.data as ProjectType} />)}
                 </div>
