@@ -2,7 +2,7 @@ import { PatentType } from '../../data/datatypes'
 
 export default function ExpPatentItem(props: {item: PatentType}) {
     return (
-        <div className='box-border p-5 border border-[var(--border-color)] rounded-xl flex flex-col justify-start w-[80%] min-w-100 gap-4'>
+        <div className='box-border p-5 border border-[var(--border-color)] rounded-xl flex flex-col justify-start min-w-100 gap-4'>
             <div className='flex gap-2 items-center'>
                 <div className='box-border border rounded-full text-xs font-bold px-2 w-min'>{props.item.status.toUpperCase()}</div>
                 {props.item.status === "granted" && 
