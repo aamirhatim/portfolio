@@ -39,12 +39,12 @@ export default function ProjectItem(props: {project:ProjectType}) {
 
     const mobileLayout = (
         <div className='px-6 flex flex-col gap-4'>
-            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full'>
+            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full border border-[var(--border-color)]'>
                 <LazyImg
                     imgPath={imgPath}
                     alt={'Project image'}
                     placeholderPath={placeholderPath}
-                    className='box-border border border-[var(--border-color)] h-full w-full'
+                    className='box-border h-full w-full'
                 />
                 <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.85)] from-25% to-[rgba(0,0,0,0)] to-80% flex flex-col gap-3 justify-end'>
                     <div className={'font-bold text-2xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
