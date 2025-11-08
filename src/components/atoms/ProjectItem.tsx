@@ -2,14 +2,17 @@ import { ProjectType } from '../../data/datatypes'
 import ChipGroup from '../molecules/ChipGroup'
 import ProjectLink from './ProjectLink'
 import LazyImg from './LazyImg';
+import { ANIMATION_DURATION_MS } from '../pages/AppLayout';
 
 export default function ProjectItem(props: {project:ProjectType}) {
     // Define image paths
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
 
+    const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
+
     return (
-        <div className={'box-border flex gap-4'}>
+        <div className={`box-border flex gap-6 px-10 cursor-pointer ${hoverClasses}`}>
             <LazyImg
                 imgPath={imgPath}
                 alt={'Project image'}
