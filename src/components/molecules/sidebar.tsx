@@ -16,8 +16,8 @@ export default function Sidebar(props: {title:string}) {
     const [isFading, setIsFading] = useState<boolean>(true);
 
     // Define animation classes
-    const slideInClasses = `transform transition-all duration-500 ease-out ${showSidebar ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`
-    const fadeClasses = `transition-opacity duration-500 ease-out ${isFading ? 'opacity-0' : 'opacity-100'}`
+    const slideInClasses = `transform transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${showSidebar ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`
+    const fadeClasses = `transition-opacity duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`
 
     // Hide sidebar if on home page
     useEffect(() => {
