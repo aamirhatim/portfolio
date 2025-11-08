@@ -31,3 +31,7 @@ dist-ssr
 
 # Firebase
 .firebase
+backups
+emulators_data
+storage.rules
+serviceAccountKey.json
