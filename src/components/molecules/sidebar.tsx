@@ -53,7 +53,7 @@ export default function Sidebar(props: {title:string}) {
     return (
         <div id="sidebar" className={`float-left box-border px-12 pt-40 pb-20 flex flex-col justify-between items-start h-full w-[300px] grow-0 shrink-0 ${slideInClasses}`}>
             <div className={`text-5xl font-bold text-violet-900 ${fadeClasses}`}>{displayTitle}.</div>
-            <Link to="/" onClick={() => setNavSelect("home")} className="hover:scale-130 transition duration-100"><FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" /></Link>
+            <div onClick={() => setNavSelect("home")} className="hover:scale-130 transition duration-100"><FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" /></div>
         </div>
     )
 }
