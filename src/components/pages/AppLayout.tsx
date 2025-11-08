@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Outlet } from "react-router"
+import { Outlet, useNavigate } from "react-router"
 import Sidebar from "../molecules/Sidebar"
 import Navbar from "../molecules/Navbar"
 import { AppContext, AppContextInterface } from "../../context/appContext"
@@ -8,9 +8,15 @@ import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppCon
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
 
+export const ANIMATION_DURATION_MS = 300;
+
 export default function AppLayout() {
     // Init state
-    const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home")
+    const navigate = useNavigate()
+    const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
+    const [isAnimating, setIsAnimating] = useState<boolean>(true);
+
+    const animationClasses = `transition-opacity duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${isAnimating ? 'opacity-0' : 'opacity-100'}`;
 
     // Init context
     const initContext:AppContextInterface = {
@@ -27,10 +33,16 @@ export default function AppLayout() {
         connectStorageEmulator(getStorage(firebaseApp), "127.0.0.1", 5002);
     }
 
-    // Update sessionStorage whenever navSelect changes
-    useEffect( () => {
-        sessionStorage.setItem("navSelect", initContext.navSelect)
-    }, [initContext.navSelect])
+    // Navigation behavior
+    useEffect(() => {
+        setIsAnimating(true);
+        const timer = setTimeout(() => {
+            const targetPath = nav === "home" ? "/" : `/${nav}`;
+            navigate(targetPath);
+            setIsAnimating(false);
+        }, ANIMATION_DURATION_MS);
+        return () => clearTimeout(timer);
+    }, [nav]);
 
     return (
         <FirebaseAppContext.Provider value={firebaseApp}>
@@ -39,7 +51,7 @@ export default function AppLayout() {
                 <div className="box-border px-6 h-full w-full w-max-view mx-auto">
                     <div className="h-full w-full flex">
                         <Sidebar title={initContext.navSelect} />
-                        <div className="box-border pt-40 pb-20 pr-10 h-full overflow-y-scroll grow-1">
+                        <div className={`box-border pt-40 pb-20 pr-10 h-full overflow-y-scroll grow-1 ${animationClasses}`}>
                             <Outlet />
                         </div>
                     </div>
