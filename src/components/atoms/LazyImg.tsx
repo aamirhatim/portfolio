@@ -6,6 +6,7 @@ interface LazyImgProps {
     imgPath: string,
     alt: string,
     className: string,
+    position?: string,
     placeholderPath: string,
 }
 
@@ -74,8 +75,9 @@ export default function LazyImg(props:LazyImgProps) {
         if (!imgRef.current || !overlayRef.current) return;
 
         imgRef.current.style.backgroundImage = `url(${imgUrl})`;
-        imgRef.current.style.backgroundPosition = "center";
+        imgRef.current.style.backgroundPosition = props.position ? props.position : "center";
         imgRef.current.style.backgroundSize = "cover";
+        imgRef.current.style.backgroundRepeat = "no-repeat";
 
         if (imgLoaded) {
             overlayRef.current.style.opacity = "0";
