@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../context/appContext";
 import SocialsBar from "./socialsBar";
 
@@ -16,15 +16,38 @@ export default function NavMenu() {
     // Init state
     const [navMenuVis, setNavMenuVis] = useState<boolean>(false);
 
+    // Create refs
+    const menuRef = useRef<HTMLDivElement>(null);
+
     const handleClick = (e:any) => {
         e.preventDefault();
 
         appContext.setNavSelect(e.target.innerText);
         setNavMenuVis(false);
     };
+
+    // Handle clicks outside menu
+    useEffect(() => {
+        // Hide menu if clicked outside
+        const handleOutsideClick = (event:MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setNavMenuVis(false);
+            }
+        };
+
+        // Attach the event listener to the document only when the menu is visible
+        if (navMenuVis) {
+            document.addEventListener("mousedown", handleOutsideClick);
+        };
+
+        // Clean up the event listener when the component unmounts OR when navMenuVis changes
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [navMenuVis]);
     
     return (
-        <div className="relative flex flex-col items-end">
+        <div ref={menuRef} className="relative flex flex-col items-end">
             <div className="font-bold text-[var(--txt-accent-color)]" onClick={() => setNavMenuVis(!navMenuVis)}>{appContext.navSelect}</div>
 
             {navMenuVis &&
