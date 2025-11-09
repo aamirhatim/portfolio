@@ -1,65 +1,46 @@
-import { useEffect, useState } from "react"
-import { Outlet, useNavigate } from "react-router"
-import Sidebar from "../molecules/Sidebar"
-import Navbar from "../molecules/Navbar"
-import { AppContext, AppContextInterface } from "../../context/appContext"
-import { FirebaseApp, initializeApp } from "firebase/app";
-import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
-import { connectStorageEmulator, getStorage } from "firebase/storage"
-import useIsMobile from "../hooks"
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../context/appContext";
+import useIsMobile from "../hooks";
+import Navbar from "../molecules/Navbar";
+import Sidebar from "../molecules/Sidebar";
+import { Outlet, useNavigate } from "react-router";
 
 export const ANIMATION_DURATION_MS = 300;
 
 export default function AppLayout() {
+    // Get context
+    const navigate = useNavigate()
+    const { navSelect } = useAppContext();
+
     // Init state
     const isMobile = useIsMobile();
     const showSidebar = !isMobile;
-    const navigate = useNavigate()
-    const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [isAnimating, setIsAnimating] = useState<boolean>(true);
 
     const animationClasses = `transition-opacity duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${isAnimating ? 'opacity-0' : 'opacity-100'}`;
-
-    // Init context
-    const initContext:AppContextInterface = {
-        navSelect: nav,
-        setNavSelect: setNav
-    }
-
-    // Init Firebase app
-    const isLocal:boolean = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const firebaseApp:FirebaseApp = initializeApp(firebaseConfig);
-    if (isLocal) {
-        console.warn("Running locally. Connecting to emulators");
-        connectFirestoreEmulator(getFirestore(firebaseApp), "127.0.0.1", 5001);
-        connectStorageEmulator(getStorage(firebaseApp), "127.0.0.1", 5002);
-    }
 
     // Navigation behavior
     useEffect(() => {
         setIsAnimating(true);
         const timer = setTimeout(() => {
-            const targetPath = nav === "home" ? "/" : `/${nav}`;
+            const targetPath = navSelect === "home" ? "/" : `/${navSelect}`;
             navigate(targetPath);
             setIsAnimating(false);
         }, ANIMATION_DURATION_MS);
         return () => clearTimeout(timer);
-    }, [nav]);
-
+    }, [navSelect]);
+    
     return (
-        <FirebaseAppContext.Provider value={firebaseApp}>
-            <AppContext.Provider value={initContext}>
-                <Navbar />
-                <div className="box-border h-full w-full w-max-view mx-auto">
-                    <div className="h-full w-full flex">
-                        {showSidebar && <Sidebar title={initContext.navSelect} />}
-                        <div className={`box-border pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${isMobile ? 'pt-25' : 'pr-10 pt-40'}`}>
-                            <Outlet />
-                        </div>
-                    </div>
+        <>
+        <Navbar />
+        <div className="box-border h-full w-full w-max-view mx-auto">
+            <div className="h-full w-full flex">
+                {showSidebar && <Sidebar title={navSelect} />}
+                <div className={`box-border pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${isMobile ? 'pt-25' : 'pr-10 pt-40'}`}>
+                    <Outlet />
                 </div>
-            </AppContext.Provider>
-        </FirebaseAppContext.Provider>
+            </div>
+        </div>
+        </>
     )
 }
