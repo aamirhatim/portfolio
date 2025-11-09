@@ -32,10 +32,10 @@ export default function LazyImg(props:LazyImgProps) {
 
         // Check cache first
         if (cache.has(props.imgPath)) {
-            console.log(`Cache HIT for: ${props.imgPath}`);
+            // console.log(`Cache HIT for: ${props.imgPath}`);
             url = cache.get(props.imgPath)!;
         } else {
-            console.log(`Cache MISS for: ${props.imgPath}. Fetching from Firebase...`);
+            // console.log(`Cache MISS for: ${props.imgPath}. Fetching from Firebase...`);
 
             // Get url from Firebase Storage
             try {
