@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { useAppContext } from "../../context/appContext";
 
 interface LazyImgProps {
     imgPath: string,
@@ -14,6 +15,7 @@ export default function LazyImg(props:LazyImgProps) {
     // Get context
     const fireBaseAppContext = useFirebaseAppContext();
     const firebaseStorage = getStorage(fireBaseAppContext);
+    const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
     const [imgUrl, setImgUrl] = useState<string>(props.placeholderPath);
@@ -25,10 +27,34 @@ export default function LazyImg(props:LazyImgProps) {
 
     // Image loader helper
     const loadImage = async () => {
-        try {
-            const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
-            const url = await getDownloadURL(imgRefFromStorage);
+        let cache = imgUrlCache;
+        let url:string;
 
+        // Check cache first
+        if (cache.has(props.imgPath)) {
+            console.log(`Cache HIT for: ${props.imgPath}`);
+            url = cache.get(props.imgPath)!;
+        } else {
+            console.log(`Cache MISS for: ${props.imgPath}. Fetching from Firebase...`);
+
+            // Get url from Firebase Storage
+            try {
+                const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
+                url = await getDownloadURL(imgRefFromStorage);
+
+                // Save URL to cache
+                cache.set(props.imgPath, url);
+                setImgUrlCache(cache);
+            } catch (error) {
+                console.error("Failed to load image or get download URL:", error);
+                setImgUrl(props.placeholderPath);
+                setImgLoaded(false);
+                return;
+            }
+        }
+
+        // Preload image
+        try {
             const fullImg = new Image();
             await new Promise<void>((resolve, reject) => {
                 fullImg.onload = () => {resolve()};

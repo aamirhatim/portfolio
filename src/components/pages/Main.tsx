@@ -9,11 +9,14 @@ import AppLayout from "./AppLayout";
 export default function Main() {
     // Init state
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
+    const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
     // Init context
     const initContext:AppContextInterface = {
         navSelect: nav,
-        setNavSelect: setNav
+        setNavSelect: setNav,
+        imgUrlCache: imgUrls,
+        setImgUrlCache: setImgUrls,
     }
 
     // Init Firebase app
