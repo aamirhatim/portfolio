@@ -10,7 +10,7 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
 
     const desktopLayout = (
-        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer h-40 ${hoverClasses}`}>
+        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
