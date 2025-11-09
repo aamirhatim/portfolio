@@ -24,6 +24,7 @@ export default function AppLayout() {
         setIsAnimating(true);
         const timer = setTimeout(() => {
             const targetPath = navSelect === "home" ? "/" : `/${navSelect}`;
+            sessionStorage.setItem("navSelect", navSelect);
             navigate(targetPath);
             setIsAnimating(false);
         }, ANIMATION_DURATION_MS);
