@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
-import ProjectItem from "../atoms/ProjectItem"
+import ProjectItem from "../molecules/ProjectItem"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes";
 
 export default function ProjectsPage() {
