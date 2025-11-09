@@ -4,7 +4,7 @@ import useIsMobile from '../hooks'
 import NavMenu from './NavMenu'
 import SocialsBar from './socialsBar'
 
-const navItems:Array<string> = [
+const navItems:string[] = [
     "about",
     "resume",
     "projects"
