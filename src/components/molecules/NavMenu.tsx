@@ -28,10 +28,10 @@ export default function NavMenu() {
             <div className="font-bold text-[var(--txt-accent-color)]" onClick={() => setNavMenuVis(!navMenuVis)}>{appContext.navSelect}</div>
 
             {navMenuVis &&
-                <div className="absolute top-full right-0 w-max mt-5 p-6 flex flex-col items-center gap-4 rounded-xl bg-[var(--bg-color)] shadow-2xl">
+                <div className="absolute top-full right-0 w-max mt-6 p-6 flex flex-col items-center gap-4 rounded-xl bg-[var(--bg-layer-color)] shadow-2xl">
                     {navItems.map((nav, idx) => {
                         return (
-                            <div key={idx} className="p-2" onClick={handleClick}>{nav}</div>
+                            <div key={idx} className="font-bold text-lg text-[var(--txt-feature-color)] p-2" onClick={handleClick}>{nav}</div>
                         )
                     })}
 
