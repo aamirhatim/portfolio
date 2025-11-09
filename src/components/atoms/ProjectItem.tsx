@@ -46,7 +46,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
                     placeholderPath={placeholderPath}
                     className='box-border h-full w-full'
                 />
-                <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.85)] from-25% to-[rgba(0,0,0,0)] to-80% flex flex-col gap-3 justify-end'>
+                <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.80)] from-40% to-[rgba(0,0,0,0)] flex flex-col gap-3 justify-end'>
                     <div className={'font-bold text-2xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
                     <div className='flex gap-3'>
                         {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
