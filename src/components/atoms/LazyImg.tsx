@@ -28,12 +28,23 @@ export default function LazyImg(props:LazyImgProps) {
         try {
             const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
             const url = await getDownloadURL(imgRefFromStorage);
+
+            const fullImg = new Image();
+            await new Promise<void>((resolve, reject) => {
+                fullImg.onload = () => {resolve()};
+                fullImg.onerror = (e) => {
+                    console.error("Failed to load full image object:", e);
+                    reject();
+                };
+                fullImg.src = url;
+            });
+
             setImgUrl(url);
+            setImgLoaded(true);
         } catch (error) {
             console.error("Failed to load image:", error);
             setImgUrl(props.placeholderPath);
-        } finally {
-            setImgLoaded(true);
+            setImgLoaded(false);
         }
     };
 
@@ -53,8 +64,8 @@ export default function LazyImg(props:LazyImgProps) {
                 });
             },
             {
-                rootMargin: "100px", // Load 100px outside of viewport
-                threshold: 0.1, // Trigger when 10% of img is visible
+                rootMargin: "250px", // Load 250px outside of viewport
+                threshold: 0.05, // Trigger when 5% of img is visible
             }
         );
 
@@ -63,9 +74,7 @@ export default function LazyImg(props:LazyImgProps) {
 
         // Disconnect observer on dismount
         return () => {
-            if (imgRef.current) {
-                observer.unobserve(imgRef.current);
-            }
+            if (imgRef.current) {observer.unobserve(imgRef.current)};
             observer.disconnect();
         }
     }, [props.imgPath, props.placeholderPath]);
