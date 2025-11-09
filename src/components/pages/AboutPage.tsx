@@ -70,7 +70,7 @@ export default function AboutPage() {
                     <LazyImg
                         imgPath="/aboutme1.jpg"
                         className={`w-full grow-1`}
-                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        placeholderPath="/proj_thumbs/aboutme1.jpg"
                         position="15% 20%"
                         alt={"This is me"}
                     />
@@ -78,14 +78,14 @@ export default function AboutPage() {
                         imgPath="/aboutme2.jpg"
                         className={`w-full grow-1`}
                         position="15% 20%"
-                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        placeholderPath="/proj_thumbs/aboutme2.jpg"
                         alt={"This is me"}
                     />
                     <LazyImg
                         imgPath="/aboutme3.jpg"
                         className={`w-full grow-1`}
                         position="15% 20%"
-                        placeholderPath="/proj_thumbs/aboutme.jpg"
+                        placeholderPath="/proj_thumbs/aboutme3.jpg"
                         alt={"This is me"}
                     />
                 </div>
