@@ -8,7 +8,6 @@ export default function ProjectViewer() {
 
     return (
         <div>
-            <div>Project viewier</div>
             <ProjectArticle projectId={projectId} />
         </div>
     )
