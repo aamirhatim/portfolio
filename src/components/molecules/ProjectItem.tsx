@@ -4,8 +4,11 @@ import ProjectLink from '../atoms/ProjectLink'
 import LazyImg from '../atoms/LazyImg';
 import { ANIMATION_DURATION_MS } from '../pages/AppLayout';
 import useIsMobile from '../hooks';
+import { useAppContext } from '../../context/appContext';
 
 export default function ProjectItem(props: {project:ProjectType}) {
+    // Get context
+    const { setNavSelect } = useAppContext();
     const isMobile = useIsMobile();
 
     // Define image paths
@@ -15,7 +18,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
 
     const desktopLayout = (
-        <div className={`box-border flex gap-6 px-10 cursor-pointer ${hoverClasses}`}>
+        <div className={`box-border flex gap-6 px-10 cursor-pointer ${hoverClasses}`} onClick={() => setNavSelect(`projects/${props.project.id}`)}>
             <LazyImg
                 imgPath={imgPath}
                 alt={'Project image'}
