@@ -18,12 +18,15 @@ export default function Sidebar(props: {title:string}) {
     const slideInClasses = `transform transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${showSidebar ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-full'}`
     const fadeClasses = `transition-opacity duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`
 
-    // Hide sidebar if on home page
+    // Hide sidebar if on home page or article
     useEffect(() => {
-        if (navSelect === "home") {
-            setShowSidebar(false)
+        const navToHome = navSelect === "home";
+        const navToArticle = navSelect !== "projects" && navSelect.startsWith("projects/");
+
+        if (navToHome || navToArticle) {
+            setShowSidebar(false);
         } else {
-            setShowSidebar(true)
+            setShowSidebar(true);
         }
     }, [navSelect]);
 
