@@ -33,10 +33,16 @@ export type CodeBlockType = BaseArticleBlock & {
     code: string,
 }
 
+export type TitleBlockType = BaseArticleBlock & {
+    type: "title",
+    content: string,
+}
+
 export type ArticleBlockType = 
     | ParagraphBlockType
     | ImageBlockType
     | CodeBlockType
+    | TitleBlockType
 
 export type ArticleType = {
     blocks: ArticleBlockType[],
