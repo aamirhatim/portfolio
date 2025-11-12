@@ -24,14 +24,14 @@ const variants = {
             ease: easing,
         }
     }),
-    enter: (direction: string) => ({
+    enter: {
         x: 0,
         opacity: 1,
         transition: {
             duration: 0.25 * ANIMATION_DURATION_MS / 1000,
             ease: easing,
         }
-    }),
+    },
     initial: (direction: string) => ({
         x: direction === "next" ? slideDist : -1 * slideDist,
         opacity: 0,
