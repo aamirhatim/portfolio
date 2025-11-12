@@ -3,7 +3,7 @@ import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes
 import { getDocumentFromId, getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
-import { where } from "firebase/firestore";
+import { orderBy, where } from "firebase/firestore";
 
 export default function ProjectArticle(props: {projectId:string}) {
     // Get context
@@ -63,7 +63,8 @@ export default function ProjectArticle(props: {projectId:string}) {
 
             // 2. Get article blocks
             const filter = where("projectId", "==", props.projectId);
-            const blocksDoc = await getDocumentsFromCollection(firebaseAppContext, "article_blocks", [filter]);
+            const sort = orderBy("order", "asc");
+            const blocksDoc = await getDocumentsFromCollection(firebaseAppContext, "article_blocks", [filter, sort]);
             if (!blocksDoc) return;
             const blocks = blocksDoc.map(data => data.data as ArticleBlockType);
             
