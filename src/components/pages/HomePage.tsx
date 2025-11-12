@@ -43,7 +43,7 @@ export default function HomePage() {
             <section className="flex flex-col gap-8">
                 <div className="text-4xl font-bold px-6">Featured work</div>
                 <div className={`flex flex-wrap`}>
-                    {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={p.data as ProjectType} />)}
+                    {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={{id: p.id, ...p.data} as ProjectType} />)}
                 </div>
                 
                 <div className={`w-full px-6 flex ${isMobile && 'justify-center'}`}>

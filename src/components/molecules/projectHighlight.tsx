@@ -1,16 +1,20 @@
+import { useAppContext } from "../../context/appContext";
 import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
 import useIsMobile from "../hooks";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
+    // Get context
+    const { setNavSelect } = useAppContext();
+
     const isMobile = useIsMobile();
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
 
     const desktopLayout = (
-        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`}>
+        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`} onClick={() => setNavSelect(`projects/${props.project.id}`)}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
@@ -25,7 +29,7 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
     );
 
     const mobileLayout = (
-        <div className="relative w-full h-75">
+        <div className="relative w-full h-75" onClick={() => setNavSelect(`projects/${props.project.id}`)}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
