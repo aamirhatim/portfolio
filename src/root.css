@@ -27,3 +27,8 @@ body {
     height: 100%;
     width: 100%;
 }
+
+p {
+    color: var(--txt-body-color);
+    font-size: var(--text-lg);
+}
