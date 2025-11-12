@@ -41,7 +41,7 @@ h2 {
 
 h3 {
     color: var(--txt-feature-color);
-    font-size: var(--text-xl);
+    font-size: var(--text-2xl);
     font-weight: bold;
 }
 
