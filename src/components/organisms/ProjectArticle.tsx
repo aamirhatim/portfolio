@@ -6,6 +6,7 @@ import ChipGroup from "../molecules/ChipGroup";
 import { orderBy, where } from "firebase/firestore";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 import { motion, AnimatePresence } from "framer-motion";
+import useIsMobile from "../hooks";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -41,6 +42,7 @@ const variants = {
 export default function ProjectArticle(props: ProjectArticleProps) {
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
+    const isMobile = useIsMobile();
 
     // Init state
     const [project, setProject] = useState<ProjectType>();
@@ -113,7 +115,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             <>
                 {block.border
                     ?   <div className="w-full flex justify-center my-6">
-                            <div className="border border-(--border-color) rounded-xl p-6 w-[80%]">{e}</div>
+                            <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
                         </div>
                     :   e
                 }
@@ -184,11 +186,11 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 exit="exit"
                 className="flex flex-col gap-3 w-full"
             >
-                <div className="font-bold text-6xl text-(--txt-title-color)">{project?.title}</div>
+                <div className="mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%]">{project?.title}</div>
 
                 {article.blocks.length > 0
                     ?   <>
-                        <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
+                            <div className="mb-15 text-md text-(--txt-feature-color)">{article.publishDate}</div>
                             {article.blocks.map((b, key) => {return createSection(b, key)})}
 
                             <div>

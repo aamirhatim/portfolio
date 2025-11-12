@@ -6,6 +6,7 @@ import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-s
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
+import useIsMobile from "../hooks";
 
 export default function ProjectViewer() {
     // Get params
@@ -13,6 +14,7 @@ export default function ProjectViewer() {
     const projectId = params.projectId!;
 
     // Get context
+    const isMobile = useIsMobile();
     const firebaseAppContext = useFirebaseAppContext();
     const navigate = useNavigate();
 
@@ -67,7 +69,7 @@ export default function ProjectViewer() {
 
     return (
         <div className="h-full w-full flex flex-col justify-between z-90 mx-auto">
-            <div className="box-border px-[15%]">
+            <div className={`box-border ${isMobile ? 'px-6' : 'px-[15%]'}`}>
                 <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
             </div>
 
