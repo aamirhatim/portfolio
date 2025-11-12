@@ -34,7 +34,7 @@ export default function AppLayout() {
     return (
         <>
         <Navbar />
-        <div className="box-border h-full w-full w-max-view mx-auto">
+        <div className="h-full w-full w-max-view mx-auto">
             <div className="h-full w-full flex">
                 {showSidebar && <Sidebar title={navSelect} />}
                 <div className={`box-border pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${isMobile ? 'pt-25' : 'pt-40'}`}>
