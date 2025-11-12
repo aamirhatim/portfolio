@@ -10,7 +10,7 @@ export default function ProjectViewer() {
     const projectId = params.projectId!;
 
     const bumperClasses = `box-border flex flex-col justify-end shrink-0 w-[10%]`;
-    const arrowClasses = `p-2 hover:scale-130 hover:text-[var(--txt-title-color)] transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
+    const arrowClasses = `p-2 hover:scale-130 hover:text-(--txt-title-color) transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
 
     return (
         <div className="box-border flex min-h-full w-full z-90">

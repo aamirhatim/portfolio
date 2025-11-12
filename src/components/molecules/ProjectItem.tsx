@@ -23,12 +23,12 @@ export default function ProjectItem(props: {project:ProjectType}) {
                 imgPath={imgPath}
                 alt={'Project image'}
                 placeholderPath={placeholderPath}
-                className='box-border border border-[var(--border-color)] rounded-xl overflow-hidden h-60 w-60 grow-0 shrink-0'
+                className='box-border border border-(--border-color) rounded-xl overflow-hidden h-60 w-60 grow-0 shrink-0'
             />
 
             <div className='flex flex-col gap-2'>
                 <div className='flex flex-wrap items-center gap-2'>
-                    <div className={'font-bold text-xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
+                    <div className={'font-bold text-xl text-(--txt-title-color)'}>{props.project.title}</div>
                     {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
                     {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
                 </div>
@@ -42,7 +42,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
 
     const mobileLayout = (
         <div className='px-6 flex flex-col gap-4'>
-            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full border border-[var(--border-color)]'>
+            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full border border-(--border-color)'>
                 <LazyImg
                     imgPath={imgPath}
                     alt={'Project image'}
@@ -50,7 +50,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
                     className='box-border h-full w-full'
                 />
                 <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.80)] from-40% to-[rgba(0,0,0,0)] flex flex-col gap-3 justify-end'>
-                    <div className={'font-bold text-2xl text-[var(--txt-title-color)]'}>{props.project.title}</div>
+                    <div className={'font-bold text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
                     <div className='flex gap-3'>
                         {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
                         {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
