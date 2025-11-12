@@ -41,6 +41,7 @@ export type TitleBlockType = BaseArticleBlock & {
 export type ListBlockType = BaseArticleBlock & {
     type: "list",
     ordered: boolean,
+    title?: string,
     items: string[],
 }
 
