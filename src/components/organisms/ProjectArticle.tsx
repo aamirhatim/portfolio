@@ -51,7 +51,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
         switch (block.type) {
             case "paragraph":
                 return (
-                    <div key={key} className="text-(--txt-body-color) text-lg">{block.content}</div>
+                    <p key={key}>{block.content}</p>
                 );
 
             case "image":
@@ -68,6 +68,24 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 return (
                     <h2 key={key}>{block.content}</h2>
                 );
+
+            case "list":
+                // Create list item objects
+                const listItems = (
+                    <>
+                        {block.items.map((i, key) => <li key={key}>{i}</li>)}
+                    </>
+                );
+
+                return(
+                    <div key={key}>
+                        {block.title && <h3>{block.title}</h3>}
+                        {block.ordered
+                            ? <ol className="list-decimal list-inside">{listItems}</ol>
+                            : <ul className="list-disc list-inside">{listItems}</ul>
+                        }
+                    </div>
+                )
         
             default:
                 return <></>;
