@@ -65,9 +65,19 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 );
 
             case "title":
-                return (
-                    <h2 key={key}>{block.content}</h2>
-                );
+                switch (block.level) {
+                    case 0:
+                        return <h2 key={key}>{block.content}</h2>
+
+                    case 1:
+                        return <h3 key={key}>{block.content}</h3>
+
+                    case 2:
+                        return <h4 key={key}>{block.content}</h4>
+                
+                    default:
+                        return <></>
+                }
 
             case "list":
                 // Create list item objects
@@ -79,13 +89,18 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
                 return(
                     <div key={key}>
-                        {block.title && <h3>{block.title}</h3>}
+                        {block.title && <h4>{block.title}</h4>}
                         {block.ordered
                             ? <ol className="list-decimal list-inside">{listItems}</ol>
                             : <ul className="list-disc list-inside">{listItems}</ul>
                         }
                     </div>
-                )
+                );
+
+            case "formula":
+                return (
+                    <div key={key} className="text-lg">{block.content}</div>
+                );
         
             default:
                 return <></>;
@@ -153,14 +168,14 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 initial="initial"
                 animate="enter"
                 exit="exit"
-                className="flex flex-col gap-12 w-full"
+                className="flex flex-col gap-3 w-full"
             >
                 <div className="font-bold text-6xl text-(--txt-title-color)">{project?.title}</div>
 
                 {article.blocks.length > 0
                     ?   <>
+                        <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
                             {article.blocks.map((b, key) => {return createSection(b, key)})}
-                            <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
 
                             <div>
                             <div className="font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>

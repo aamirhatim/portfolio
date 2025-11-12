@@ -35,6 +35,7 @@ export type CodeBlockType = BaseArticleBlock & {
 
 export type TitleBlockType = BaseArticleBlock & {
     type: "title",
+    level: number,
     content: string,
 }
 
@@ -45,12 +46,18 @@ export type ListBlockType = BaseArticleBlock & {
     items: string[],
 }
 
+export type FormulaBlockType = BaseArticleBlock & {
+    type: "formula",
+    content: string,
+}
+
 export type ArticleBlockType = 
     | ParagraphBlockType
     | ImageBlockType
     | CodeBlockType
     | TitleBlockType
     | ListBlockType
+    | FormulaBlockType
 
 export type ArticleType = {
     blocks: ArticleBlockType[],
