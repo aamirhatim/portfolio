@@ -11,7 +11,7 @@ export default function ProjectArticle(props: {projectId:string}) {
 
     // Init state
     const [project, setProject] = useState<ProjectType>();
-    const [article, setArticle] = useState<ArticleType>();
+    const [article, setArticle] = useState<ArticleType>({blocks: [], publishDate: ""});
 
     // Create section for article block
     const createSection = (block:ArticleBlockType, key:number) => {
@@ -86,18 +86,19 @@ export default function ProjectArticle(props: {projectId:string}) {
         <div className="box-border flex flex-col gap-12">
             <div className="font-bold text-6xl text-(--txt-title-color)">{project?.title}</div>
 
-            {article &&
-                <>
-                {article.blocks.map((b, key) => {return createSection(b, key)})}
-                <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
-                </>
-            }
+            {article.blocks.length > 0
+                ?   <>
+                        {article.blocks.map((b, key) => {return createSection(b, key)})}
+                        <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
 
-            {project?.skills &&
-                <div>
-                    <div className="font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
-                    <ChipGroup list={project.skills} />
-                </div>
+                        <div>
+                        <div className="font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                            <ChipGroup list={project?.skills || []} />
+                        </div>
+                    </>
+                :   <div className="border border-(--border-color) p-6 rounded-xl">
+                        <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                    </div>
             }
         </div>
     )
