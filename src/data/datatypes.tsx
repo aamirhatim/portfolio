@@ -11,7 +11,10 @@ export type ProjectType = {
     video?: string,
 }
 
-export type BaseArticleBlock = {}
+export type BaseArticleBlock = {
+    order: number,
+    projectId: string,
+}
 
 export type ParagraphBlockType = BaseArticleBlock & {
     type: "paragraph",
