@@ -15,6 +15,7 @@ export default function NavMenu() {
 
     // Init state
     const [navMenuVis, setNavMenuVis] = useState<boolean>(false);
+    const [navDisplay, setNavDisplay] = useState<string>("");
 
     // Create refs
     const menuRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,15 @@ export default function NavMenu() {
         appContext.setNavSelect(e.target.innerText);
         setNavMenuVis(false);
     };
+
+    // Handle nav indicator formatting
+    useEffect(() => {
+        if (appContext.navSelect.startsWith("projects/")) {
+            setNavDisplay("projects");
+        } else {
+            setNavDisplay(appContext.navSelect);
+        }
+    }, [appContext.navSelect]);
 
     // Handle clicks outside menu
     useEffect(() => {
@@ -48,7 +58,7 @@ export default function NavMenu() {
     
     return (
         <div ref={menuRef} className="relative flex flex-col items-end">
-            <div className="font-bold text-[var(--txt-accent-color)]" onClick={() => setNavMenuVis(!navMenuVis)}>{appContext.navSelect}</div>
+            <div className="font-bold text-[var(--txt-accent-color)]" onClick={() => setNavMenuVis(!navMenuVis)}>{navDisplay}</div>
 
             {navMenuVis &&
                 <div className="absolute top-full right-0 w-max mt-6 p-6 flex flex-col items-center gap-4 rounded-xl bg-[var(--bg-layer-color)] shadow-2xl">
