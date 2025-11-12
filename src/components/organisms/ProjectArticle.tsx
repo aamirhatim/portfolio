@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { ArticleType, ProjectType } from "../../data/datatypes";
-import { getDocumentFromId } from "../../lib/firestoreLib";
+import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes";
+import { getDocumentFromId, getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
+import { where } from "firebase/firestore";
 
 export default function ProjectArticle(props: {projectId:string}) {
     // Get context
@@ -13,8 +14,28 @@ export default function ProjectArticle(props: {projectId:string}) {
     const [article, setArticle] = useState<ArticleType>();
 
     // Create section for article block
-    const createSection = (block) => {
+    const createSection = (block:ArticleBlockType, key:number) => {
+        console.log("Block:", block);
+        switch (block.type) {
+            case "paragraph":
+                console.log("paragraph");
+                return (
+                    <div key={key} className="text-(--txt-body-color) text-lg">{block.content}</div>
+                );
 
+            case "image":
+                return (
+                    <div key={key}><img src={block.url} /></div>
+                );
+
+            case "code":
+                return (
+                    <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div>
+                );
+        
+            default:
+                return <></>;
+        }
     };
 
     // Get project info
@@ -35,17 +56,29 @@ export default function ProjectArticle(props: {projectId:string}) {
 
     // Get project article
     useEffect(() => {
-        const getProjectArticle = async () => {
-            const doc = await getDocumentFromId(firebaseAppContext, "project_articles", props.projectId);
-            if (!doc) return;
+        const getArticleData = async () => {
+            // 1. Get article metadata
+            const metaDoc = await getDocumentFromId(firebaseAppContext, "article_meta", props.projectId);
+            if (!metaDoc) return;
 
-            const articleData = {
-                ...doc.data
-            } as ArticleType;
+            // 2. Get article blocks
+            const filter = where("projectId", "==", props.projectId);
+            const blocksDoc = await getDocumentsFromCollection(firebaseAppContext, "article_blocks", [filter]);
+            if (!blocksDoc) return;
+            const blocks = blocksDoc.map(data => data.data as ArticleBlockType);
+            
+            // 3. Structure data
+            const articleData:ArticleType = {
+                publishDate: metaDoc.data.publishDate,
+                blocks: blocks,
+            };
+            console.log("Article:", articleData);
+
+            // 4. Update state
             setArticle(articleData);
         };
 
-        getProjectArticle();
+        getArticleData();
     }, [props.projectId]);
 
     return (
@@ -54,7 +87,7 @@ export default function ProjectArticle(props: {projectId:string}) {
 
             {article &&
                 <>
-                {article.blocks.map(b => {createSection(b)})}
+                {article.blocks.map((b, key) => {return createSection(b, key)})}
                 <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
                 </>
             }
