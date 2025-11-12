@@ -48,36 +48,45 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
     // Create section for article block
     const createSection = (block:ArticleBlockType, key:number) => {
+        let e = <></>;
+
         switch (block.type) {
             case "paragraph":
-                return (
+                e = (
                     <p key={key}>{block.content}</p>
                 );
+                break;
 
             case "image":
-                return (
+                e = (
                     <div key={key}><img src={block.url} /></div>
                 );
+                break;
 
             case "code":
-                return (
+                e = (
                     <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div>
                 );
+                break;
 
             case "title":
                 switch (block.level) {
                     case 0:
-                        return <h2 key={key}>{block.content}</h2>
+                        e = (<h2 key={key}>{block.content}</h2>);
+                        break;
 
                     case 1:
-                        return <h3 key={key}>{block.content}</h3>
+                        e = (<h3 key={key}>{block.content}</h3>);
+                        break;
 
                     case 2:
-                        return <h4 key={key}>{block.content}</h4>
+                        e = (<h4 key={key}>{block.content}</h4>);
+                        break;
                 
                     default:
-                        return <></>
-                }
+                        break;
+                };
+                break;
 
             case "list":
                 // Create list item objects
@@ -87,7 +96,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     </>
                 );
 
-                return(
+                e = (
                     <div key={key}>
                         {block.title && <h4 className="mb-2">{block.title}</h4>}
                         {block.ordered
@@ -96,15 +105,28 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                         }
                     </div>
                 );
+                break;
 
             case "formula":
-                return (
+                e = (
                     <div key={key} className="text-lg">{block.content}</div>
                 );
+                break;
         
             default:
-                return <></>;
-        }
+                break;
+        };
+
+        return (
+            <>
+                {block.border
+                    ?   <div className="w-full flex justify-center my-6">
+                            <div className="border border-(--border-color) rounded-xl p-6 w-[80%]">{e}</div>
+                        </div>
+                    :   e
+                }
+            </>
+        )
     };
 
     // Get project info

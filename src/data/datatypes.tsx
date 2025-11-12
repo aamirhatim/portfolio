@@ -14,6 +14,7 @@ export type ProjectType = {
 export type BaseArticleBlock = {
     order: number,
     projectId: string,
+    border: boolean,
 }
 
 export type ParagraphBlockType = BaseArticleBlock & {
