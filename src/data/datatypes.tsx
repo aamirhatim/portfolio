@@ -11,29 +11,34 @@ export type ProjectType = {
     video?: string,
 }
 
-export type ArticleType = {
-    blocks: string[],
-    publishDate: string,
-}
-
 export type BaseArticleBlock = {}
 
 export type ParagraphBlockType = BaseArticleBlock & {
     type: "paragraph",
     content: string,
-};
+}
 
 export type ImageBlockType = BaseArticleBlock & {
     type: "image",
     url: string,
     caption?: string,
-};
+}
 
 export type CodeBlockType = BaseArticleBlock & {
     type: "code",
     language: string,
     code: string,
-};
+}
+
+export type ArticleBlockType = 
+    | ParagraphBlockType
+    | ImageBlockType
+    | CodeBlockType
+
+export type ArticleType = {
+    blocks: ArticleBlockType[],
+    publishDate: string,
+}
 
 export type SkillType = {
     name: string,
