@@ -38,11 +38,18 @@ export type TitleBlockType = BaseArticleBlock & {
     content: string,
 }
 
+export type ListBlockType = BaseArticleBlock & {
+    type: "list",
+    ordered: boolean,
+    items: string[],
+}
+
 export type ArticleBlockType = 
     | ParagraphBlockType
     | ImageBlockType
     | CodeBlockType
     | TitleBlockType
+    | ListBlockType
 
 export type ArticleType = {
     blocks: ArticleBlockType[],
