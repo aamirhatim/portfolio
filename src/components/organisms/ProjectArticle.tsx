@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ProjectArticleType, ProjectType } from "../../data/datatypes";
+import { ArticleType, ProjectType } from "../../data/datatypes";
 import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
@@ -10,7 +10,12 @@ export default function ProjectArticle(props: {projectId:string}) {
 
     // Init state
     const [project, setProject] = useState<ProjectType>();
-    const [article, setArticle] = useState<ProjectArticleType>();
+    const [article, setArticle] = useState<ArticleType>();
+
+    // Create section for article block
+    const createSection = (block) => {
+
+    };
 
     // Get project info
     useEffect(() => {
@@ -36,7 +41,7 @@ export default function ProjectArticle(props: {projectId:string}) {
 
             const articleData = {
                 ...doc.data
-            } as ProjectArticleType;
+            } as ArticleType;
             setArticle(articleData);
         };
 
@@ -45,17 +50,18 @@ export default function ProjectArticle(props: {projectId:string}) {
 
     return (
         <div className="box-border flex flex-col gap-12">
-            <div className="font-bold text-6xl text-(--txt-feature-color)">{project?.title}</div>
+            <div className="font-bold text-6xl text-(--txt-title-color)">{project?.title}</div>
 
             {article &&
                 <>
+                {article.blocks.map(b => {createSection(b)})}
                 <div className="text-md text-(--txt-feature-color)">{article.publishDate}</div>
                 </>
             }
 
             {project?.skills &&
                 <div>
-                    <div className="font-bold text-lg text-(--txt-feature-color) mb-3">Keywords</div>
+                    <div className="font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
                     <ChipGroup list={project.skills} />
                 </div>
             }
