@@ -20,6 +20,10 @@ export default function CurrentWork() {
 
         const getCurrentJob = async () => {
             const currentJob = await getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]);
+            if (!currentJob) {
+                setCurrentWork(undefined);
+                return;
+            }
             setCurrentWork(currentJob[0]);
         };
         getCurrentJob();

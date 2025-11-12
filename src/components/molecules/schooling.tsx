@@ -16,6 +16,10 @@ export default function Schooling() {
     useEffect( () => {
         const getEdu = async () => {
             const edu = await getDocumentsFromCollection(firebaseAppContext, "education", [orderBy("end", "desc")]);
+            if (!edu) {
+                setEduList([]);
+                return;
+            }
             setEduList(edu);
         };
         getEdu();

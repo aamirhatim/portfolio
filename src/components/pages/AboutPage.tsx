@@ -23,7 +23,7 @@ export default function AboutPage() {
         const getAboutTxt = async () => {
             let aboutTxtRaw:string[] = [];
             const aboutDocs = await getDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("section")]);
-            aboutDocs.forEach(doc => {
+            aboutDocs?.forEach(doc => {
                 aboutTxtRaw.push(doc.data.text);
             });
             setAboutTxt(aboutTxtRaw);
@@ -40,7 +40,7 @@ export default function AboutPage() {
             const tops:SkillType[] = [];
             const mids:SkillType[] = [];
             const lows:SkillType[] = [];
-            skills.map((skill) => {
+            skills?.map((skill) => {
                 const data = skill.data as SkillType;
                 if (data.level >= 4) {
                     tops.push(data);

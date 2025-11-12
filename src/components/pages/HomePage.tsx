@@ -20,6 +20,10 @@ export default function HomePage() {
     useEffect(() => {
         const getIntroTxt = async () => {
             const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
+            if (!txt) {
+                setIntroTxt("");
+                return;
+            }
             setIntroTxt(txt[0].data.text);
         };
         getIntroTxt();
@@ -31,6 +35,10 @@ export default function HomePage() {
             const filter = where("spotlight", "==", true);
 
             const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
+            if (!spotlights) {
+                setProjSpotlightList([]);
+                return;
+            }
             setProjSpotlightList(spotlights);
         };
         getSpotlights();

@@ -18,6 +18,10 @@ export default function ProjectsPage() {
     useEffect( () => {
         const getProjects = async () => {
             const projectList = await getDocumentsFromCollection(firebaseAppContext, "projects");
+            if (!projectList) {
+                setProjectList([]);
+                return;
+            }
             setProjectList(projectList);
         };
         getProjects();

@@ -21,6 +21,10 @@ export default function PrevWork() {
 
         const getPrevWork = async () => {
             const prevWork = await getDocumentsFromCollection(firebaseAppContext, "jobs", queryOptions);
+            if (!prevWork) {
+                setPrevWorkList([]);
+                return;
+            }
             setPrevWorkList(prevWork);
         };
         getPrevWork();

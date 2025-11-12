@@ -16,6 +16,10 @@ export default function Patents() {
     useEffect( () => {
         const getPatents = async () => {
             const patents = await getDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]);
+            if (!patents) {
+                setPatentList([]);
+                return;
+            }
             setPatentList(patents);
         };
         getPatents();
