@@ -15,10 +15,8 @@ export default function ProjectArticle(props: {projectId:string}) {
 
     // Create section for article block
     const createSection = (block:ArticleBlockType, key:number) => {
-        console.log("Block:", block);
         switch (block.type) {
             case "paragraph":
-                console.log("paragraph");
                 return (
                     <div key={key} className="text-(--txt-body-color) text-lg">{block.content}</div>
                 );
@@ -73,7 +71,6 @@ export default function ProjectArticle(props: {projectId:string}) {
                 publishDate: metaDoc.data.publishDate,
                 blocks: blocks,
             };
-            console.log("Article:", articleData);
 
             // 4. Update state
             setArticle(articleData);
