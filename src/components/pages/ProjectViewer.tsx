@@ -24,6 +24,7 @@ export default function ProjectViewer() {
 
     // Get current index of project
     const currentIndex = projectList.indexOf(projectId);
+    const [transitionDir, setTransitionDir] = useState<"next"|"prev">("next");
 
     // Define boundary conditions
     const isFirstProject = currentIndex === 0;
@@ -44,13 +45,21 @@ export default function ProjectViewer() {
     const navProject = useCallback((direction: "next"|"prev") => {
         if (projectList.length === 0) return;
 
-        // Check if direction is valid
+        setTransitionDir(direction);
         let newIndex = currentIndex;
+        let shouldNavigate = false;
+
+        // Check if direction is valid
         if (direction === "next" && !isLastProject) {
             newIndex += 1;
+            shouldNavigate = true;
         } else if (direction === "prev" && !isFirstProject) {
             newIndex -= 1;
+            shouldNavigate = true;
         }
+
+        // Don't navigate if nav flag is false
+        if (!shouldNavigate) return;
 
         // Navigate to new project
         const nextProjectId = projectList[newIndex];
@@ -65,7 +74,9 @@ export default function ProjectViewer() {
                 </div>
             </div>
 
-            <div className="grow-1 shrink-0"><ProjectArticle projectId={projectId} /></div>
+            <div className="grow-1 shrink-0">
+                <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
+            </div>
 
             <div className={`${bumperClasses} items-end`} onClick={() => navProject("next")}>
                 <div className={`${arrowClasses} ${isLastProject && 'opacity-30'}`}>
