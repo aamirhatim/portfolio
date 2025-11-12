@@ -32,3 +32,9 @@ p {
     color: var(--txt-body-color);
     font-size: var(--text-lg);
 }
+
+h2 {
+    color: var(--txt-accent-color);
+    font-size: var(--text-3xl);
+    font-weight: bold;
+}
