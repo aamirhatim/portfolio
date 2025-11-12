@@ -1,5 +1,12 @@
 export default function ProjectLink(props: {value:string, url:string}) {
+    const handleClick = (e:React.MouseEvent) => {
+        e.stopPropagation();
+        window.open(props.url, '_blank');
+    };
+
     return (
-        <div className='text-sm font-bold text-[var(--txt-link-color)]'><a href={props.url} target='_blank'>{`{ ${props.value} }`}</a></div>
+        <div onClick={handleClick} className='text-sm font-bold text-(--txt-link-color)'>
+            <a>{`{ ${props.value} }`}</a>
+        </div>
     )
 }
