@@ -33,6 +33,13 @@ p {
     font-size: var(--text-lg);
 }
 
+.p-hyphen {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    overflow-wrap: break-word;
+}
+
 h2 {
     color: var(--txt-accent-color);
     font-size: var(--text-3xl);

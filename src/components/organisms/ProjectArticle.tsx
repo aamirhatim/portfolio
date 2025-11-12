@@ -54,7 +54,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
         switch (block.type) {
             case "paragraph":
-                e = ( <p key={key}>{block.content}</p> );
+                e = ( <p className={`${isMobile && 'p-hyphen'}`} key={key}>{block.content}</p> );
                 break;
 
             case "image":
