@@ -67,14 +67,14 @@ export default function ProjectViewer() {
     }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
 
     return (
-        <div className="box-border flex min-h-full w-full z-90">
+        <div className="flex min-h-full w-full z-90">
             <div className={`${bumperClasses} items-start`} onClick={() => navProject("prev")}>
                 <div className={`${arrowClasses} ${isFirstProject && 'opacity-30'}`}>
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
                 </div>
             </div>
 
-            <div className="grow-1 shrink-0">
+            <div className="grow">
                 <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
             </div>
 
