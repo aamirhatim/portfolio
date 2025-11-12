@@ -41,7 +41,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
     );
 
     const mobileLayout = (
-        <div className='px-6 flex flex-col gap-4'>
+        <div className='px-6 flex flex-col gap-4' onClick={() => setNavSelect(`projects/${props.project.id}`)}>
             <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full border border-(--border-color)'>
                 <LazyImg
                     imgPath={imgPath}
