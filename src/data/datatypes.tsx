@@ -11,6 +11,11 @@ export type ProjectType = {
     video?: string,
 }
 
+export type ProjectArticleType = {
+    blocks: string[],
+    publishDate: string,
+}
+
 export type SkillType = {
     name: string,
     type: string,
