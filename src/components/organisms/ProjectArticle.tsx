@@ -52,35 +52,29 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
         switch (block.type) {
             case "paragraph":
-                e = (
-                    <p key={key}>{block.content}</p>
-                );
+                e = ( <p key={key}>{block.content}</p> );
                 break;
 
             case "image":
-                e = (
-                    <div key={key}><img src={block.url} /></div>
-                );
+                e = ( <div key={key}><img src={block.url} /></div> );
                 break;
 
             case "code":
-                e = (
-                    <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div>
-                );
+                e = ( <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div> );
                 break;
 
             case "title":
                 switch (block.level) {
                     case 0:
-                        e = (<h2 key={key}>{block.content}</h2>);
+                        e = ( <h2 key={key}>{block.content}</h2> );
                         break;
 
                     case 1:
-                        e = (<h3 key={key}>{block.content}</h3>);
+                        e = ( <h3 key={key}>{block.content}</h3> );
                         break;
 
                     case 2:
-                        e = (<h4 key={key}>{block.content}</h4>);
+                        e = ( <h4 key={key}>{block.content}</h4> );
                         break;
                 
                     default:
@@ -108,9 +102,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "formula":
-                e = (
-                    <div key={key} className="text-lg">{block.content}</div>
-                );
+                e = ( <div key={key} className="text-lg">{block.content}</div> );
                 break;
         
             default:
