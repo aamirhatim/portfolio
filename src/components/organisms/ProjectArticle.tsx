@@ -63,6 +63,11 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 return (
                     <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div>
                 );
+
+            case "title":
+                return (
+                    <h2 key={key}>{block.content}</h2>
+                );
         
             default:
                 return <></>;
@@ -130,7 +135,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 initial="initial"
                 animate="enter"
                 exit="exit"
-                className="box-border flex flex-col gap-12"
+                className="flex flex-col gap-12 w-full"
             >
                 <div className="font-bold text-6xl text-(--txt-title-color)">{project?.title}</div>
 
