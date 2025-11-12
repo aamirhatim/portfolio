@@ -1,27 +1,76 @@
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import ProjectArticle from "../organisms/ProjectArticle";
 import { ANIMATION_DURATION_MS } from "./AppLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { useCallback, useEffect, useState } from "react";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext";
+import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 
 export default function ProjectViewer() {
     // Get params
     const params = useParams();
     const projectId = params.projectId!;
 
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+    const navigate = useNavigate();
+
+    // Init state
+    const [projectList, setProjectList] = useState<string[]>([]);
+
     const bumperClasses = `box-border flex flex-col justify-end shrink-0 w-[10%]`;
     const arrowClasses = `p-2 hover:scale-130 hover:text-(--txt-title-color) transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
 
+    // Get current index of project
+    const currentIndex = projectList.indexOf(projectId);
+
+    // Define boundary conditions
+    const isFirstProject = currentIndex === 0;
+    const isLastProject = currentIndex === projectList.length - 1;
+
+    // Get list of all projects
+    useEffect(() => {
+        const getProjectList = async () => {
+            const projectDocs = await getDocumentsFromCollection(firebaseAppContext, "projects");
+            const newList = projectDocs?.map(p => p.id) || [];
+            setProjectList(newList);
+        };
+
+        getProjectList();
+    }, []);
+
+    // Define nav buttons
+    const navProject = useCallback((direction: "next"|"prev") => {
+        if (projectList.length === 0) return;
+
+        // Check if direction is valid
+        let newIndex = currentIndex;
+        if (direction === "next" && !isLastProject) {
+            newIndex += 1;
+        } else if (direction === "prev" && !isFirstProject) {
+            newIndex -= 1;
+        }
+
+        // Navigate to new project
+        const nextProjectId = projectList[newIndex];
+        navigate(`/projects/${nextProjectId}`);
+    }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
+
     return (
         <div className="box-border flex min-h-full w-full z-90">
-            <div className={`${bumperClasses} items-start`}>
-                <div className={arrowClasses}><FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" /></div>
+            <div className={`${bumperClasses} items-start`} onClick={() => navProject("prev")}>
+                <div className={`${arrowClasses} ${isFirstProject && 'opacity-30'}`}>
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
+                </div>
             </div>
 
             <div className="grow-1 shrink-0"><ProjectArticle projectId={projectId} /></div>
 
-            <div className={`${bumperClasses} items-end`}>
-                <div className={arrowClasses}><FontAwesomeIcon icon={faArrowAltCircleRight} size="2xl" /></div>
+            <div className={`${bumperClasses} items-end`} onClick={() => navProject("next")}>
+                <div className={`${arrowClasses} ${isLastProject && 'opacity-30'}`}>
+                    <FontAwesomeIcon icon={faArrowAltCircleRight} size="2xl" />
+                </div>
             </div>
         </div>
     )
