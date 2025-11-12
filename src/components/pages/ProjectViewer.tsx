@@ -19,8 +19,7 @@ export default function ProjectViewer() {
     // Init state
     const [projectList, setProjectList] = useState<string[]>([]);
 
-    const bumperClasses = `box-border flex flex-col justify-end shrink-0 w-[10%]`;
-    const arrowClasses = `p-2 hover:scale-130 hover:text-(--txt-title-color) transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
+    const arrowClasses = `cursor-pointer hover:scale-130 hover:text-(--txt-title-color) transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
 
     // Get current index of project
     const currentIndex = projectList.indexOf(projectId);
@@ -67,19 +66,17 @@ export default function ProjectViewer() {
     }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
 
     return (
-        <div className="flex min-h-full w-full z-90">
-            <div className={`${bumperClasses} items-start`} onClick={() => navProject("prev")}>
-                <div className={`${arrowClasses} ${isFirstProject && 'opacity-30'}`}>
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
-                </div>
-            </div>
-
-            <div className="grow">
+        <div className="h-full w-full flex flex-col justify-between z-90 mx-auto">
+            <div className="box-border px-[15%]">
                 <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
             </div>
 
-            <div className={`${bumperClasses} items-end`} onClick={() => navProject("next")}>
-                <div className={`${arrowClasses} ${isLastProject && 'opacity-30'}`}>
+            <div className="flex w-full px-[15%] py-20 justify-between">
+                <div className={`${arrowClasses} left-0 justify-end ${isFirstProject && 'opacity-30'}`} onClick={() => navProject("prev")}>
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
+                </div>
+
+                <div className={`${arrowClasses} right-0 justify-start ${isLastProject && 'opacity-30'}`} onClick={() => navProject("next")}>
                     <FontAwesomeIcon icon={faArrowAltCircleRight} size="2xl" />
                 </div>
             </div>
