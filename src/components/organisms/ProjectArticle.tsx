@@ -89,10 +89,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
                 return(
                     <div key={key}>
-                        {block.title && <h4>{block.title}</h4>}
+                        {block.title && <h4 className="mb-2">{block.title}</h4>}
                         {block.ordered
-                            ? <ol className="list-decimal list-inside">{listItems}</ol>
-                            : <ul className="list-disc list-inside">{listItems}</ul>
+                            ? <ol className="list-decimal list-inside pl-6">{listItems}</ol>
+                            : <ul className="list-disc list-inside pl-6">{listItems}</ul>
                         }
                     </div>
                 );

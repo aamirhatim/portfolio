@@ -37,12 +37,14 @@ h2 {
     color: var(--txt-accent-color);
     font-size: var(--text-3xl);
     font-weight: bold;
+    margin-top: 3rem;
 }
 
 h3 {
     color: var(--txt-feature-color);
     font-size: var(--text-2xl);
     font-weight: bold;
+    margin-top: 2rem;
 }
 
 h4 {
