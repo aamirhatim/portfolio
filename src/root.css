@@ -38,3 +38,9 @@ h2 {
     font-size: var(--text-3xl);
     font-weight: bold;
 }
+
+h3 {
+    color: var(--txt-feature-color);
+    font-size: var(--text-xl);
+    font-weight: bold;
+}
