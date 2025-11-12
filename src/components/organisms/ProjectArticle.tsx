@@ -194,7 +194,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                             {article.blocks.map((b, key) => {return createSection(b, key)})}
 
                             <div>
-                            <div className="font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                            <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
                                 <ChipGroup list={project?.skills || []} />
                             </div>
                         </>
