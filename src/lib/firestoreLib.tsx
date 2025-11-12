@@ -8,18 +8,24 @@ import { FirestoreDocType } from "../data/datatypes";
  * @param collectionName - Collection name
  * @returns List of Firestore documents
  */
-export async function getDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string, queryOptions?:QueryConstraint[]): Promise<FirestoreDocType[]> {
+export async function getDocumentsFromCollection(firebaseApp:FirebaseApp, collectionName:string, queryOptions?:QueryConstraint[]): Promise<FirestoreDocType[]|null> {
     const db = getFirestore(firebaseApp);
     const q = query(
         collection(db, collectionName),
         ...(queryOptions ? queryOptions : []),
     );
-    const querySnapshot = await getDocs(q);
-    const items:FirestoreDocType[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-    }));
-    return items;
+
+    try {
+        const querySnapshot = await getDocs(q);
+        const items:FirestoreDocType[] = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+        }));
+        return items;
+    } catch (error) {
+        console.error(`Error getting docs:`, error);
+        return null;
+    }
 }
 
 /**
