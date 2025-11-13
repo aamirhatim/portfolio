@@ -60,13 +60,34 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "image":
                 const imgPath = `/article_img/${block.url}`;
+                let size = 'w-full';
+                switch (block.size) {
+                    case "sm":
+                        size = 'w-[100px]';
+                        break;
+
+                    case "md":
+                        size = 'w-[250px]';
+                        break;
+
+                    case "lg":
+                        size = 'w-[400px]';
+                        break;
+
+                    case "xl":
+                        size = 'w-[500px]';
+                        break;
+                
+                    default:
+                        break;
+                };
                 e = (
-                    <div key={key} className="flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6">
+                    <div key={key} className={`flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6`}>
                         <LazyImg
                             imgPath={imgPath}
                             alt={block.url}
                             fill={true}
-                            className="rounded-xl h-full w-full"
+                            className={`rounded-xl h-full ${size}`}
                         />
                         {block.caption && <div>{block.caption}</div>}
                     </div>
