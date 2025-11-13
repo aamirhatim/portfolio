@@ -7,6 +7,7 @@ import { orderBy, where } from "firebase/firestore";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import useIsMobile from "../hooks";
+import LazyImg from "../atoms/LazyImg";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -58,7 +59,18 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "image":
-                e = ( <div key={key}><img src={block.url} /></div> );
+                const imgPath = `/article_img/${block.url}`;
+                e = (
+                    <div key={key} className="flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6">
+                        <LazyImg
+                            imgPath={imgPath}
+                            alt={block.url}
+                            fill={true}
+                            className="rounded-xl h-full w-full"
+                        />
+                        {block.caption && <div>{block.caption}</div>}
+                    </div>
+                );
                 break;
 
             case "code":
