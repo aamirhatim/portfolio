@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes";
-import { getDocumentFromId, getDocumentsFromCollection, getFileFromFirebaseStorage } from "../../lib/firestoreLib";
+import { getDocumentFromId, getFileFromFirebaseStorage } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
-import { orderBy, where } from "firebase/firestore";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import useIsMobile from "../hooks";
