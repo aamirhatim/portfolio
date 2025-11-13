@@ -94,7 +94,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "code":
-                e = ( <div key={key} className="text-(--txt-accent-color) text-lg">{block.code}</div> );
+                e = ( <div key={key} className="text-(--txt-accent-color) text-lg">{block.content}</div> );
                 break;
 
             case "title":

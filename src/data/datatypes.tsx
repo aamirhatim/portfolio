@@ -32,7 +32,7 @@ export type ImageBlockType = BaseArticleBlock & {
 export type CodeBlockType = BaseArticleBlock & {
     type: "code",
     language: string,
-    code: string,
+    content: string,
 }
 
 export type TitleBlockType = BaseArticleBlock & {
