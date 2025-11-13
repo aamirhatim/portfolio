@@ -1,6 +1,7 @@
 import { FirebaseApp } from "firebase/app";
 import { collection, doc, getDoc, getDocs, getFirestore, query, QueryConstraint } from "firebase/firestore";
 import { FirestoreDocType } from "../data/datatypes";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 
 /**
  * Returns list of documents from a given Firestore Collection
@@ -53,6 +54,33 @@ export async function getDocumentFromId(firebaseApp:FirebaseApp, collectionName:
         }
     } catch (error) {
         console.error("Error getting document:", error);
+        return null;
+    }
+}
+
+export async function getFileFromFirebaseStorage(firebaseApp:FirebaseApp, filepath:string) {
+    const storage = getStorage(firebaseApp);
+    const fileRef = ref(storage, filepath);
+    
+    // Get file URL
+    let url:string;
+    try {
+        url = await getDownloadURL(fileRef);
+    } catch (error) {
+        console.error("Error getting file download url for file:", filepath);
+        return null;
+    }
+
+    // Download file
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.log("Bad response when fetching file");
+            return null;
+        }
+        return response;
+    } catch (error) {
+        console.error("Error fetching file:", filepath);
         return null;
     }
 }
