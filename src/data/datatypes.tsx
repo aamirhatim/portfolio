@@ -26,6 +26,7 @@ export type ImageBlockType = BaseArticleBlock & {
     type: "image",
     url: string,
     caption?: string,
+    size?: "sm" | "md" | "lg" | "xl"
 }
 
 export type CodeBlockType = BaseArticleBlock & {
