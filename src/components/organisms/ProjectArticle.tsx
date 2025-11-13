@@ -46,7 +46,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
     // Init state
     const [project, setProject] = useState<ProjectType>();
-    const [article, setArticle] = useState<ArticleType>({blocks: [], publishDate: ""});
+    const [article, setArticle] = useState<ArticleType|undefined>(undefined);
 
     // Create section for article block
     const createSection = (block:ArticleBlockType, key:number) => {
@@ -183,6 +183,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             const projectDoc = await getDocumentFromId(firebaseAppContext, "projects", props.projectId);
             if (!projectDoc) {
                 setProject(undefined);
+                setArticle(undefined);
                 return;
             };
 
@@ -201,7 +202,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
         const getArticleData = async () => {
             // 1. Get url response from Firebase storage
             const response = await getFileFromFirebaseStorage(firebaseAppContext, `articles/${props.projectId}.json`);
-            if (!response) return;
+            if (!response) {
+                setArticle(undefined);
+                return;
+            };
 
             // 2. Get JSON body
             const articleJson:ArticleType = await response.json();
@@ -223,7 +227,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             >
                 <div className="mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%]">{project?.title}</div>
 
-                {article.blocks.length > 0
+                {article !== undefined
                     ?   <>
                             <div className="mb-15 text-md text-(--txt-feature-color)">{article.publishDate}</div>
                             {article.blocks.map((b, key) => {return createSection(b, key)})}
