@@ -53,6 +53,12 @@ export type FormulaBlockType = BaseArticleBlock & {
     content: string,
 }
 
+export type TableBlockType = BaseArticleBlock & {
+    type: "table",
+    headers: string[],
+    content: string[][],
+}
+
 export type ArticleBlockType = 
     | ParagraphBlockType
     | ImageBlockType
@@ -60,6 +66,7 @@ export type ArticleBlockType =
     | TitleBlockType
     | ListBlockType
     | FormulaBlockType
+    | TableBlockType
 
 export type ArticleType = {
     blocks: ArticleBlockType[],

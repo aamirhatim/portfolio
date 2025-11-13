@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes";
-import { getDocumentFromId, getDocumentsFromCollection } from "../../lib/firestoreLib";
+import { getDocumentFromId, getDocumentsFromCollection, getFileFromFirebaseStorage } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
 import { orderBy, where } from "firebase/firestore";
@@ -127,7 +127,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
                 e = (
                     <div key={key}>
-                        {block.title && <h4 className="mb-2">{block.title}</h4>}
+                        {block.title && <h4 className="!mt-0 mb-2">{block.title}</h4>}
                         {block.ordered
                             ? <ol className="list-decimal list-inside pl-6">{listItems}</ol>
                             : <ul className="list-disc list-inside pl-6">{listItems}</ul>
@@ -139,6 +139,28 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             case "formula":
                 e = ( <div key={key} className="text-lg">{block.content}</div> );
                 break;
+
+            case "table":
+                e = (
+                    <table>
+                        <thead>
+                            <tr>
+                                {block.headers.map((h, key) => <th key={key}>{h}</th>)}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {block.content.map((row, rowKey) => (
+                                <tr key={rowKey}>
+                                    {row.map((td, tdKey) => (
+                                        <td key={tdKey}>{td}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                );
+                break
         
             default:
                 break;
@@ -178,33 +200,14 @@ export default function ProjectArticle(props: ProjectArticleProps) {
     // Get project article
     useEffect(() => {
         const getArticleData = async () => {
-            // 1. Get article metadata
-            const metaDoc = await getDocumentFromId(firebaseAppContext, "article_meta", props.projectId);
-            if (!metaDoc) {
-                setArticle({blocks: [], publishDate: ""});
-                return;
-            };
+            // 1. Get url response from Firebase storage
+            const response = await getFileFromFirebaseStorage(firebaseAppContext, `articles/${props.projectId}.json`);
+            if (!response) return;
 
-            // 2. Get article blocks
-            const filter = where("projectId", "==", props.projectId);
-            const sort = orderBy("order", "asc");
-            const blocksDoc = await getDocumentsFromCollection(firebaseAppContext, "article_blocks", [filter, sort]);
-            if (!blocksDoc) {
-                setArticle({blocks: [], publishDate: ""});
-                return;
-            };
-            const blocks = blocksDoc.map(data => data.data as ArticleBlockType);
-            
-            // 3. Structure data
-            const articleData:ArticleType = {
-                publishDate: metaDoc.data.publishDate,
-                blocks: blocks,
-            };
-
-            // 4. Update state
-            setArticle(articleData);
+            // 2. Get JSON body
+            const articleJson:ArticleType = await response.json();
+            setArticle(articleJson);
         };
-
         getArticleData();
     }, [props.projectId, firebaseAppContext]);
 
