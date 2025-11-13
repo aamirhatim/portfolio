@@ -7,8 +7,9 @@ interface LazyImgProps {
     imgPath: string,
     alt: string,
     className: string,
+    fill?: boolean,
     position?: string,
-    placeholderPath: string,
+    placeholderPath?: string,
 }
 
 export default function LazyImg(props:LazyImgProps) {
@@ -18,11 +19,13 @@ export default function LazyImg(props:LazyImgProps) {
     const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
-    const [imgUrl, setImgUrl] = useState<string>(props.placeholderPath);
+    const placeholder = props.placeholderPath ? props.placeholderPath : "/placeholder.gif";
+    const [imgUrl, setImgUrl] = useState<string>(placeholder);
+    const [gotFinalUrl, setGotFinalUrl] = useState<boolean>(false);
     const [imgLoaded, setImgLoaded] = useState<boolean>(false);
 
     // Create refs
-    const imgRef = useRef<HTMLDivElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
 
     // Image loader helper
@@ -47,31 +50,15 @@ export default function LazyImg(props:LazyImgProps) {
                 setImgUrlCache(cache);
             } catch (error) {
                 console.error("Failed to load image or get download URL:", error);
-                setImgUrl(props.placeholderPath);
+                setImgUrl(placeholder);
                 setImgLoaded(false);
                 return;
             }
         }
 
-        // Preload image
-        try {
-            const fullImg = new Image();
-            await new Promise<void>((resolve, reject) => {
-                fullImg.onload = () => {resolve()};
-                fullImg.onerror = (e) => {
-                    console.error("Failed to load full image object:", e);
-                    reject();
-                };
-                fullImg.src = url;
-            });
-
-            setImgUrl(url);
-            setImgLoaded(true);
-        } catch (error) {
-            console.error("Failed to load image:", error);
-            setImgUrl(props.placeholderPath);
-            setImgLoaded(false);
-        }
+        // Set final image url
+        setGotFinalUrl(true);
+        setImgUrl(url);
     };
 
     // useEffect for setting up observer
@@ -105,25 +92,38 @@ export default function LazyImg(props:LazyImgProps) {
         }
     }, [props.imgPath, props.placeholderPath]);
 
-    // useEffect for updating bg image
+    // Handle overlay opacity when final image completes loading
     useEffect(() => {
-        if (!imgRef.current || !overlayRef.current) return;
-
-        imgRef.current.style.backgroundImage = `url(${imgUrl})`;
-        imgRef.current.style.backgroundPosition = props.position ? props.position : "center";
-        imgRef.current.style.backgroundSize = "cover";
-        imgRef.current.style.backgroundRepeat = "no-repeat";
+        if (!overlayRef.current) return;
+        if (!gotFinalUrl) return;
 
         if (imgLoaded) {
             overlayRef.current.style.opacity = "0";
         } else {
             overlayRef.current.style.opacity = "1";
         }
-    }, [imgUrl, imgLoaded]);
+    }, [imgLoaded, gotFinalUrl]);
 
     return (
-        <div ref={imgRef} className={`relative ${props.className}`}>
-            <div ref={overlayRef} className="absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500"></div>
+        <div className={`overflow-clip ${props.className}`}>
+            <div className="relative h-full w-full">
+                <img
+                    ref={imgRef}
+                    src={imgUrl}
+                    alt={props.alt}
+                    onLoad={() => {
+                        if (gotFinalUrl) {
+                            setImgLoaded(true);
+                        }
+                    }}
+                    onError={() => {
+                        console.error(`Error loading image: ${imgUrl}`);
+                        setImgUrl(placeholder);
+                    }}
+                    className={`h-full w-full ${props.fill ? 'object-fill' : 'object-cover'}`}
+                />
+                <div ref={overlayRef} className={`absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500`}></div>
+            </div>
         </div>
     )
 }
