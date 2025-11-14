@@ -1,0 +1,75 @@
+{
+    "publishDate": "March 2018",
+    "blocks": [
+        {
+            "type": "paragraph",
+            "content": "One of the fundamental aspects of robotics and mechatronics is having the ability to control movement. Just like how we keep track of our muscle movements (eyes, touch, etc.), a robot needs a set of sensors so it knows its current state at any moment. This project uses mainstream sensors like encoders and current sensors to provide position and movement information about a spinning motor. The motor also has a MATLAB GUI so that a user can control the motor's speed and direction, maintain a position angle, follow an input trajectory, read encoder information, and read the motor's current draw. The PIC32MX250F128B microcontroller was used on board the <a href = \"http://hades.mech.northwestern.edu/index.php/NU32\">NU32</a> board designed at Northwestern University for implementation."
+        },
+        {
+            "type": "list",
+            "border": true,
+            "ordered": false,
+            "title": "Hardware Components",
+            "items": [
+                "Brushed DC motor (with encoder)",
+                "NU32 microcontroller board",
+                "Quadrature encoder counter (SPI communication)",
+                "MAX9918 current-sense amplifier",
+                "DRV8835 H-bridge",
+                "6V battery pack",
+                "Various resistors and capacitors"
+            ]
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "Software Implementation"
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "The Current Controller"
+        },
+        {
+            "type": "paragraph",
+            "content": "For an electric motor, the output torque is drectly proportional to the current. Therefore, to controll the speed and power of the motor, we can change the amount of current passing through the motor. This is done by setting the duty cycle of a PWM signal that corresponds to the desired motor torque. The MAX9918 current-sense amplifier is used to read the current at any given moment - specifically, it reads the current at 5kHz for the control loop. A PI controller is implemented to set the right duty cycle."
+        },
+        {
+            "type": "paragraph",
+            "content": "The PWM is passed through the DRV8835 H-bridge which safely directs the current through the motor. The H-bride allows for direction and braking control using a set of four switch-diode pairs."
+        },
+        {
+            "type": "image",
+            "url": "icontrol.png",
+            "size": "lg",
+            "caption": "Performance of the current controller. Blue is the desired output and orange is the actual result."
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "The Position Controller"
+        },
+        {
+            "type": "An optical encoder is used to determine the position of the motor. This type of encoder is made up of a transparent disk with several thin opaque lines around its circumference and a light source/photo-detector pair. Light from the light source passes through the transparent parts of the disk but does not pass through the opaque lines. As the motor spins, the light that passes through comes in small bursts and is picked up by the photo-detector, which can be used as a counter. Knowing the number of lines on the disk, we can then calculate the position of the motor using the number of counts picked up by the photo-detector. In this project, a quadrature decoder is used to count the start and end of a line. This allows us to keep track of which direction the motor is spinning in as well."
+        },
+        {
+            "type": "paragraph",
+            "content": "A PID controller is used for position control. It uses encoder information to determine how far the motor is from its desired postion and calculates the required current needed to bring the motor to that position."
+        },
+        {
+            "type": "image",
+            "url": "pos_control.png",
+            "size": "lg",
+            "caption": "Performance of the position controller for a cubic trajectory. Blue is the desired output and orange is the actual result."
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "MATLAB Interface"
+        },
+        {
+            "type": "paragraph",
+            "content": "The user controls all low level motor functions through a MATLAB menu screen. The controller uses UART communication to send any relevant information to the computer such as encoder counts, motor position, position and current gain control, speed control, trajectory loading and executing, resetting the encoder, and unpowering the motor. The program also outputs error plots for trajectories the motor executes."
+        }
+    ]
+}

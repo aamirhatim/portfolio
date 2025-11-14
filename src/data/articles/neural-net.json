@@ -1,0 +1,85 @@
+{
+    "publishDate": "Date Unknown",
+    "blocks": [
+        {
+            "type": "title",
+            "level": 0,
+            "content": "The Power of Neural Networks"
+        },
+        {
+            "type": "paragraph",
+            "content": "Neural networks have the potential to learn incredibly complex functions that can help us classify all kinds of data. Given the right hardware, and a little time, neural networks can be fine tuned to deliver great performance in tasks like object recognition, captioning pictures, and making music. For this project, I learned the fundamentals behind deep learning and how one can build a basic but efficient library in Python to implement your own network."
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "Components"
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "Normalizer"
+        },
+        {
+            "type": "paragraph",
+            "content": "A standard normalizer is included in the library to normalize the input data. Normalizing helps in making optimization methods like gradient descent much quicker since it helps \"steer\" each step closer to the actual minimum of the gradient. Standard normalization is done by subtracting the mean and dividing by the standard deviation:"
+        },
+        {
+            "type": "formula",
+            "content": "X_{norm}= \\frac {X - \\mu}{\\sigma}"
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "Cost Functions"
+        },
+        {
+            "type": "paragraph",
+            "content": "A cost function allows us to determine the best relationship we can find between the input and output of our data. The library contains two cost functions to optimize: <i>least squares</i> and <i>softmax</i>. In a least squares cost function, larger errors are penalized more than smaller errors due to the squared term."
+        },
+        {
+            "type": "formula",
+            "content": "loss(y,y_p)=(y-y_p)^2"
+        },
+        {
+            "type": "paragraph",
+            "content": "A softmax (log-loss) function takes in a dataset and outputs a new set with values ranging from 0 to 1. Additionally, the sum of all values of the dataset add up to 1."
+        },
+        {
+            "type": "formula",
+            "content": "loss(w_0,w_1)=log(1+e^{-y_p(w_0+xw_1)})"
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "Multilayer perceptron"
+        },
+        {
+            "type": "paragraph",
+            "content": "This module of the library initializes the multilayer perceptron (MLP) used to generate a classifier. The number of hidden units and number of layers can be modified as well as the activation function (ReLU, tanh, maxout). The activation functions serve as various <i>feature transforms</i> that can be used to modify how the network deals with inputs."
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "Optimizer"
+        },
+        {
+            "type": "paragraph",
+            "content": "Gradient descent is used to optimize the loss functions mentioned above. The algorithm calculates the gradient at a location on the cost function and then takes a step in a direction negative to the gradient. This process is repeated until (ideally) a minimum is reached. Convergence indicates that a fit has been found to minimize the cost, or error, of the regression model."
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "Using the Library"
+        },
+        {
+            "type": "paragraph",
+            "content": "The library can be used to construct a neural network and plot its performance on a given dataset. See the sample code below for proper syntax in Python 3.6."
+        },
+        {
+            "type": "code",
+            "language": "python",
+            "content": "# Import deep learning library\nfrom dl_lib import deep_learner as DL\nimport autograd.numpy as np\n\n# Initilaize learner, including weight and cost histories\nlearner = DL.Setup(x,y)\n\n# Choose normalization method\nlearner.choose_normalizer(name = 'standard')\n\n# Dimensions of input and output, 3 hidden layers of ten units each\nN = 1; M = 1\nlayer_sizes = [N, 10, 10, 10, M]\n\n# MLP parameters\nlearner.choose_features(name = 'multilayer_perceptron', layer_sizes = layer_sizes, activation = 'maxout', scale = .3)\n\n# Choose cost function\nlearner.choose_cost(name = 'least_squares')\n\n# Run gradient descent and plot weight and cost histories\nlearner.optimize(max_its = 200, alpha_choice = 1)\nlearner.plot_model()"
+        }
+    ]
+}
