@@ -9,6 +9,8 @@ import useIsMobile from "../hooks";
 import LazyImg from "../atoms/LazyImg";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -70,7 +72,8 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     <div className={`${isMobile && 'p-hyphen'}`}>
                         <ReactMarkdown
                             children={block.content}
-                            remarkPlugins={[remarkGfm]}
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
                         />
                     </div>
                 );
@@ -154,7 +157,8 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     <li key={liKey}>
                         <ReactMarkdown
                             children={i}
-                            remarkPlugins={[remarkGfm]}
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
                             components={{p: ({children}) => <>{children}</>}} // Remove <p> tag from list items
                         />
                     </li>
