@@ -61,3 +61,8 @@ h4 {
     font-weight: bold;
     margin-top: 1rem;
 }
+
+a {
+    color: var(--txt-link-color);
+    text-decoration: underline;
+}
