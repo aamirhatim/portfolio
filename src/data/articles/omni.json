@@ -12,11 +12,11 @@
         },
         {
             "type": "paragraph",
-            "content": "The goal of this ongoing project is to create an autonomous fleet of mobile robots, each one made up of an omni-directional mobile base and a delta arm, that are capable of sensing their environment and move together as a single unit (like a rigid body) as well as relative to their own positions (like a fleet) so that they can collaboratively work together to pick up and move large, unwieldy objects to a desired destination - all without human intervetion. During the Spring and Fall quarters of 2018, my partner, <a href = \"https://swiz23.github.io/Portfolio/\">Solomon Wiznitzer</a> and I worked alongside our advisor <a href = \"https://nxr.northwestern.edu/people/matthew-elwin\">Matthew Elwin</a> to get closer towards this end goal. Continuing the work of previous MSR students, we were able to construct three mobile bases, control them both as a fleet and as a rigid body, and integrate multiple on-board sensors for localization and odometry. By the end of the project, we had built a solid foundation for future students to better integrate multi-agent control and higher level processes like SLAM and coordinated movement."
+            "content": "The goal of this ongoing project is to create an autonomous fleet of mobile robots, each one made up of an omni-directional mobile base and a delta arm, that are capable of sensing their environment and move together as a single unit (like a rigid body) as well as relative to their own positions (like a fleet) so that they can collaboratively work together to pick up and move large, unwieldy objects to a desired destination - all without human intervetion. During the Spring and Fall quarters of 2018, my partner, [Solomon Wiznitzer](https://swiz23.github.io/Portfolio/) and I worked alongside our advisor [Matthew Elwin](https://nxr.northwestern.edu/people/matthew-elwin) to get closer towards this end goal. Continuing the work of previous MSR students, we were able to construct three mobile bases, control them both as a fleet and as a rigid body, and integrate multiple on-board sensors for localization and odometry. By the end of the project, we had built a solid foundation for future students to better integrate multi-agent control and higher level processes like SLAM and coordinated movement."
         },
         {
             "type": "paragraph",
-            "content": "Special thanks also to <a href = \"https://nxr.northwestern.edu/people/jarvis-schultz\">Jarvis Schultz</a>, <a href = \"https://nxr.northwestern.edu/people/bill-hunt\">Bill Hunt</a>, and the <a href = \"https://nxr.northwestern.edu\">Northwestern NxR Lab</a> for the invaluable help and support to make this project happen."
+            "content": "Special thanks also to [arvis Schultz](https://nxr.northwestern.edu/people/jarvis-schultz), [Bill Hunt](https://nxr.northwestern.edu/people/bill-hunt) and the [https://nxr.northwestern.edu](Northwestern NxR Lab) for the invaluable help and support to make this project happen."
         },
         {
             "type": "title",
@@ -25,7 +25,7 @@
         },
         {
             "type": "paragraph",
-            "content": "<i>Note: Complete build instructions, as well as a bill of materials, CAD models, schematics, etc., are documented in the project's GitHub repository. Please contact Matthew Elwin for more information.</i>"
+            "content": "_Note: Complete build instructions, as well as a bill of materials, CAD models, schematics, etc., are documented in the project's GitHub repository. Please contact Matthew Elwin for more information._"
         },
         {
             "type": "title",
@@ -34,7 +34,7 @@
         },
         {
             "type": "paragraph",
-            "content": "The mobile base was built using a <a href = \"https://www.superdroidrobots.com/shop/item.aspx/programmable-mecanum-wheel-vectoring-robot-ig52-db/1788/\">robot kit</a> purchased from SuperDroid robots. Some modifications were needed to meet our requirements for the project, like turning the chassis upside down to have easier access to the motors, altering the position of the batteris for better space management, drilling extra holes in the chassis for peripheral attachments, etc. Once one robot was fully constructed and operational, two more were built with a special focus on cable management and optimal component positioning for ease of access and efficient use of space."
+            "content": "The mobile base was built using a [robot kit](https://www.superdroidrobots.com/shop/item.aspx/programmable-mecanum-wheel-vectoring-robot-ig52-db/1788/) purchased from SuperDroid robots. Some modifications were needed to meet our requirements for the project, like turning the chassis upside down to have easier access to the motors, altering the position of the batteris for better space management, drilling extra holes in the chassis for peripheral attachments, etc. Once one robot was fully constructed and operational, two more were built with a special focus on cable management and optimal component positioning for ease of access and efficient use of space."
         },
         {
             "type": "list",
@@ -60,7 +60,7 @@
         },
         {
             "type": "paragraph",
-            "content": "The original version of the mobile base used an Arduino and a Kangaroo motor controller to operate the robot, but it was decided at the start of the quarter to replace these components with a setup of <a href = \"http://processors.wiki.ti.com/index.php/Tiva_C_Series_TM4C123G_LaunchPad\">Tiva C LaunchPad</a> boards. There were a few reasons for this change. One was to standardize the electrical components used across the whole system: the mobile base and the delta arm that will eventually be placed on top. The arm already used a robust communications protocol using Tiva boards and so it would be easier to integrate it with the mobile base if everything was using the same setup. Another reason was to fix timing and latency issues that arose with the Arduino/Kangaroo combination. The libraries used with this setup required massive amounts of overhead just to make it run, and the frequency at which commands were being sent were not reliable."
+            "content": "The original version of the mobile base used an Arduino and a Kangaroo motor controller to operate the robot, but it was decided at the start of the quarter to replace these components with a setup of [Tiva C LaunchPad boards](http://processors.wiki.ti.com/index.php/Tiva_C_Series_TM4C123G_LaunchPad). There were a few reasons for this change. One was to standardize the electrical components used across the whole system: the mobile base and the delta arm that will eventually be placed on top. The arm already used a robust communications protocol using Tiva boards and so it would be easier to integrate it with the mobile base if everything was using the same setup. Another reason was to fix timing and latency issues that arose with the Arduino/Kangaroo combination. The libraries used with this setup required massive amounts of overhead just to make it run, and the frequency at which commands were being sent were not reliable."
         },
         {
             "type": "paragraph",

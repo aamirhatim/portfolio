@@ -9,7 +9,7 @@
         {
             "type": "paragraph",
             "content":
-                "Curious what our model will predict for a particular country? Go find out <a href = \"https://aamirhatim.github.io/day_zero_predictor/\" target = \"_blank\">here</a>!</i>"
+                "Curious what our model will predict for a particular country? Go find out [here](https://aamirhatim.github.io/day_zero_predictor/)!"
         },
         {
             "type": "paragraph",
@@ -45,7 +45,7 @@
         },
         {
             "type": "paragraph",
-            "content": "Most of our data was gathered from the extensive <a href = \"http://www.fao.org/nr/water/aquastat/main/index.stm\" target = \"_blank\">AQUASTAT</a> database which provides many different water metrics for every country for the past 60 years. Another source was used to get rainwater harvesting information. Our goal was to develop a model that incorporates new attributes compared to other models. After doing some initial research, we made a small list of attributes we thought would be useful in classifying a nation's stress level. Fortunately, we did not have to hunt down every data sample. The water consumption and usage database from AQUASTAT proved to be extremely comprehensive, however we were still tasked with consolidating multiple tables for the attributes we were interested in."
+            "content": "Most of our data was gathered from the extensive [AQUASTAT database](http://www.fao.org/nr/water/aquastat/main/index.stm) which provides many different water metrics for every country for the past 60 years. Another source was used to get rainwater harvesting information. Our goal was to develop a model that incorporates new attributes compared to other models. After doing some initial research, we made a small list of attributes we thought would be useful in classifying a nation's stress level. Fortunately, we did not have to hunt down every data sample. The water consumption and usage database from AQUASTAT proved to be extremely comprehensive, however we were still tasked with consolidating multiple tables for the attributes we were interested in."
         },
         {
             "type": "table",
@@ -219,7 +219,7 @@
         },
         {
             "type": "paragraph",
-            "content": "This project was a team effort, completed by myself and <a href = \"https://am2512.github.io/\" target = \"_blank\">Ahalya Mandana</a>."
+            "content": "This project was a team effort, completed by myself and [Ahalya Mandana](https://am2512.github.io/)."
         }
     ]
 }

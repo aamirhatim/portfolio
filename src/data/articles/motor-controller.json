@@ -3,7 +3,7 @@
     "blocks": [
         {
             "type": "paragraph",
-            "content": "One of the fundamental aspects of robotics and mechatronics is having the ability to control movement. Just like how we keep track of our muscle movements (eyes, touch, etc.), a robot needs a set of sensors so it knows its current state at any moment. This project uses mainstream sensors like encoders and current sensors to provide position and movement information about a spinning motor. The motor also has a MATLAB GUI so that a user can control the motor's speed and direction, maintain a position angle, follow an input trajectory, read encoder information, and read the motor's current draw. The PIC32MX250F128B microcontroller was used on board the <a href = \"http://hades.mech.northwestern.edu/index.php/NU32\">NU32</a> board designed at Northwestern University for implementation."
+            "content": "One of the fundamental aspects of robotics and mechatronics is having the ability to control movement. Just like how we keep track of our muscle movements (eyes, touch, etc.), a robot needs a set of sensors so it knows its current state at any moment. This project uses mainstream sensors like encoders and current sensors to provide position and movement information about a spinning motor. The motor also has a MATLAB GUI so that a user can control the motor's speed and direction, maintain a position angle, follow an input trajectory, read encoder information, and read the motor's current draw. The PIC32MX250F128B microcontroller was used on board the [NU32 board](http://hades.mech.northwestern.edu/index.php/NU32) designed at Northwestern University for implementation."
         },
         {
             "type": "list",

@@ -35,7 +35,7 @@
         },
         {
             "type": "paragraph",
-            "content": "A cost function allows us to determine the best relationship we can find between the input and output of our data. The library contains two cost functions to optimize: <i>least squares</i> and <i>softmax</i>. In a least squares cost function, larger errors are penalized more than smaller errors due to the squared term."
+            "content": "A cost function allows us to determine the best relationship we can find between the input and output of our data. The library contains two cost functions to optimize: _least squares_ and _softmax_. In a least squares cost function, larger errors are penalized more than smaller errors due to the squared term."
         },
         {
             "type": "formula",
@@ -56,7 +56,7 @@
         },
         {
             "type": "paragraph",
-            "content": "This module of the library initializes the multilayer perceptron (MLP) used to generate a classifier. The number of hidden units and number of layers can be modified as well as the activation function (ReLU, tanh, maxout). The activation functions serve as various <i>feature transforms</i> that can be used to modify how the network deals with inputs."
+            "content": "This module of the library initializes the multilayer perceptron (MLP) used to generate a classifier. The number of hidden units and number of layers can be modified as well as the activation function (ReLU, tanh, maxout). The activation functions serve as various _feature transforms_ that can be used to modify how the network deals with inputs."
         },
         {
             "type": "title",
