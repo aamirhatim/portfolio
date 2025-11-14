@@ -198,23 +198,27 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "table":
                 e = (
-                    <table>
-                        <thead>
-                            <tr>
-                                {block.headers.map((h, key) => <th key={key}>{h}</th>)}
-                            </tr>
-                        </thead>
+                    <div className="w-full flex justify-center py-4">
+                        <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {block.headers.map((h, key) => <th key={key}>{h}</th>)}
+                                    </tr>
+                                </thead>
 
-                        <tbody>
-                            {block.content.map((row, rowKey) => (
-                                <tr key={rowKey}>
-                                    {row.map((td, tdKey) => (
-                                        <td key={tdKey}>{td}</td>
+                                <tbody>
+                                    {block.content.map((row, rowKey) => (
+                                        <tr key={rowKey}>
+                                            {row.map((td, tdKey) => (
+                                                <td key={tdKey} className={`${rowKey === 0 && '!pt-4'}`}>{td}</td>
+                                            ))}
+                                        </tr>
                                     ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 );
                 break;
         

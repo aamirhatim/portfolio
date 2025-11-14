@@ -66,3 +66,15 @@ a {
     color: var(--txt-link-color);
     text-decoration: underline;
 }
+
+table {
+    @apply border-collapse border-spacing-4 text-left;
+
+    th {
+        @apply border-b border-(--border-color) text-(--txt-subtitle-color) px-3 py-2;
+    }
+
+    td {
+        @apply px-3 py-1;
+    }
+}
