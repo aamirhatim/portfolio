@@ -9,6 +9,8 @@ import useIsMobile from "../hooks";
 import LazyImg from "../atoms/LazyImg";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -147,7 +149,14 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "formula":
-                e = ( <div className="w-full text-lg text-center">{block.content}</div> );
+                e = (
+                    <div className="w-full text-lg text-center">
+                        <BlockMath
+                            math={block.content}
+                            errorColor={"#cc0000"}
+                        />
+                    </div>
+                );
                 break;
 
             case "table":
