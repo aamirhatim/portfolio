@@ -281,24 +281,36 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 initial="initial"
                 animate="enter"
                 exit="exit"
-                className="flex flex-col gap-3 w-full"
+                className="relative w-full"
             >
-                <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile && 'break-words'}`}>{project?.title}</div>
+                <div className={`absolute h-120 w-full -z-10 ${isMobile ? '-top-40' : '-top-10 px-[10%]'}`}>
+                    <LazyImg
+                        imgPath={`/proj_img/${project?.img}`}
+                        alt={'Project image'}
+                        placeholderPath={`/proj_thumbs/${project?.img}`}
+                        className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
+                    />
+                    <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
+                </div>
 
-                {article !== undefined
-                    ?   <>
-                            <div className="mb-15 text-md text-(--txt-feature-color)">{article.publishDate}</div>
-                            {article.blocks.map((b, key) => createSection(b, key))}
+                <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-6' : 'px-[15%]'}`}>
+                    <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
 
-                            <div>
-                            <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
-                                <ChipGroup list={project?.skills || []} />
+                    {article !== undefined
+                        ?   <>
+                                <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
+                                {article.blocks.map((b, key) => createSection(b, key))}
+
+                                <div>
+                                <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                                    <ChipGroup list={project?.skills || []} />
+                                </div>
+                            </>
+                        :   <div className="border border-(--border-color) p-6 rounded-xl">
+                                <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
                             </div>
-                        </>
-                    :   <div className="border border-(--border-color) p-6 rounded-xl">
-                            <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
-                        </div>
-                }
+                    }
+                </div>
             </motion.div>
         </AnimatePresence>
     )
