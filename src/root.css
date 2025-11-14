@@ -30,7 +30,7 @@ body {
 
 p {
     color: var(--txt-body-color);
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
 }
 
 .p-hyphen {
