@@ -7,6 +7,8 @@ import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import useIsMobile from "../hooks";
 import LazyImg from "../atoms/LazyImg";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -59,7 +61,15 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
         switch (block.type) {
             case "paragraph":
-                e = ( <p className={`${isMobile && 'p-hyphen'}`}>{block.content}</p> );
+
+                e = (
+                    <div className={`${isMobile && 'p-hyphen'}`}>
+                        <ReactMarkdown
+                            children={block.content}
+                            remarkPlugins={[remarkGfm]}
+                        />
+                    </div>
+                );
                 break;
 
             case "image":
@@ -137,7 +147,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "formula":
-                e = ( <div className="text-lg">{block.content}</div> );
+                e = ( <div className="w-full text-lg text-center">{block.content}</div> );
                 break;
 
             case "table":
