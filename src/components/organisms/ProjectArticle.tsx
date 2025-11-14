@@ -11,6 +11,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { nightOwl as codeStyle } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -111,7 +113,19 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "code":
-                e = ( <div className="text-(--txt-accent-color) text-lg">{block.content}</div> );
+                e = (
+                    <div className="rounded-xl overflow-clip">
+                        <div className="text-sm">
+                            <SyntaxHighlighter
+                                language={block.language}
+                                style={codeStyle}
+                                PreTag={"div"}
+                            >
+                                {block.content}
+                            </SyntaxHighlighter>
+                        </div>
+                    </div>
+                );
                 break;
 
             case "title":
