@@ -149,7 +149,16 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "list":
                 // Create list item objects
-                const listItems = block.items.map((i, liKey) => <li key={liKey}>{i}</li>);
+                console.log(block.items)
+                const listItems = block.items.map((i, liKey) => 
+                    <li key={liKey}>
+                        <ReactMarkdown
+                            children={i}
+                            remarkPlugins={[remarkGfm]}
+                            components={{p: ({children}) => <>{children}</>}} // Remove <p> tag from list items
+                        />
+                    </li>
+                );
 
                 e = (
                     <div>
