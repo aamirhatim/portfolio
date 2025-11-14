@@ -237,7 +237,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 exit="exit"
                 className="flex flex-col gap-3 w-full"
             >
-                <div className="mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%]">{project?.title}</div>
+                <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile && 'break-words'}`}>{project?.title}</div>
 
                 {article !== undefined
                     ?   <>
