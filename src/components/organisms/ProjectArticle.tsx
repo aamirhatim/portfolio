@@ -52,6 +52,13 @@ const variants = {
     })
 };
 
+// Handler for opening markdown links in a new tab
+const linkRenderer = (props: any) => {
+    return (
+        <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
+    );
+}
+
 export default function ProjectArticle(props: ProjectArticleProps) {
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
@@ -74,6 +81,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                             children={block.content}
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeKatex]}
+                            components={{a: linkRenderer}}
                         />
                     </div>
                 );
@@ -158,7 +166,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                             children={i}
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeKatex]}
-                            components={{p: ({children}) => <>{children}</>}} // Remove <p> tag from list items
+                            components={{
+                                p: ({children}) => <>{children}</>,  // Remove <p> tag from list items
+                                a: linkRenderer
+                            }} 
                         />
                     </li>
                 );
