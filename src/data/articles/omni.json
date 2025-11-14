@@ -2,11 +2,6 @@
     "publishDate": "Fall 2018",
     "blocks": [
         {
-            "type": "title",
-            "level": 0,
-            "content": "Overview"
-        },
-        {
             "type": "paragraph",
             "content": "When it comes to moving large objects, coordination becomes vital as risk of damage increases. If not everyone is working together, it could lead to disatrous consequences on a factory floor. One method to mitigate this risk is to have a fleet of autonomous agents that can take the place of humans in doing these tasks. The benefits of this are two-fold. First, the likelihood of injury decreases since there are no humans directly involved in moving. Second, performance increases when using robots that can react and communicate more quickly than its average human counterpart, which also allows humans to focus on other important tasks that need to be done."
         },

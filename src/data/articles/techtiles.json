@@ -2,11 +2,6 @@
     "publishDate": "May 2015",
     "blocks": [
         {
-            "type": "title",
-            "level": 0,
-            "content": "Overview"
-        },
-        {
             "type": "paragraph",
             "content": "This project was completed as a capstone senior design project at The George Washington University, winning second place and awarded for being the \"most marketable project\" at the GW Pelton Award Competition in 2015. The goal of Techtiles was to provide users the option of a more comprehensive system for tracking their biometrics through a mobile app. We also wanted to introduce wearable technology that can be completely washable without having to remove all the electronics. We envisioned this device being useful in a variety of applications including firefighting, space travel, and athletics. Techtiles uses three sensors to gather all of its data: an accelerometer, electrocardiogram (ECG), and a stretch sensor. With these, the device can extract useful information like heart rate, breathing rate, steps taken, distance traveled, and energy expended. The project was divided into three main categories: Hardware, Data Processing, and App Development."
         },
