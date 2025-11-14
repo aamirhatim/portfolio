@@ -40,7 +40,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Two packages are required to run Argo. To publish raw camera data to an Image topic, <a href = \"https://github.com/dganbold/raspicam_node\" target = \"blank\">raspicam_node</a> package was used. For detecting AR tags, the popular <a href = \"https://github.com/ros-perception/ar_track_alvar\" target = \"blank\">ar_track_alvar</a> package by Alvar was used. As an optional package, image_view can be used to view the camera feed, but this can also be done through several other methods. For a complete description on setting up the Raspberry Pi, ROS, and any packages, see the Github documentation."
+      "content": "Two packages are required to run Argo. To publish raw camera data to an Image topic, the [raspicam_node](https://github.com/dganbold/raspicam_node) package was used. For detecting AR tags, the popular [ar_track_alvar](https://github.com/ros-perception/ar_track_alvar) package by Alvar was used. As an optional package, image_view can be used to view the camera feed, but this can also be done through several other methods. For a complete description on setting up the Raspberry Pi, ROS, and any packages, see the Github documentation."
     },
     {
       "type": "list",
@@ -64,7 +64,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Argo uses a few different controllers to determine the best speed to spin each wheel. The key to generating smooth turns and speed transitions was by implementing several <a href = \"https://en.wikipedia.org/wiki/Gompertz_function\">Gompertz equations</a> - a special type of sigmoid (this could likely be replaced by a simpler logistic function as well). The output of this function is treated as a percentage of Argo's maximum speed."
+      "content": "Argo uses a few different controllers to determine the best speed to spin each wheel. The key to generating smooth turns and speed transitions was by implementing several [Gompertz equations](https://en.wikipedia.org/wiki/Gompertz_function) - a special type of sigmoid (this could likely be replaced by a simpler logistic function as well). The output of this function is treated as a percentage of Argo's maximum speed."
     },
     {
       "type": "formula",
@@ -138,7 +138,7 @@
     },
     {
       "type": "paragraph",
-      "content": "There were several problems that came up over the course of the project. Probably the largest one was implementing a tracker that could track objects other than an AR tag. Tracking by color separation was the first attempt, but it was not nearly as robust as it needed to be for basic tracking. Moving a few feet in any direction drastically changed the lighting of the environment which meant that color separation had to be re-calibrated every time. Another attempt at general object detection was done using five different object trackers in the OpenCV library (Boosting, MILTrack, Median-Flow, TLD, KCF) but all of them were too slow to perform well in real time on the Raspberry Pi. For more information on this, please see the experiment results <a href = \"https://github.com/aamirhatim/tracker_compare_ee432\" target = \"blank\">here</a>."
+      "content": "There were several problems that came up over the course of the project. Probably the largest one was implementing a tracker that could track objects other than an AR tag. Tracking by color separation was the first attempt, but it was not nearly as robust as it needed to be for basic tracking. Moving a few feet in any direction drastically changed the lighting of the environment which meant that color separation had to be re-calibrated every time. Another attempt at general object detection was done using five different object trackers in the OpenCV library (Boosting, MILTrack, Median-Flow, TLD, KCF) but all of them were too slow to perform well in real time on the Raspberry Pi. For more information on this, please see the experiment results [here](https://github.com/aamirhatim/tracker_compare_ee432)."
     },
     {
       "type": "paragraph",
