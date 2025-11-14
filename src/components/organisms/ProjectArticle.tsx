@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes";
-import { getDocumentFromId, getFileFromFirebaseStorage } from "../../lib/firestoreLib";
+import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
 import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
@@ -12,6 +12,11 @@ type ProjectArticleProps = {
     projectId: string,
     transitionDir: "next" | "prev",
 }
+
+type ArticleImportFn = () => Promise<ArticleType|undefined>;
+
+// Create a map of all articles so the right one can be imported when queried
+const articleModules: Record<string, ArticleImportFn> = import.meta.glob("/src/data/articles/*.json") as Record<string, ArticleImportFn>;
 
 // Define motion variants for animation
 const slideDist = 250;
@@ -54,7 +59,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
         switch (block.type) {
             case "paragraph":
-                e = ( <p className={`${isMobile && 'p-hyphen'}`} key={key}>{block.content}</p> );
+                e = ( <p className={`${isMobile && 'p-hyphen'}`}>{block.content}</p> );
                 break;
 
             case "image":
@@ -81,7 +86,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                         break;
                 };
                 e = (
-                    <div key={key} className={`flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6`}>
+                    <div className={`flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6`}>
                         <LazyImg
                             imgPath={imgPath}
                             alt={block.url}
@@ -94,21 +99,21 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "code":
-                e = ( <div key={key} className="text-(--txt-accent-color) text-lg">{block.content}</div> );
+                e = ( <div className="text-(--txt-accent-color) text-lg">{block.content}</div> );
                 break;
 
             case "title":
                 switch (block.level) {
                     case 0:
-                        e = ( <h2 key={key}>{block.content}</h2> );
+                        e = ( <h2>{block.content}</h2> );
                         break;
 
                     case 1:
-                        e = ( <h3 key={key}>{block.content}</h3> );
+                        e = ( <h3>{block.content}</h3> );
                         break;
 
                     case 2:
-                        e = ( <h4 key={key}>{block.content}</h4> );
+                        e = ( <h4>{block.content}</h4> );
                         break;
                 
                     default:
@@ -118,14 +123,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "list":
                 // Create list item objects
-                const listItems = (
-                    <>
-                        {block.items.map((i, key) => <li key={key}>{i}</li>)}
-                    </>
-                );
+                const listItems = block.items.map((i, liKey) => <li key={liKey}>{i}</li>);
 
                 e = (
-                    <div key={key}>
+                    <div>
                         {block.title && <h4 className="!mt-0 mb-2">{block.title}</h4>}
                         {block.ordered
                             ? <ol className="list-decimal list-inside pl-6">{listItems}</ol>
@@ -136,7 +137,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 break;
 
             case "formula":
-                e = ( <div key={key} className="text-lg">{block.content}</div> );
+                e = ( <div className="text-lg">{block.content}</div> );
                 break;
 
             case "table":
@@ -159,22 +160,31 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                         </tbody>
                     </table>
                 );
-                break
+                break;
         
             default:
                 break;
         };
 
-        return (
-            <>
-                {block.border
-                    ?   <div className="w-full flex justify-center my-6">
-                            <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
-                        </div>
-                    :   e
-                }
-            </>
-        )
+        if (block.border) {
+            return (
+                <div key={key} className="w-full flex justify-center my-6">
+                    <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
+                </div>
+            );
+        } else {
+            return (
+                <div key={key}>{e}</div>
+            );
+        }
+
+        // return {
+        // block.border
+        //             ?   <div key={key} className="w-full flex justify-center my-6">
+        //                     <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
+        //                 </div>
+        //             :   <div key={key}>{e}</div>
+        //         }
     };
 
     // Get project info
@@ -200,16 +210,26 @@ export default function ProjectArticle(props: ProjectArticleProps) {
     // Get project article
     useEffect(() => {
         const getArticleData = async () => {
-            // 1. Get url response from Firebase storage
-            const response = await getFileFromFirebaseStorage(firebaseAppContext, `articles/${props.projectId}.json`);
-            if (!response) {
+            // 1. Create file path for article
+            const articlePath = `/src/data/articles/${props.projectId}.json`;
+
+            // 2. Look up dynamic import function in articleModule map
+            const importFunction = articleModules[articlePath];
+            if (!importFunction) {
+                console.warn(`No article found for ${props.projectId}`);
                 setArticle(undefined);
                 return;
-            };
+            }
 
-            // 2. Get JSON body
-            const articleJson:ArticleType = await response.json();
-            setArticle(articleJson);
+            // 3. Import the article
+            try {
+                const module = await importFunction();
+                setArticle(module);
+            } catch (error) {
+                console.error(`Failed to load article for ${props.projectId}: ${error}`);
+                setArticle(undefined);
+                return;
+            }
         };
         getArticleData();
     }, [props.projectId, firebaseAppContext]);
@@ -230,7 +250,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 {article !== undefined
                     ?   <>
                             <div className="mb-15 text-md text-(--txt-feature-color)">{article.publishDate}</div>
-                            {article.blocks.map((b, key) => {return createSection(b, key)})}
+                            {article.blocks.map((b, key) => createSection(b, key))}
 
                             <div>
                             <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
