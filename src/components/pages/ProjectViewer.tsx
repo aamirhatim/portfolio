@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import useIsMobile from "../hooks";
+import { useAppContext } from "../../context/appContext";
 
 export default function ProjectViewer() {
     // Get params
@@ -16,6 +17,7 @@ export default function ProjectViewer() {
     // Get context
     const isMobile = useIsMobile();
     const firebaseAppContext = useFirebaseAppContext();
+    const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
 
     // Init state
@@ -65,6 +67,7 @@ export default function ProjectViewer() {
         // Navigate to new project
         const nextProjectId = projectList[newIndex];
         navigate(`/projects/${nextProjectId}`);
+        setNavSelect(`projects/${nextProjectId}`);
     }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
 
     return (
