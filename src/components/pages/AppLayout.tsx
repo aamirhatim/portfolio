@@ -10,7 +10,7 @@ export const ANIMATION_DURATION_MS = 300;
 export default function AppLayout() {
     // Get context
     const navigate = useNavigate()
-    const { navSelect } = useAppContext();
+    const { navSelect, setNavSelect } = useAppContext();
 
     // Init state
     const isMobile = useIsMobile();
@@ -30,6 +30,32 @@ export default function AppLayout() {
         }, ANIMATION_DURATION_MS);
         return () => clearTimeout(timer);
     }, [navSelect]);
+
+    // Handle user forward/back actions
+    useEffect(() => {
+        const handlePopState = () => {
+            const currentPath = window.location.pathname;
+            let newNav: string;
+            if (currentPath === "/") {
+                newNav = "home";
+            } else {
+                // Remove leading slash from current path
+                newNav = currentPath.substring(1);
+            }
+
+            // Update navSelect if different
+            if (newNav !== navSelect) {
+                setNavSelect(newNav);
+            }
+        };
+
+        // Create event listener for popstate
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        }
+    }, [navSelect, setNavSelect]);
     
     return (
         <>
