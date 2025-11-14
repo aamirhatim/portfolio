@@ -152,7 +152,6 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "list":
                 // Create list item objects
-                console.log(block.items)
                 const listItems = block.items.map((i, liKey) => 
                     <li key={liKey}>
                         <ReactMarkdown
@@ -284,12 +283,14 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 className="relative w-full"
             >
                 <div className={`absolute h-120 w-full -z-10 ${isMobile ? '-top-40' : '-top-10 px-[10%]'}`}>
-                    <LazyImg
-                        imgPath={`/proj_img/${project?.img}`}
-                        alt={'Project image'}
-                        placeholderPath={`/proj_thumbs/${project?.img}`}
-                        className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
-                    />
+                    {project &&
+                        <LazyImg
+                            imgPath={`/proj_img/${project?.img}`}
+                            alt={'Project image'}
+                            placeholderPath={`/proj_thumbs/${project?.img}`}
+                            className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
+                        />
+                    }
                     <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
                 </div>
 
