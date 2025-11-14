@@ -6,7 +6,6 @@ import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-s
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
-import useIsMobile from "../hooks";
 import { useAppContext } from "../../context/appContext";
 
 export default function ProjectViewer() {
@@ -15,7 +14,6 @@ export default function ProjectViewer() {
     const projectId = params.projectId!;
 
     // Get context
-    const isMobile = useIsMobile();
     const firebaseAppContext = useFirebaseAppContext();
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
@@ -72,9 +70,7 @@ export default function ProjectViewer() {
 
     return (
         <div className="h-full w-full flex flex-col justify-between z-90 mx-auto">
-            <div className={`box-border ${isMobile ? 'px-6' : 'px-[15%]'}`}>
-                <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
-            </div>
+            <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
 
             <div className="flex w-full px-[15%] py-20 justify-between">
                 <div className={`${arrowClasses} left-0 justify-end ${isFirstProject && 'opacity-30'}`} onClick={() => navProject("prev")}>
