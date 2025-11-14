@@ -177,14 +177,6 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 <div key={key}>{e}</div>
             );
         }
-
-        // return {
-        // block.border
-        //             ?   <div key={key} className="w-full flex justify-center my-6">
-        //                     <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
-        //                 </div>
-        //             :   <div key={key}>{e}</div>
-        //         }
     };
 
     // Get project info
