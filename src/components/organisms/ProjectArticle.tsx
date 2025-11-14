@@ -199,7 +199,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             case "table":
                 e = (
                     <div className="w-full flex justify-center py-4">
-                        <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2">
+                        <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2 bg-(--bg-layer-color)">
                             <table>
                                 <thead>
                                     <tr>
