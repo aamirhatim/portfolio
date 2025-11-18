@@ -64,11 +64,11 @@ export default function AboutPage() {
     return (
         <div className="px-6 flex flex-col gap-20">
             <section className={`box-border flex gap-10 w-full ${isMobile ? 'flex-col-reverse' : ''}`}>
-                <div className="flex flex-col gap-5 grow-1 text-xl">
+                <div className="flex flex-col gap-5 grow-1 text-xl text-(--txt-feature-color)">
                     {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
 
-                <div className={`flex border border-[var(--border-color)] rounded-xl overflow-clip opacity-75 ${isMobile ? 'w-full h-80' : 'flex-col w-100 h-150'}`}>
+                <div className={`flex shrink-0 border border-[var(--border-color)] rounded-xl overflow-clip opacity-75 ${isMobile ? 'w-full h-80' : 'flex-col w-100 h-150'}`}>
                     <LazyImg
                         imgPath="/aboutme1.jpg"
                         className={aboutMeImgClasses}
