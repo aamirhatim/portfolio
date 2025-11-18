@@ -8,7 +8,7 @@ interface LazyImgProps {
     alt: string,
     className: string,
     fill?: boolean,
-    position?: string,
+    positionClass?: string,
     placeholderPath?: string,
 }
 
@@ -120,7 +120,7 @@ export default function LazyImg(props:LazyImgProps) {
                         console.error(`Error loading image: ${imgUrl}`);
                         setImgUrl(placeholder);
                     }}
-                    className={`h-full w-full ${props.fill ? 'object-fill' : 'object-cover'}`}
+                    className={`h-full w-full ${props.fill ? 'object-fill' : 'object-cover'} ${props.positionClass}`}
                 />
                 <div ref={overlayRef} className={`absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500`}></div>
             </div>
