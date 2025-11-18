@@ -18,7 +18,7 @@ export default function AboutPage() {
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
     const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
 
-    const aboutMeImgClasses = `grow ${isMobile ? '' : 'h-[33%]'}`;
+    const aboutMeImgClasses = `opacity-80 grow ${isMobile ? '' : 'h-[33%]'}`;
 
     // Get about me text
     useEffect(() => {
