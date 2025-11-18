@@ -18,6 +18,8 @@ export default function AboutPage() {
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
     const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
 
+    const aboutMeImgClasses = `grow ${isMobile ? '' : 'h-[33%]'}`;
+
     // Get about me text
     useEffect(() => {
         const getAboutTxt = async () => {
@@ -69,22 +71,22 @@ export default function AboutPage() {
                 <div className={`flex border border-[var(--border-color)] rounded-xl overflow-clip opacity-75 ${isMobile ? 'w-full h-80' : 'flex-col w-100 h-150'}`}>
                     <LazyImg
                         imgPath="/aboutme1.jpg"
-                        className={`h-[33%] grow`}
+                        className={aboutMeImgClasses}
                         placeholderPath="/proj_thumbs/aboutme1.jpg"
-                        // position="15% 20%"
+                        positionClass="object-left"
                         alt={"This is me"}
                     />
                     <LazyImg
                         imgPath="/aboutme2.jpg"
-                        className={`h-[33%] grow`}
-                        // position="15% 20%"
+                        className={aboutMeImgClasses}
+                        positionClass="object-left"
                         placeholderPath="/proj_thumbs/aboutme2.jpg"
                         alt={"This is me"}
                     />
                     <LazyImg
                         imgPath="/aboutme3.jpg"
-                        className={`h-[33%] grow`}
-                        // position="15% 20%"
+                        className={aboutMeImgClasses}
+                        positionClass="object-left"
                         placeholderPath="/proj_thumbs/aboutme3.jpg"
                         alt={"This is me"}
                     />
