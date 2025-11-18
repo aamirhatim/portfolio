@@ -15,6 +15,7 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl as codeStyle } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ProjectLink from "../atoms/ProjectLink";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -311,6 +312,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
                 <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-6' : 'px-[15%]'}`}>
                     <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
+                    <div className="flex gap-3">
+                        {project?.code && <ProjectLink value="Code" url={project.code} />}
+                        {project?.video && <ProjectLink value="Video" url={project.video} />}
+                    </div>
 
                     {article !== undefined
                         ?   <>
