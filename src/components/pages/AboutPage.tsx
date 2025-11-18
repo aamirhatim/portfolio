@@ -24,7 +24,7 @@ export default function AboutPage() {
     useEffect(() => {
         const getAboutTxt = async () => {
             let aboutTxtRaw:string[] = [];
-            const aboutDocs = await getDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("section")]);
+            const aboutDocs = await getDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("order")]);
             aboutDocs?.forEach(doc => {
                 aboutTxtRaw.push(doc.data.text);
             });
