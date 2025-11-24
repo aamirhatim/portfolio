@@ -4,6 +4,7 @@ import { useAppContext } from "../../context/appContext"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion";
 import { ANIMATION_DURATION_MS } from "../../data/constants";
+import { useNavigate } from "react-router";
 
 const duration = ANIMATION_DURATION_MS / 1000;
 
@@ -55,6 +56,7 @@ const titleVariants = {
 export default function Sidebar(props: {title:string}) {
     // Get context
     const { navSelect, setNavSelect } = useAppContext();
+    const navigate = useNavigate();
     const { title } = props;
 
     // Init state
@@ -67,6 +69,12 @@ export default function Sidebar(props: {title:string}) {
         setNavToHome(navSelect === "home");
         setNavToArticle(navSelect !== "projects" && navSelect.startsWith("projects/"));
     }, [navSelect]);
+
+    // Button handler
+    const handleNavHome = () => {
+        setNavSelect("home");
+        navigate("/");
+    };
     
     return (
         <motion.div
@@ -92,7 +100,7 @@ export default function Sidebar(props: {title:string}) {
                     </AnimatePresence>
 
                     <div
-                        onClick={() => setNavSelect("home")}
+                        onClick={handleNavHome}
                         className={`hover:scale-130 hover:text-[var(--txt-title-color)] transition-all duration-[${ANIMATION_DURATION_MS}ms]`}
                     >
                         <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
