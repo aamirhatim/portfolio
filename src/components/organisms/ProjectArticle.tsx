@@ -3,7 +3,6 @@ import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes
 import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
-import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import useIsMobile from "../hooks";
 import LazyImg from "../atoms/LazyImg";
@@ -16,6 +15,7 @@ import "katex/dist/katex.min.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl as codeStyle } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ProjectLink from "../atoms/ProjectLink";
+import { ANIMATION_DURATION_MS } from "../../data/constants";
 
 type ProjectArticleProps = {
     projectId: string,

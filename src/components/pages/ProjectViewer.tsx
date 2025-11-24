@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router"
 import ProjectArticle from "../organisms/ProjectArticle";
-import { ANIMATION_DURATION_MS } from "./AppLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { useAppContext } from "../../context/appContext";
+import { ANIMATION_DURATION_MS } from "../../data/constants";
 
 export default function ProjectViewer() {
     // Get params

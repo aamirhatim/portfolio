@@ -1,8 +1,8 @@
 import { useAppContext } from "../../context/appContext";
+import { ANIMATION_DURATION_MS } from "../../data/constants";
 import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
 import useIsMobile from "../hooks";
-import { ANIMATION_DURATION_MS } from "../pages/AppLayout";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
     // Get context

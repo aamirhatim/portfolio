@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithubAlt, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons'
 import { faPencil } from '@fortawesome/free-solid-svg-icons'
-import { ANIMATION_DURATION_MS } from '../pages/AppLayout'
 import useIsMobile from '../hooks'
+import { ANIMATION_DURATION_MS } from '../../data/constants';
 
 export default function SocialsBar() {
     const isMobile = useIsMobile();

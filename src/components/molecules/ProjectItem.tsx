@@ -2,9 +2,9 @@ import { ProjectType } from '../../data/datatypes'
 import ChipGroup from './ChipGroup'
 import ProjectLink from '../atoms/ProjectLink'
 import LazyImg from '../atoms/LazyImg';
-import { ANIMATION_DURATION_MS } from '../pages/AppLayout';
 import useIsMobile from '../hooks';
 import { useAppContext } from '../../context/appContext';
+import { ANIMATION_DURATION_MS } from '../../data/constants';
 
 export default function ProjectItem(props: {project:ProjectType}) {
     // Get context
