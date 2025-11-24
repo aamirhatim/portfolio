@@ -1,13 +1,36 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { AppContext, AppContextInterface } from "../../context/appContext"
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
-import AppLayout from "./AppLayout";
+import { ANIMATION_DURATION_MS } from "../../data/constants";
+import { useLocation, useOutlet } from "react-router";
+import useIsMobile from "../hooks";
+import { motion, AnimatePresence, Transition } from "framer-motion";
+import Navbar from "../molecules/Navbar";
+import Sidebar from "../molecules/Sidebar";
+
+const pageVariants = {
+    initial: { opacity: 0, y: 10 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -10 },
+};
+
+const pageTransition = {
+    type: "tween",
+    ease: "easeInOut",
+    duration: ANIMATION_DURATION_MS / 1000,
+};
 
 export default function Main() {
+    // Get context
+    const location = useLocation();
+    const currentOutlet = useOutlet();
+    
     // Init state
+    const isMobile = useIsMobile();
+    const showSidebar = !isMobile;
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
@@ -31,12 +54,43 @@ export default function Main() {
         };
 
         return app;
-    }, []);    
+    }, []);
+
+    // Handle broswer navigation (back/forward)
+    useEffect(() => {
+        if (location.pathname === "/") {
+            setNav("home");
+        } else {
+            const newNav = location.pathname.substring(1);
+            setNav(newNav);
+        }
+    }, [location.pathname]);
 
     return (
         <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
-                <AppLayout />
+                <>
+                    <Navbar />
+                    <div className="h-screen w-screen w-max-view mx-auto flex">
+                        {showSidebar && <Sidebar title={nav} />}
+
+                        <div className={`flex-1 h-full overflow-y-auto relative ${isMobile ? 'pt-25' : 'pt-40'}`}>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={location.pathname}
+                                    initial="initial"
+                                    animate="in"
+                                    exit="out"
+                                    variants={pageVariants}
+                                    transition={pageTransition as Transition}
+                                    className="h-full"
+                                >
+                                    {currentOutlet}
+                                </motion.div>
+                            </AnimatePresence>
+                        </div>
+                    </div>
+                </>
             </AppContext.Provider>
         </FirebaseAppContext.Provider>
     )
