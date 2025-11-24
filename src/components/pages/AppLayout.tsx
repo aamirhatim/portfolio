@@ -31,7 +31,6 @@ export default function AppLayout() {
 
     // Handle broswer navigation (back/forward)
     useEffect(() => {
-        console.log(`location.pathname changed: ${location.pathname}`);
         if (location.pathname === "/") {
             setNavSelect("home");
         } else {
