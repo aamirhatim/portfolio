@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
 import { ANIMATION_DURATION_MS } from "../../data/constants";
 import { ProjectType } from "../../data/datatypes"
@@ -7,14 +8,24 @@ import useIsMobile from "../hooks";
 export default function ProjectHighlight(props: {project:ProjectType}) {
     // Get context
     const { setNavSelect } = useAppContext();
-
+    const navigate = useNavigate();
     const isMobile = useIsMobile();
+
+    // Define image paths
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
+
+    // Define hover styles
     const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
 
+    // Nav handler
+    const handleNav = () => {
+        setNavSelect(`projects/${props.project.id}`);
+        navigate(`/projects/${props.project.id}`);
+    };
+
     const desktopLayout = (
-        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`} onClick={() => setNavSelect(`projects/${props.project.id}`)}>
+        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`} onClick={handleNav}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
@@ -29,7 +40,7 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
     );
 
     const mobileLayout = (
-        <div className="relative w-full h-75" onClick={() => setNavSelect(`projects/${props.project.id}`)}>
+        <div className="relative w-full h-75" onClick={handleNav}>
             <LazyImg
                 imgPath={imgPath}
                 alt="Project Image"
