@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../context/appContext";
 import SocialsBar from "./socialsBar";
+import { useNavigate } from "react-router";
 
 const navItems:string[] = [
     "home",
@@ -12,6 +13,7 @@ const navItems:string[] = [
 export default function NavMenu() {
     // Get context
     const appContext = useAppContext();
+    const navigate = useNavigate();
 
     // Init state
     const [navMenuVis, setNavMenuVis] = useState<boolean>(false);
@@ -23,7 +25,9 @@ export default function NavMenu() {
     const handleClick = (e:any) => {
         e.preventDefault();
 
+        const path = e.target.innerText === "home" ? "/" : e.target.innerText
         appContext.setNavSelect(e.target.innerText);
+        navigate(path);
         setNavMenuVis(false);
     };
 

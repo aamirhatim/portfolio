@@ -3,7 +3,7 @@ import { useAppContext } from "../../context/appContext";
 import useIsMobile from "../hooks";
 import Navbar from "../molecules/Navbar";
 import Sidebar from "../molecules/Sidebar";
-import { useLocation, useNavigate, useOutlet } from "react-router";
+import { useLocation, useOutlet } from "react-router";
 import { motion, AnimatePresence, Transition } from "framer-motion";
 import { ANIMATION_DURATION_MS } from "../../data/constants";
 
@@ -22,7 +22,6 @@ const pageTransition = {
 export default function AppLayout() {
     // Get context
     const location = useLocation();
-    const navigate = useNavigate();
     const currentOutlet = useOutlet();
     const { navSelect, setNavSelect } = useAppContext();
 
@@ -30,28 +29,16 @@ export default function AppLayout() {
     const isMobile = useIsMobile();
     const showSidebar = !isMobile;
 
-    // Navigation behavior
+    // Handle broswer navigation (back/forward)
     useEffect(() => {
-        const targetPath = navSelect === "home" ? "/" : `/${navSelect}`;
-        if (location.pathname !== targetPath) {
-            sessionStorage.setItem("navSelect", navSelect);
-            navigate(targetPath);
+        console.log(`location.pathname changed: ${location.pathname}`);
+        if (location.pathname === "/") {
+            setNavSelect("home");
+        } else {
+            const newNav = location.pathname.substring(1);
+            setNavSelect(newNav);
         }
-    }, [navSelect, navigate, location.pathname]);
-
-    // Handle user forward/back actions
-    useEffect(() => {
-        const handlePopState = () => {
-            const currentPath = location.pathname;
-            let newNav = currentPath === "/" ? "home" : currentPath.substring(1);
-            if (newNav !== navSelect) {
-                setNavSelect(newNav);
-            };
-        };
-
-        window.addEventListener("popstate", handlePopState);
-        return () => window.removeEventListener("popstate", handlePopState);
-    }, [navSelect, setNavSelect]);
+    }, [location.pathname]);
     
     return (
         <>
