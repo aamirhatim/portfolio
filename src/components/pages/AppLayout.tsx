@@ -1,73 +1,80 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "../../context/appContext";
 import useIsMobile from "../hooks";
 import Navbar from "../molecules/Navbar";
 import Sidebar from "../molecules/Sidebar";
-import { Outlet, useNavigate } from "react-router";
+import { useLocation, useNavigate, useOutlet } from "react-router";
+import { motion, AnimatePresence, Transition } from "framer-motion";
+import { ANIMATION_DURATION_MS } from "../../data/constants";
 
-export const ANIMATION_DURATION_MS = 300;
+const pageVariants = {
+    initial: { opacity: 0, y: 10 },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: -10 },
+};
+
+const pageTransition = {
+    type: "tween",
+    ease: "easeInOut",
+    duration: ANIMATION_DURATION_MS / 1000,
+};
 
 export default function AppLayout() {
     // Get context
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
+    const currentOutlet = useOutlet();
     const { navSelect, setNavSelect } = useAppContext();
 
     // Init state
     const isMobile = useIsMobile();
     const showSidebar = !isMobile;
-    const [isAnimating, setIsAnimating] = useState<boolean>(true);
-
-    const animationClasses = `transition-opacity duration-[${ANIMATION_DURATION_MS}ms] ease-in-out ${isAnimating ? 'opacity-0' : 'opacity-100'}`;
 
     // Navigation behavior
     useEffect(() => {
-        setIsAnimating(true);
-        const timer = setTimeout(() => {
-            const targetPath = navSelect === "home" ? "/" : `/${navSelect}`;
+        const targetPath = navSelect === "home" ? "/" : `/${navSelect}`;
+        if (location.pathname !== targetPath) {
             sessionStorage.setItem("navSelect", navSelect);
             navigate(targetPath);
-            setIsAnimating(false);
-        }, ANIMATION_DURATION_MS);
-        return () => clearTimeout(timer);
-    }, [navSelect]);
+        }
+    }, [navSelect, navigate, location.pathname]);
 
     // Handle user forward/back actions
     useEffect(() => {
         const handlePopState = () => {
-            const currentPath = window.location.pathname;
-            let newNav: string;
-            if (currentPath === "/") {
-                newNav = "home";
-            } else {
-                // Remove leading slash from current path
-                newNav = currentPath.substring(1);
-            }
-
-            // Update navSelect if different
+            const currentPath = location.pathname;
+            let newNav = currentPath === "/" ? "home" : currentPath.substring(1);
             if (newNav !== navSelect) {
                 setNavSelect(newNav);
-            }
+            };
         };
 
-        // Create event listener for popstate
         window.addEventListener("popstate", handlePopState);
-
-        return () => {
-            window.removeEventListener("popstate", handlePopState);
-        }
+        return () => window.removeEventListener("popstate", handlePopState);
     }, [navSelect, setNavSelect]);
     
     return (
         <>
-        <Navbar />
-        <div className="h-full w-full w-max-view mx-auto">
-            <div className="h-full w-full flex">
+            <Navbar />
+            <div className="h-screen w-screen w-max-view mx-auto flex">
                 {showSidebar && <Sidebar title={navSelect} />}
-                <div className={`box-border pb-20 h-full overflow-y-scroll grow-1 ${animationClasses} ${isMobile ? 'pt-25' : 'pt-40'}`}>
-                    <Outlet />
+
+                <div className={`flex-1 h-full overflow-y-auto relative ${isMobile ? 'pt-25' : 'pt-40'}`}>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={location.pathname}
+                            initial="initial"
+                            animate="in"
+                            exit="out"
+                            variants={pageVariants}
+                            transition={pageTransition as Transition}
+                            className="h-full"
+                        >
+                            {currentOutlet}
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
             </div>
-        </div>
         </>
     )
 }
