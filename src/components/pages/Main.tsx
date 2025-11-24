@@ -69,28 +69,26 @@ export default function Main() {
     return (
         <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
-                <>
-                    <Navbar />
-                    <div className="h-screen w-screen w-max-view mx-auto flex">
-                        {showSidebar && <Sidebar title={nav} />}
+                <Navbar />
+                <div className="h-screen w-screen w-max-view mx-auto flex">
+                    {showSidebar && <Sidebar title={nav} />}
 
-                        <div className={`flex-1 h-full overflow-y-auto relative ${isMobile ? 'pt-25' : 'pt-40'}`}>
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={location.pathname}
-                                    initial="initial"
-                                    animate="in"
-                                    exit="out"
-                                    variants={pageVariants}
-                                    transition={pageTransition as Transition}
-                                    className="h-full"
-                                >
-                                    {currentOutlet}
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
+                    <div className={`flex-1 h-full overflow-y-auto relative ${isMobile ? 'pt-25' : 'pt-40'}`}>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={location.pathname}
+                                initial="initial"
+                                animate="in"
+                                exit="out"
+                                variants={pageVariants}
+                                transition={pageTransition as Transition}
+                                className="h-full"
+                            >
+                                {currentOutlet}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-                </>
+                </div>
             </AppContext.Provider>
         </FirebaseAppContext.Provider>
     )
