@@ -64,6 +64,14 @@ export default function Main() {
             const newNav = location.pathname.substring(1);
             setNav(newNav);
         }
+
+        // Update document title
+        let pageTitle = "Aamir Husain";
+        if (location.pathname !== "/" && !location.pathname.startsWith("/projects/")) {
+            const subTitle = location.pathname.substring(1).charAt(0).toUpperCase() + location.pathname.substring(2);
+            pageTitle = `Aamir Husain | ${subTitle}`;
+        }
+        document.title = pageTitle;
     }, [location.pathname]);
 
     return (

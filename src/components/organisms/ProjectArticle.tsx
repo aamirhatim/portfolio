@@ -255,6 +255,9 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 ...projectDoc.data,
             } as ProjectType;
             setProject(projectData);
+
+            // Update title page using project title
+            document.title = `Aamir Husain | ${projectData.title}`;
         };
 
         getProject();
