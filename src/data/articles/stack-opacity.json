@@ -1,0 +1,95 @@
+{
+    "publishDate": "December 2025",
+    "blocks": [
+        {
+            "type": "paragraph",
+            "content": "Astrophotography is one area I've been particularly interested in over the past few years. It lets me pack an entire 8-12 hour experience into a single image and I think that kind of dimension blending leads to some incredible, thought provoking art. Putting all the fancy gear and camera settings aside, the hardest part of creating a good astro photo comes when I'm back in front of my computer screen. Memory card in, Lightroom open, DNG import started. \"This is going to be the best star trail yet,\" I say every time. Tingles."
+        },
+        {
+            "type": "paragraph",
+            "content": "But what still frustrates me is that when it comes to making those epic star trail images - something like this:"
+        },
+        {
+            "type": "image",
+            "size": "xl",
+            "url": "star_trails.jpg"
+        },
+        {
+            "type": "paragraph",
+            "content": "I'm always left asking myself the same question - Why does stacking my photos always have to take so painfully long? I found some extremely useful programs like [StarStaX](https://starstax.net) but they did have their limitations. StarStaX, for example, does not import or export in DNG format, which means that my workflow now must now include a conversion step to a high quality image format like TIFF which takes up time and a ton of storage space. Plus, I can only export in JPG which is not ideal if I want to continue doing edits after creating the base stack. StarStax has completely valid reasons as to why some of these features aren't included so it was up to me to find a solution that would be better for my own editing workflow."
+        },
+        {
+            "type": "paragraph",
+            "content": "If I were to stack my own photos in Photoshop, I essentially need to control just two things: **blend mode** and **opacity**. Star trails typically use the **lighten** blend mode, so that's pretty straightforward and takes almost no time to do. That alone is already a huge improvement in my workflow. But if I wanted to make comet trails, I need to gradually decrease the opacity of every layer in my stack so that the solid star trails now fade away into the night sky like a million little comets. This is where things get tricky. Depending on the number of images in the stack and how long the \"comet trail\" should be would require a unique opacity curve calculation for each new image I wanted to create. To add to that, Photoshop doesn't have a feature where I can control opacity levels for multiple layers as a batch operation - it has to be done **manually**. That's a huge time sink in my workflow and in no way is it practical."
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "Creating the Photoshop plugin"
+        },
+        {
+            "type": "paragraph",
+            "content": "After playing around a bit more in Photoshop, I finally knew exactly what I needed to have a killer workflow for my star trail edits: a curve editor that controls layer opacity across an entire image stack. By being able to define an arbitrary curve, I can make my star trails look like comets, solid trails, pulsing dots, a swarm of UFOs, or anything else. Turns out a plugin to do exactly this already existed - nice! But it cost $5, hadn't been updated since 2017, and it had a 1 star rating in the Adobe marketplace - yikes. I figured this was a perfect opportunity for me to learn about making Photoshop plugins and maybe expanding ym skillset a bit more. Once I learned that plugins use the standard frontend stack (HTML/CSS/JS) I knew I could do this in a couple days tops. So I got to work."
+        },
+        {
+            "type": "paragraph",
+            "content": "After chatting with Gemini and reading up on the Adobe UXP documentation, I was able to get a basic working version running in a few hours. I spent the next day handling edge cases, designing icons, writing documentation, styling the UI and improving the UX like adding preset curves and reset buttons. I was so happy with the result that I decided to make a public Adobe profile and submit this plugin as a free tool for others to use through the official Adobe Marketplace."
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "How it works"
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "The UI"
+        },
+        {
+            "type": "paragraph",
+            "content": "The user panel consists of a grid with two points on each end. The X-axis represents the number of layers in the stack with the first layer on the left edge and the last layer on the right edge. The Y-axis represents opacity, with the bottom at 0% and the top at 100%. There is also a dropdown menu to choose from a list of preset curves. At the bottom of the panel are three buttons - one to reset an edited curve, one to invert the curve to flip it along the y axis, and one to apply the curve to the stack."
+        },
+        {
+            "type": "title",
+            "level": 1,
+            "content": "Under the hood"
+        },
+        {
+            "type": "paragraph",
+            "content": "Once the user selects to apply the curve to the stack, the opacity application logic is triggered. The algorithm is quite straightforward and relies on the linear interpolation formula (lerp):"
+        },
+        {
+            "type": "formula",
+            "content": "opacity = p1_y + t * (p2_y - p1_y)"
+        },
+        {
+            "type": "formula",
+            "content": "t = \\frac{(layer_x - p1_x)}{(p2_x - p1_x)}"
+        },
+        {
+            "type": "list",
+            "border": true,
+            "ordered": true,
+            "title": "Pseudocode for each layer",
+            "items": [
+                "Normalize the layer number in the stack to a 0.0 - 1.0 range",
+                "Get the line segment from the opacity curve that contains the normalized layer number",
+                "Run a linear interpolation formula to calculate the opacity level for the layer",
+                "Set the layer opacity and apply the \"lighten\" blend mode"
+            ]
+        },
+        {
+            "type": "title",
+            "level": 0,
+            "content": "Worth the effort"
+        },
+        {
+            "type": "paragraph",
+            "content": "Overall, this was a fun challenge for me and it solved a few pain points in my photo editing process. I no longer have to convert hundreds of files to another format. I can apply any kind of star trail opacity I can think of. I can stay inside Adobe's powerful editing ecosystem. Now when I come back from my next stargazing trip I'll actually be pretty excited to sit down in front of my screen again! Plus, I got to build and deploy my first Adobe plugin."
+        },
+        {
+            "type": "paragraph",
+            "content": "You can find **Stack Opacity** in the [Adobe Marketplace](https://adobe.com/go/cc_plugins_discover_plugin?pluginId=52c22891&workflow=share) or check out the source code on GitHub (linked above)."
+        }
+    ]
+}
