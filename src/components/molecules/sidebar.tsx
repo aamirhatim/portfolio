@@ -1,10 +1,7 @@
-import { faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useAppContext } from "../../context/appContext"
-import { useEffect, useState } from "react"
+import { useAppContext } from "../../context/appContext";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ANIMATION_DURATION_MS } from "../../data/constants";
-import { useNavigate } from "react-router";
 
 const duration = ANIMATION_DURATION_MS / 1000;
 
@@ -20,9 +17,9 @@ const sidebarVariants = {
         }
     },
     visible: {
-        width: 300,
-        paddingLeft: "calc(var(--spacing) * 12)",
-        paddingRight: "calc(var(--spacing) * 12)",
+        width: "100%",
+        paddingLeft: 0,
+        paddingRight: 0,
         opacity: 1,
         transition: {
             duration: duration,
@@ -55,8 +52,7 @@ const titleVariants = {
 
 export default function Sidebar(props: {title:string}) {
     // Get context
-    const { navSelect, setNavSelect } = useAppContext();
-    const navigate = useNavigate();
+    const { navSelect } = useAppContext();
     const { title } = props;
 
     // Init state
@@ -69,43 +65,28 @@ export default function Sidebar(props: {title:string}) {
         setNavToHome(navSelect === "home");
         setNavToArticle(navSelect !== "projects" && navSelect.startsWith("projects/"));
     }, [navSelect]);
-
-    // Button handler
-    const handleNavHome = () => {
-        setNavSelect("home");
-        navigate("/");
-    };
     
     return (
         <motion.div
             id="sidebar"
-            className="float-left box-border pt-40 pb-20 flex flex-col justify-between items-start h-full grow-0 shrink-0"
+            className="box-border pt-40"
             variants={sidebarVariants}
             initial={sidebarState}
             animate={sidebarState}
         >
             {!(navToHome || navToArticle) &&
-                <> 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={title}
-                            variants={titleVariants}
-                            initial="initial"
-                            animate="animate"
-                            exit="exit"
-                            className="text-5xl font-bold text-violet-900"
-                        >
-                            {title}.
-                        </motion.div>
-                    </AnimatePresence>
-
-                    <div
-                        onClick={handleNavHome}
-                        className={`hover:scale-130 hover:text-[var(--txt-title-color)] transition-all duration-[${ANIMATION_DURATION_MS}ms]`}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={title}
+                        variants={titleVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        className="text-5xl font-bold text-(--bg-secondary-color) cursive"
                     >
-                        <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
-                    </div>
-                </>
+                        {title}.
+                    </motion.div>
+                </AnimatePresence>
             }
         </motion.div>
     )
