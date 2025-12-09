@@ -72,9 +72,9 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
                 animate="visible"
                 transition={{
                     type: "spring",
-                    bounce: .4,
+                    bounce: .3,
                     delay: props.idx * 0.05,
-                    duration: .7
+                    duration: .6
                 }}
               >
                 {mobileLayout}
