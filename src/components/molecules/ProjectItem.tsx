@@ -68,7 +68,7 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
 
     const mobileLayout = (
         <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl'>
-            <div className={'font-bold text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
+            <div className={'title text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
             <div className='text-lg'>{props.project.description}</div>
 
