@@ -45,7 +45,7 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
     };
 
     const desktopLayout = (
-        <div id={props.project.id} ref={projectItemRef} className={`project-item relative box-border rounded-xl flex ${hoverClasses}`}>
+        <div id={props.project.id} ref={projectItemRef} className={`relative box-border rounded-xl flex ${hoverClasses}`}>
             <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
 
             <div className='flex flex-col w-full gap-1'>
@@ -113,7 +113,7 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
               >
                 {desktopLayout}
               </motion.div>
-            }
+        }
         </>
     )
 }
