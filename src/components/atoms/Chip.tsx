@@ -4,9 +4,11 @@ export interface ChipProps {
 }
 
 export default function Chip(props:ChipProps) {
+    const commonClasses = `box-border border border-(--txt-subtitle-color) text-(--txt-subtitle-color) rounded-md`;
+    
     const chipClasses = props.size === "lg"
-        ? "box-border px-4 py-1 border border-[var(--txt-subtitle-color)] text-[var(--txt-subtitle-color)] rounded-full text-xl"
-        : "box-border px-2 border border-[var(--txt-subtitle-color)] text-[var(--txt-subtitle-color)] rounded-full text-xs";
+        ? `${commonClasses} px-4 py-1 text-xl`
+        : `${commonClasses} px-2 text-xs`;
 
     return (
         <div className={chipClasses}>
