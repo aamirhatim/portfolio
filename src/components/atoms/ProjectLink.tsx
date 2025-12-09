@@ -1,8 +1,10 @@
 import { faVideo, faNewspaper, faLink, faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router';
+import { useAppContext } from '../../context/appContext';
 
 export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean}) {
+    const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
 
     const handleClick = (e:React.MouseEvent) => {
@@ -10,6 +12,7 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
         if (props.newTab) {
             window.open(props.url, '_blank');
         } else {
+            setNavSelect(props.url);
             navigate(props.url);
         }
     };
