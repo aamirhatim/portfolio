@@ -1,10 +1,17 @@
 import { faVideo, faNewspaper, faLink, faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router';
 
-export default function ProjectLink(props: {value:string, url:string}) {
+export default function ProjectLink(props: {value:string, url:string, newTab?:boolean}) {
+    const navigate = useNavigate();
+
     const handleClick = (e:React.MouseEvent) => {
         e.stopPropagation();
-        window.open(props.url, '_blank');
+        if (props.newTab) {
+            window.open(props.url, '_blank');
+        } else {
+            navigate(props.url);
+        }
     };
 
     const getIcon = () => {
