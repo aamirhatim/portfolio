@@ -46,16 +46,16 @@ export default function HomePage() {
 
     return (
         <div className="box-border flex flex-col w-full gap-40">
-            <div className={`px-6 flex font-bold text-[var(--txt-feature-color)] ${isMobile ? 'text-4xl' : 'text-5xl w-[65%]'}`}>{introTxt}</div>
+            <div className={`feature px-6 flex text-[var(--txt-feature-color)] ${isMobile ? 'text-5xl' : 'text-6xl w-[65%]'}`}>{introTxt}</div>
 
             <section className="flex flex-col gap-8">
-                <div className="text-4xl font-bold px-6">Featured work</div>
-                <div className={`flex flex-wrap`}>
-                    {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={{id: p.id, ...p.data} as ProjectType} />)}
+                <div className="title text-3xl px-6">Featured work</div>
+                <div className={`flex flex-col gap-4`}>
+                    {projSpotlightList.map( (p, idx) => <ProjectHighlight key={idx} project={{id: p.id, ...p.data} as ProjectType} idx={idx} />)}
                 </div>
                 
-                <div className={`w-full px-6 flex ${isMobile && 'justify-center'}`}>
-                    <ArrowBtn text="See more" link="projects" />
+                <div className={`w-full flex pl-6 text-lg`}>
+                    <ArrowBtn text="See more" link="projects" className="!text-(--txt-subtitle-color)"/>
                 </div>
             </section>
         </div>
