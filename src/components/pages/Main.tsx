@@ -9,7 +9,6 @@ import { useLocation, useOutlet } from "react-router";
 import useIsMobile from "../hooks";
 import { motion, AnimatePresence, Transition } from "framer-motion";
 import Navbar from "../molecules/Navbar";
-import Sidebar from "../molecules/Sidebar";
 
 const pageVariants = {
     initial: { opacity: 0, y: 10 },
@@ -30,7 +29,7 @@ export default function Main() {
     
     // Init state
     const isMobile = useIsMobile();
-    const showSidebar = !isMobile;
+    // const showSidebar = !isMobile;
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
@@ -78,10 +77,7 @@ export default function Main() {
         <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
                 <Navbar />
-                <div className="h-screen w-screen w-max-view mx-auto flex">
-                    {showSidebar && <Sidebar title={nav} />}
-
-                    <div className={`flex-1 h-full overflow-y-auto relative ${isMobile ? 'pt-25' : 'pt-40'}`}>
+                    <div className={`w-screen w-max-view mx-auto pb-10 ${isMobile ? 'pt-25' : 'pt-40 px-10'}`}>
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={location.pathname}
@@ -90,13 +86,11 @@ export default function Main() {
                                 exit="out"
                                 variants={pageVariants}
                                 transition={pageTransition as Transition}
-                                className="h-full"
                             >
                                 {currentOutlet}
                             </motion.div>
                         </AnimatePresence>
                     </div>
-                </div>
             </AppContext.Provider>
         </FirebaseAppContext.Provider>
     )
