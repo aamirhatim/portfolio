@@ -1,0 +1,140 @@
+import { useEffect, useRef, useState } from "react";
+import { useAppContext } from "../../context/appContext";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext";
+import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
+
+interface ProjectPopupProps {
+    refDiv: React.RefObject<HTMLDivElement|null>,
+    projectId:string,
+}
+
+export default function ProjectPopup(props:ProjectPopupProps) {
+    const { refDiv, projectId } = props;
+
+    // Get context
+    const firebaseAppContext = useFirebaseAppContext();
+    const { imgUrlCache, setImgUrlCache } = useAppContext();
+
+    // Init state
+    const [vis, setVis] = useState<boolean>(false);
+    const [previewsLoaded, setPreviewsLoaded] = useState<boolean>(false);
+    const [fileUrls, setFileUrls] = useState<string[]>([]);
+
+    // Create refs
+    const popupRef = useRef<HTMLDivElement>(null);
+
+    const hoverClasses = `${!vis && 'opacity-0'} transition-opacity duration-150 ease-in-out bg-center bg-cover`;
+
+    // Get all preview images for project
+    useEffect(() => {
+        const getFileUrls = async () => {
+            // Get file references
+            const folderPath = `proj_img/${projectId}/previews`;
+            const references = await getStorageFolderReferences(firebaseAppContext, folderPath);
+            if (!references) return;
+
+            // Load images into url cache
+            let urls:string[] = [];
+            const promises = references.map(async r => {
+                const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
+                
+                // Add path to url array
+                if (imgUrl) {
+                    urls.push(imgUrl);
+                }
+            });
+
+            // Wait for all cache loads to complete
+            await Promise.all(promises);
+            
+            // Update states
+            setFileUrls(urls);
+            setPreviewsLoaded(true);
+        };
+
+        getFileUrls();
+    }, []);
+    
+    // Create mouse event listeners once files have been loaded
+    useEffect(() => {
+        if (!props.refDiv.current || !previewsLoaded) return;
+
+        // Exit if no images are in the cache for this project
+        if (fileUrls.length === 0) return;
+
+        // Initialize interval to update preview every second
+        let interval:NodeJS.Timeout;
+        let idx = 0;
+        const intervalHandler = () => {
+            if (!popupRef.current) return;
+            idx++;
+
+            // Reset index if past file url array length
+            if (idx >= fileUrls.length) {
+                idx = 0;
+            }
+
+            // Set bg image
+            popupRef.current.style.backgroundImage = `url("${fileUrls[idx]}")`;
+        };
+
+        const handleMouseEnter = () => {
+            if (!popupRef.current) return;
+
+            // Show popup
+            setVis(true);
+
+            // Set initial preview image
+            popupRef.current.style.backgroundImage = `url("${fileUrls[0]}")`;
+
+            // Create interval to cycle through previews
+            interval = setInterval(intervalHandler, 1000);
+        };
+
+        const handleMouseLeave = () => {
+            // Hide popup
+            setVis(false);
+
+            // Clear interval
+            clearInterval(interval);
+            idx = 0;
+        };
+
+        const handleMouseMove = (e:MouseEvent) => {
+            if (!refDiv.current || !popupRef.current) return;
+
+            // Define offset
+            const offsetY = 20;
+            const offsetX = 20;
+
+            // Get reference div position
+            const baseY = refDiv.current.offsetTop;
+            const baseX = refDiv.current.offsetLeft;
+
+            // Subtract refrence from mouse pos and add some buffer
+            popupRef.current.style.left = `${e.pageX - baseX + offsetX}px`;
+            popupRef.current.style.top = `${e.pageY - baseY + offsetY}px`;
+        }
+
+        // Add listeners to project's root div
+        props.refDiv.current.addEventListener('mouseenter', handleMouseEnter);
+        props.refDiv.current.addEventListener('mouseleave', handleMouseLeave);
+        props.refDiv.current.addEventListener('mousemove', handleMouseMove);
+
+        // Cleanup on unmount
+        return () => {
+            if (!props.refDiv.current) return;
+            props.refDiv.current.removeEventListener('mouseenter', handleMouseEnter);
+            props.refDiv.current.removeEventListener('mouseleave', handleMouseLeave);
+            props.refDiv.current.removeEventListener('mousemove', handleMouseMove);
+
+            // Clear interval
+            clearInterval(interval);
+            idx = 0;
+        }
+    }, [previewsLoaded]);
+
+    return (
+        <div ref={popupRef} className={`absolute box-border border h-[200px] w-[300px] z-10 ${hoverClasses}`}></div>
+    );
+}
