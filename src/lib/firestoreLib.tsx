@@ -1,7 +1,7 @@
 import { FirebaseApp } from "firebase/app";
 import { collection, doc, getDoc, getDocs, getFirestore, query, QueryConstraint } from "firebase/firestore";
 import { FirestoreDocType } from "../data/datatypes";
-import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
 
 /**
  * Returns list of documents from a given Firestore Collection
@@ -81,6 +81,48 @@ export async function getFileFromFirebaseStorage(firebaseApp:FirebaseApp, filepa
         return response;
     } catch (error) {
         console.error("Error fetching file:", filepath);
+        return null;
+    }
+}
+
+
+// Load Firebase Storage image URL into cache
+export async function loadImgIntoCache(firebaseApp:FirebaseApp, imgPath:string, imgCache:Map<string, string>, setImgCache:(value: React.SetStateAction<Map<string, string>>) => void) {
+    const storage = getStorage(firebaseApp);
+    let cache = imgCache;
+
+    // Check image cache
+    if (!cache.has(imgPath)) {
+        // Get url from Firebase Storage
+        try {
+            const imgRefFromStorage = ref(storage, imgPath);
+            const url = await getDownloadURL(imgRefFromStorage);
+
+            // Save URL to cache
+            cache.set(imgPath, url);
+            setImgCache(cache);
+            return url;
+        } catch (error) {
+            console.error("Failed to load image or get download URL:", error);
+            return null;
+        }
+    } else {
+        console.log(`Image already cached, skipping: ${imgPath}`);
+        return cache.get(imgPath);
+    }
+}
+
+
+// Returns list of file references of type StorageReference
+export async function getStorageFolderReferences(firebaseApp:FirebaseApp, folderPath:string) {
+    const storage = getStorage(firebaseApp);
+    const folderRef = ref(storage, folderPath);
+    
+    try {
+        const result = await listAll(folderRef);
+        return result.items;
+    } catch (error) {
+        console.error(`Unable to get files in folder: ${folderPath}`);
         return null;
     }
 }
