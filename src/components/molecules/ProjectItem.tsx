@@ -1,82 +1,119 @@
 import { ProjectType } from '../../data/datatypes'
 import ChipGroup from './ChipGroup'
 import ProjectLink from '../atoms/ProjectLink'
-import LazyImg from '../atoms/LazyImg';
 import useIsMobile from '../hooks';
-import { useAppContext } from '../../context/appContext';
 import { ANIMATION_DURATION_MS } from '../../data/constants';
-import { useNavigate } from 'react-router';
+import ArrowBtn from '../atoms/ArrowBtn';
+import { motion } from 'framer-motion';
+import ProjectPopup from './ProjectPopup';
+import { useRef } from 'react';
 
-export default function ProjectItem(props: {project:ProjectType}) {
+export default function ProjectItem(props: {project:ProjectType, idx:number}) {
     // Get context
-    const { setNavSelect } = useAppContext();
     const isMobile = useIsMobile();
-    const navigate = useNavigate();
+    const hasLinks = props.project.code || props.project.video || props.project.article;
 
-    // Define image paths
-    const imgPath = `/proj_img/${props.project.img}`;
-    const placeholderPath = `/proj_thumbs/${props.project.img}`;
+    // Create refs
+    const projectItemRef = useRef<HTMLDivElement>(null);
 
     // Define hover styles
-    const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
+    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out`;
 
-    // Nav handler
-    const handleNav = () => {
-        setNavSelect(`projects/${props.project.id}`);
-        navigate(`/projects/${props.project.id}`);
+    // Animation config
+    const desktopVariants = {
+        hidden: {
+            opacity: 0,
+            x: 50,
+            y: 30,
+        },
+        visible: {
+            opacity: 1,
+            x: 0,
+            y: 0,
+        }
+    };
+
+    const mobileVariants = {
+        hidden: {
+            opacity: 0,
+            y: 30,
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+        }
     };
 
     const desktopLayout = (
-        <div className={`box-border flex gap-6 px-10 cursor-pointer ${hoverClasses}`} onClick={handleNav}>
-            <LazyImg
-                imgPath={imgPath}
-                alt={'Project image'}
-                placeholderPath={placeholderPath}
-                className='box-border border border-(--border-color) rounded-xl overflow-hidden h-60 w-60 grow-0 shrink-0'
-            />
+        <div id={props.project.id} ref={projectItemRef} className={`project-item relative box-border rounded-xl flex ${hoverClasses}`}>
+            <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
 
-            <div className='flex flex-col gap-2'>
-                <div className='flex flex-wrap items-center gap-2'>
-                    <div className={'font-bold text-xl text-(--txt-title-color)'}>{props.project.title}</div>
-                    {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
-                    {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
+            <div className='flex flex-col w-full gap-1'>
+                <div className='flex flex-wrap items-center gap-6'>
+                    <div className={'title text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
+
+                    <div className='flex gap-2 pr-10'>
+                        {props.project.code && <ProjectLink value='code' url={props.project.code} newTab={true} />}
+                        {props.project.video && <ProjectLink value='video' url={props.project.video} newTab={true} />}
+                        {props.project.article && <ProjectLink value='blog' url={`/projects/${props.project.id}`} />}
+                    </div>
                 </div>
 
+                <div className='text-xl text-(--txt-subtitle-color) w-[80%] mb-4'>{props.project.description}</div>
+                {props.project.article && <ArrowBtn text="Read the article" link="" className="mb-4 text-lg !text-(--txt-subtitle-color)" />}
                 <ChipGroup list={props.project.skills} />
-                
-                <div className='text-md mt-4'>{props.project.description}</div>
             </div>
         </div>
     );
 
     const mobileLayout = (
-        <div className='px-6 flex flex-col gap-4' onClick={handleNav}>
-            <div className='relative flex flex-col rounded-xl overflow-hidden h-60 w-full border border-(--border-color)'>
-                <LazyImg
-                    imgPath={imgPath}
-                    alt={'Project image'}
-                    placeholderPath={placeholderPath}
-                    className='box-border h-full w-full'
-                />
-                <div className='absolute top-0 left-0 box-border p-6 h-full w-full bg-gradient-to-t from-[rgba(0,0,0,.80)] from-40% to-[rgba(0,0,0,0)] flex flex-col gap-3 justify-end'>
-                    <div className={'font-bold text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
-                    <div className='flex gap-3'>
-                        {props.project.code && <ProjectLink value='Code' url={props.project.code} />}
-                        {props.project.video && <ProjectLink value='Video' url={props.project.video} />}
-                    </div>
-                </div>
-            </div>
+        <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl'>
+            <div className={'font-bold text-2xl text-(--txt-title-color)'}>{props.project.title}</div>
+            <ChipGroup list={props.project.skills} />
+            <div className='text-lg'>{props.project.description}</div>
 
-            <div className='px-3 flex flex-col gap-4'>
-                <div className='text-lg'>{props.project.description}</div>
-                <ChipGroup list={props.project.skills} />
-            </div>
+            
+            {hasLinks &&
+                <div className='flex gap-3 justify-center'>
+                    {props.project.code && <ProjectLink value='Code' url={props.project.code} showText={true} />}
+                    {props.project.video && <ProjectLink value='Video' url={props.project.video} showText={true} />}
+                    {props.project.article && <ProjectLink value='Article' url={`/projects/${props.project.id}`} showText={true} />}
+                </div>
+            }
         </div>
     );
 
     return (
         <>
-        {isMobile ? mobileLayout : desktopLayout}
+        {isMobile
+            ? <motion.div
+                variants={mobileVariants}
+                initial="hidden"
+                animate="visible"
+                transition={{
+                    type: "spring",
+                    bounce: .4,
+                    delay: props.idx * 0.1,
+                    duration: .7
+                }}
+              >
+                {mobileLayout}
+              </motion.div>
+
+            : <motion.div
+                variants={desktopVariants}
+                initial="hidden"
+                animate="visible"
+                transition={{
+                    type: "spring",
+                    bounce: .4,
+                    delay: props.idx * 0.1,
+                    duration: .7
+                }}
+              >
+                {desktopLayout}
+              </motion.div>
+            }
         </>
     )
 }
