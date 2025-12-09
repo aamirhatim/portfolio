@@ -18,7 +18,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     const highlightRef = useRef<HTMLDivElement>(null);
 
     // Define hover styles
-    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-6`;
+    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-6 hover:text-(--txt-subtitle-color)`;
 
     // Nav handler
     const handleNav = () => {
@@ -50,9 +50,9 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     };
 
     const desktopLayout = (
-        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 ml-6 pl-0 py-2 border-b border-b-(--border-color) ${hoverClasses}`}>
+        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 ml-6 pl-0 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
-            <div className="cursor-pointer title text-lg text-[var(--txt-title-color)]" onClick={handleNav}>{props.project.title}</div>
+            <div className="cursor-pointer title text-lg" onClick={handleNav}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
         </div>
     );
