@@ -2,13 +2,13 @@ import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
 import { ANIMATION_DURATION_MS } from "../../data/constants";
 import { ProjectType } from "../../data/datatypes"
-import LazyImg from "../atoms/LazyImg";
 import useIsMobile from "../hooks";
 import ChipGroup from "./ChipGroup";
 import { useRef } from "react";
 import ProjectPopup from "./ProjectPopup";
+import { motion } from "framer-motion";
 
-export default function ProjectHighlight(props: {project:ProjectType}) {
+export default function ProjectHighlight(props: {project:ProjectType, idx:number}) {
     // Get context
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
@@ -16,10 +16,6 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
 
     // Create refs
     const highlightRef = useRef<HTMLDivElement>(null);
-
-    // Define image paths
-    const imgPath = `/proj_img/${props.project.img}`;
-    const placeholderPath = `/proj_thumbs/${props.project.img}`;
 
     // Define hover styles
     const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-6`;
@@ -30,33 +26,74 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
         navigate(`/projects/${props.project.id}`);
     };
 
+    // Animation config
+    const desktopVariants = {
+        hidden: {
+            opacity: 0,
+            x: 200,
+        },
+        visible: {
+            opacity: 1,
+            x: 0,
+        }
+    };
+
+    const mobileVariants = {
+        hidden: {
+            opacity: 0,
+            x: 200,
+        },
+        visible: {
+            opacity: 1,
+            x: 0,
+        }
+    };
+
     const desktopLayout = (
-        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 pl-0 py-2 border-b border-b-(--border-color) ${hoverClasses}`}>
+        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 ml-6 pl-0 py-2 border-b border-b-(--border-color) ${hoverClasses}`}>
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
-            <div className="cursor-pointer text-md font-bold text-[var(--txt-title-color)]" onClick={handleNav}>{props.project.title}</div>
+            <div className="cursor-pointer title text-lg text-[var(--txt-title-color)]" onClick={handleNav}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
         </div>
     );
 
     const mobileLayout = (
-        <div className="relative w-full h-75" onClick={handleNav}>
-            <LazyImg
-                imgPath={imgPath}
-                alt="Project Image"
-                className="h-full w-full"
-                placeholderPath={placeholderPath}                
-            />
-
-            <div className="absolute top-0 left-0 p-10 h-full w-full flex flex-col justify-between gap-4 bg-gradient-to-t from-[rgba(0,0,0,.80)] from-40% to-[rgba(0,0,0,0.01)]">
-                <div className="text-3xl font-bold text-[var(--txt-title-color)]">{props.project.title}</div>
-                <div className="text-lg">{props.project.description}</div>
-            </div>
+        <div className="relative cursor-pointer w-full px-6 pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" onClick={handleNav}>
+            <div className="title text-lg text-(--txt-title-color)">{props.project.title}</div>
         </div>
     )
     
     return (
         <>
-        {isMobile ? mobileLayout : desktopLayout}
+        {isMobile
+            ? <motion.div
+                variants={mobileVariants}
+                initial="hidden"
+                animate="visible"
+                transition={{
+                    type: "spring",
+                    bounce: .4,
+                    delay: props.idx * 0.05,
+                    duration: .7
+                }}
+              >
+                {mobileLayout}
+              </motion.div>
+
+            : <motion.div
+                variants={desktopVariants}
+                initial="hidden"
+                animate="visible"
+                transition={{
+                    type: "spring",
+                    bounce: .4,
+                    delay: props.idx * 0.05,
+                    duration: .7
+                }}
+              >
+                {desktopLayout}
+              </motion.div>
+        }
         </>
     )
 }
