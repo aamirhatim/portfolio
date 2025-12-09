@@ -29,14 +29,14 @@ export default function Navbar() {
     }
 
     const desktopLayout = (
-        <nav className='box-border w-dvw fixed top-0 left-0 flex justify-center p-5 z-10'>
-            <div className='w-full w-max-view box-border px-10 py-3 flex items-center gap-8 rounded-full text-l backdrop-blur-md backdrop-brightness-70 shadow-[0_0_8px_rgba(0,0,0,0.2)]'>
+        <nav className='box-border w-dvw fixed top-0 left-0 px-10 flex justify-center z-10 backdrop-blur-md bg-(--bg-color)/60'>
+            <div className='w-full w-max-view box-border py-6 flex items-center gap-8'>
                 <div className='cursor-pointer' onClick={() => handleNavClick("home")}><img id='logo' className='size-[22px]' src={Logo} alt='logo' /></div>
                 
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <div key={idx} className={`cursor-pointer content-center font-bold hover:text-[var(--txt-accent-color)] transition-colors ${appContext.navSelect === n ? 'text-[var(--txt-accent-color)]' : ''}`} onClick={() => handleNavClick(n)}>{n}</div>
+                            <div key={idx} className={`cursor-pointer content-center font-bold hover:text-(--txt-accent-color) transition-colors ${appContext.navSelect === n ? 'text-(--txt-accent-color)' : 'text-(--txt-inactive-color)'}`} onClick={() => handleNavClick(n)}>{n}</div>
                         ))
                     }
                 </div>
