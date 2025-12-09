@@ -60,7 +60,7 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
                 </div>
 
                 <div className='text-xl text-(--txt-subtitle-color) w-[80%] mb-4'>{props.project.description}</div>
-                {props.project.article && <ArrowBtn text="Read the article" link="" className="mb-4 text-lg !text-(--txt-subtitle-color)" />}
+                {props.project.article && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg !text-(--txt-subtitle-color)" />}
                 <ChipGroup list={props.project.skills} />
             </div>
         </div>
