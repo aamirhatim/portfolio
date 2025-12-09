@@ -55,7 +55,7 @@ export default function HomePage() {
                 </div>
                 
                 <div className={`w-full flex pl-6 text-lg`}>
-                    <ArrowBtn text="See more" link="projects" className="!text-(--txt-subtitle-color)"/>
+                    <ArrowBtn text="See more" link="/projects" className="!text-(--txt-subtitle-color)"/>
                 </div>
             </section>
         </div>
