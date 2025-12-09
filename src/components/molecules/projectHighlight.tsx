@@ -4,6 +4,9 @@ import { ANIMATION_DURATION_MS } from "../../data/constants";
 import { ProjectType } from "../../data/datatypes"
 import LazyImg from "../atoms/LazyImg";
 import useIsMobile from "../hooks";
+import ChipGroup from "./ChipGroup";
+import { useRef } from "react";
+import ProjectPopup from "./ProjectPopup";
 
 export default function ProjectHighlight(props: {project:ProjectType}) {
     // Get context
@@ -11,12 +14,15 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
 
+    // Create refs
+    const highlightRef = useRef<HTMLDivElement>(null);
+
     // Define image paths
     const imgPath = `/proj_img/${props.project.img}`;
     const placeholderPath = `/proj_thumbs/${props.project.img}`;
 
     // Define hover styles
-    const hoverClasses = `transition duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:scale-[1.05] active:scale-[1.03]`;
+    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-6`;
 
     // Nav handler
     const handleNav = () => {
@@ -25,17 +31,10 @@ export default function ProjectHighlight(props: {project:ProjectType}) {
     };
 
     const desktopLayout = (
-        <div className={`box-border flex px-6 max-w-[45%] cursor-pointer min-h-40 ${hoverClasses}`} onClick={handleNav}>
-            <LazyImg
-                imgPath={imgPath}
-                alt="Project Image"
-                className="box-border border border-[var(--border-color)] rounded-xl h-30 w-40 grow-0 shrink-0"
-                placeholderPath={placeholderPath}                
-            />
-            <div className="box-border px-4 w-80">
-                <div className="text-md font-bold text-[var(--txt-title-color)] mb-2">{props.project.title}</div>
-                <div className="text-sm">{props.project.description}</div>
-            </div>
+        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 pl-0 py-2 border-b border-b-(--border-color) ${hoverClasses}`}>
+            <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
+            <div className="cursor-pointer text-md font-bold text-[var(--txt-title-color)]" onClick={handleNav}>{props.project.title}</div>
+            <ChipGroup list={props.project.skills} />
         </div>
     );
 
