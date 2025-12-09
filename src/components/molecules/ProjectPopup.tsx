@@ -23,7 +23,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     // Create refs
     const popupRef = useRef<HTMLDivElement>(null);
 
-    const hoverClasses = `${!vis && 'opacity-0'} transition-opacity duration-150 ease-in-out bg-center bg-cover`;
+    const hoverClasses = `${!vis ? 'opacity-0 h-0 w-0' : 'h-[200px] w-[300px]'} transition-opacity duration-150 ease-in-out`;
 
     // Get all preview images for project
     useEffect(() => {
@@ -79,6 +79,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         };
 
         const handleMouseEnter = () => {
+            console.log(`enter ${projectId}`)
             if (!popupRef.current) return;
 
             // Show popup
@@ -135,6 +136,6 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     }, [previewsLoaded]);
 
     return (
-        <div ref={popupRef} className={`absolute box-border border h-[200px] w-[300px] z-10 ${hoverClasses}`}></div>
+        <div ref={popupRef} className={`absolute box-border border z-10 bg-center bg-cover ${hoverClasses}`}></div>
     );
 }
