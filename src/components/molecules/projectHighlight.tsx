@@ -6,7 +6,6 @@ import useIsMobile from "../hooks";
 import ChipGroup from "./ChipGroup";
 import { useRef } from "react";
 import ProjectPopup from "./ProjectPopup";
-import { motion } from "framer-motion";
 
 export default function ProjectHighlight(props: {project:ProjectType, idx:number}) {
     // Get context
@@ -26,29 +25,6 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
         navigate(`/projects/${props.project.id}`);
     };
 
-    // Animation config
-    const desktopVariants = {
-        hidden: {
-            opacity: 0,
-            x: 200,
-        },
-        visible: {
-            opacity: 1,
-            x: 0,
-        }
-    };
-
-    const mobileVariants = {
-        hidden: {
-            opacity: 0,
-            x: 200,
-        },
-        visible: {
-            opacity: 1,
-            x: 0,
-        }
-    };
-
     const desktopLayout = (
         <div ref={highlightRef} className={`relative box-border flex items-center justify-between gap-2 ml-6 pl-0 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
@@ -65,35 +41,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     
     return (
         <>
-        {isMobile
-            ? <motion.div
-                variants={mobileVariants}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                    type: "spring",
-                    bounce: .3,
-                    delay: props.idx * 0.05,
-                    duration: .6
-                }}
-              >
-                {mobileLayout}
-              </motion.div>
-
-            : <motion.div
-                variants={desktopVariants}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                    type: "spring",
-                    bounce: .4,
-                    delay: props.idx * 0.05,
-                    duration: .7
-                }}
-              >
-                {desktopLayout}
-              </motion.div>
-        }
+        {isMobile ? mobileLayout : desktopLayout}
         </>
     )
 }

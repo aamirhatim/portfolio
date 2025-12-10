@@ -8,11 +8,11 @@ export default function ResumePage() {
     const isMobile = useIsMobile();
 
     return (
-        <div className={`flex flex-col gap-40 w-full px-4 ${isMobile ? '' : 'max-w-[800px] mx-auto'}`}>
+        <section className={`flex flex-col gap-30 w-full px-4 ${isMobile ? '' : 'max-w-[800px] mx-auto'}`}>
             <CurrentWork />
             <PrevWork />
             <Patents />
             <Schooling />
-        </div>
+        </section>
     )
 }
