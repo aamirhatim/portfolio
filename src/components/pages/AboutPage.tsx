@@ -18,8 +18,6 @@ export default function AboutPage() {
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
     const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
 
-    const aboutMeImgClasses = `opacity-80 grow ${isMobile ? '' : 'h-[33%]'}`;
-
     // Get about me text
     useEffect(() => {
         const getAboutTxt = async () => {
@@ -62,38 +60,21 @@ export default function AboutPage() {
     }, []);
 
     return (
-        <div className="px-6 flex flex-col gap-20">
-            <section className={`box-border flex gap-10 w-full ${isMobile ? 'flex-col-reverse' : ''}`}>
-                <div className="flex flex-col gap-5 grow-1 text-xl text-(--txt-feature-color)">
-                    {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
-                </div>
+        <div className="flex flex-col gap-20">
+            <section className={`mt-20 flex ${isMobile ? 'p-4 flex-col' : 'relative'}`}>
+                <LazyImg
+                    imgPath="/aboutme.jpg"
+                    className={`border rounded-md ${isMobile ? 'w-full h-90' : 'absolute right-[10%] -top-20 w-[40%] h-150'}`}
+                    placeholderPath="/proj_thumbs/aboutme_thumb.jpg"
+                    alt={"This is me"}
+                />
 
-                <div className={`flex shrink-0 border border-[var(--border-color)] rounded-xl overflow-clip opacity-75 ${isMobile ? 'w-full h-80' : 'flex-col w-100 h-150'}`}>
-                    <LazyImg
-                        imgPath="/aboutme1.jpg"
-                        className={aboutMeImgClasses}
-                        placeholderPath="/proj_thumbs/aboutme1.jpg"
-                        positionClass="object-left"
-                        alt={"This is me"}
-                    />
-                    <LazyImg
-                        imgPath="/aboutme2.jpg"
-                        className={aboutMeImgClasses}
-                        positionClass="object-left"
-                        placeholderPath="/proj_thumbs/aboutme2.jpg"
-                        alt={"This is me"}
-                    />
-                    <LazyImg
-                        imgPath="/aboutme3.jpg"
-                        className={aboutMeImgClasses}
-                        positionClass="object-left"
-                        placeholderPath="/proj_thumbs/aboutme3.jpg"
-                        alt={"This is me"}
-                    />
+                <div className={`box-border flex flex-col gap-5 text-lg text-(--txt-feature-color) ${isMobile ? 'p-6' : 'border border-l-0 w-[55%] p-10 pl-[8%] rounded-r-md bg-(--bg-secondary-color) z-1'}`}>
+                    {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
             </section>
 
-            <section className='flex flex-col'>
+            <section className='flex flex-col px-4'>
                 <div className="mb-10">
                     <div className='text-3xl font-bold mb-5'>I'm pretty good at</div>
                     <ChipGroup list={topSkills.map(i => i.name)} size="lg" />
