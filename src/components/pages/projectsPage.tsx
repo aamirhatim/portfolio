@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../molecules/ProjectItem"
@@ -12,9 +12,6 @@ export default function ProjectsPage() {
 
     // Init state
     const [projectList, setProjectList] = useState<FirestoreDocType[]>([]);
-
-    // Create refs
-    const sectionRef = useRef<HTMLDivElement>(null);
 
     // Get list of projects
     useEffect( () => {
@@ -30,7 +27,7 @@ export default function ProjectsPage() {
     }, []);
 
     return (
-        <section ref={sectionRef} className={`box-border flex flex-col mx-auto ${isMobile ? 'px-4 gap-6' : 'gap-18 max-w-[1000px]'}`}>
+        <section className={`box-border flex flex-col mx-auto ${isMobile ? 'px-4 gap-6' : 'gap-18 max-w-[1000px]'}`}>
             {projectList.map((p, idx) => <ProjectItem key={idx} project={{...p.data, id: p.id as string} as ProjectType} />)}
         </section>
     )
