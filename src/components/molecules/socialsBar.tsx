@@ -7,8 +7,8 @@ import { ANIMATION_DURATION_MS } from '../../data/constants';
 export default function SocialsBar() {
     const isMobile = useIsMobile();
     const iconClasses = isMobile
-        ? `!text-[var(--txt-feature-color)]`
-        : `!text-[var(--txt-feature-color)] transition-colors duration-[${ANIMATION_DURATION_MS}ms] hover:!text-[var(--txt-title-color)]`
+        ? `!text-(--txt-subtitle-color)`
+        : `!text-(--txt-subtitle-color) transition-colors duration-[${ANIMATION_DURATION_MS}ms] hover:!text-(--txt-accent-color)`
 
     return (
         <div className="flex justify-center gap-6">
