@@ -26,7 +26,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     };
 
     const desktopLayout = (
-        <div ref={highlightRef} className={`relative box-border flex items-center justify-between gap-2 ml-6 pl-0 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
+        <div ref={highlightRef} className={`relative box-border flex items-center justify-between gap-2 px-4 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
             <div className="cursor-pointer title text-lg" onClick={handleNav}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
@@ -34,7 +34,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     );
 
     const mobileLayout = (
-        <div className="relative cursor-pointer w-full px-6 pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" onClick={handleNav}>
+        <div className="relative cursor-pointer w-full px-4 pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" onClick={handleNav}>
             <div className="title text-lg text-(--txt-title-color)">{props.project.title}</div>
         </div>
     )
