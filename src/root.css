@@ -2,8 +2,7 @@
 
 :root {
     --bg-color: var(--color-stone-50);
-    --bg-secondary-color: var(--color-stone-300);
-    --bg-layer-color: var(--color-violet-900);
+    --bg-secondary-color: var(--color-stone-200);
     --txt-body-color: var(--color-stone-900);
     --txt-feature-color: var(--color-stone-900);
     --txt-title-color: var(--color-slate-900);
@@ -11,7 +10,7 @@
     --txt-accent-color: var(--color-amber-300);
     --txt-link-color: var(--color-orange-600);
     --txt-inactive-color: var(--color-stone-300);
-    --border-color: var(--color-stone-200);
+    --border-color: var(--color-stone-300);
 }
 
 * {
