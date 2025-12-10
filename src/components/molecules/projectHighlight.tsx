@@ -50,7 +50,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     };
 
     const desktopLayout = (
-        <div ref={highlightRef} className={`relative box-border flex items-center gap-1 ml-6 pl-0 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
+        <div ref={highlightRef} className={`relative box-border flex items-center justify-between gap-2 ml-6 pl-0 py-2 text-(--txt-title-color) border-b border-b-(--border-color) ${hoverClasses}`}>
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
             <div className="cursor-pointer title text-lg" onClick={handleNav}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
