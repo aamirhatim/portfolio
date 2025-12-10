@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
 :root {
-    --bg-color: var(--color-violet-950);
+    --bg-color: var(--color-stone-50);
+    --bg-secondary-color: var(--color-stone-300);
     --bg-layer-color: var(--color-violet-900);
-    --txt-body-color: var(--color-violet-200);
-    --txt-feature-color: var(--color-violet-400);
-    --txt-title-color: var(--color-emerald-400);
-    --txt-subtitle-color: var(--color-violet-400);
-    --txt-accent-color: var(--color-blue-500);
+    --txt-body-color: var(--color-stone-900);
+    --txt-feature-color: var(--color-stone-900);
+    --txt-title-color: var(--color-slate-900);
+    --txt-subtitle-color: var(--color-stone-500);
+    --txt-accent-color: var(--color-amber-300);
     --txt-link-color: var(--color-orange-600);
-    --border-color: var(--color-violet-700);
+    --txt-inactive-color: var(--color-stone-300);
+    --border-color: var(--color-stone-200);
+}
+
+* {
+    border-color: var(--border-color);
 }
 
 .w-max-view {
@@ -21,11 +27,29 @@ body {
     color: var(--txt-body-color);
     height: 100dvh;
     width: 100dvw;
+
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 }
 
 #root {
     height: 100%;
     width: 100%;
+}
+
+.feature {
+    font-family: "Bebas Neue", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.title {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
 }
 
 p {
