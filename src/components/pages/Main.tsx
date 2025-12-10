@@ -14,7 +14,6 @@ export default function Main() {
     
     // Init state
     const isMobile = useIsMobile();
-    // const showSidebar = !isMobile;
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
@@ -56,6 +55,14 @@ export default function Main() {
             pageTitle = `Aamir Husain | ${subTitle}`;
         }
         document.title = pageTitle;
+
+        // Scroll to top of page
+        if (typeof window !== 'undefined') {
+        window.scrollTo({
+            top: 0,
+            behavior: 'auto'
+        });
+    }
     }, [location.pathname]);
 
     return (
