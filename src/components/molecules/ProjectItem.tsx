@@ -2,7 +2,6 @@ import { ProjectType } from '../../data/datatypes'
 import ChipGroup from './ChipGroup'
 import ProjectLink from '../atoms/ProjectLink'
 import useIsMobile from '../hooks';
-import { ANIMATION_DURATION_MS } from '../../data/constants';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
@@ -15,11 +14,8 @@ export default function ProjectItem(props: {project:ProjectType}) {
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
 
-    // Define hover styles
-    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out`;
-
     const desktopLayout = (
-        <div id={props.project.id} ref={projectItemRef} className={`relative box-border rounded-xl flex ${hoverClasses}`}>
+        <div id={props.project.id} ref={projectItemRef} className={`relative box-border w-full flex`}>
             <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
 
             <div className='flex flex-col w-full gap-1'>
@@ -33,7 +29,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
                     </div>
                 </div>
 
-                <div className='text-xl text-(--txt-subtitle-color) w-[80%] mb-4'>{props.project.description}</div>
+                <div className='text-xl text-(--txt-subtitle-color) w-full mb-4'>{props.project.description}</div>
                 {props.project.article && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg !text-(--txt-subtitle-color)" />}
                 <ChipGroup list={props.project.skills} />
             </div>
