@@ -4,11 +4,10 @@ import ProjectLink from '../atoms/ProjectLink'
 import useIsMobile from '../hooks';
 import { ANIMATION_DURATION_MS } from '../../data/constants';
 import ArrowBtn from '../atoms/ArrowBtn';
-import { motion } from 'framer-motion';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
 
-export default function ProjectItem(props: {project:ProjectType, idx:number}) {
+export default function ProjectItem(props: {project:ProjectType}) {
     // Get context
     const isMobile = useIsMobile();
     const hasLinks = props.project.code || props.project.video || props.project.article;
@@ -18,31 +17,6 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
 
     // Define hover styles
     const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out`;
-
-    // Animation config
-    const desktopVariants = {
-        hidden: {
-            opacity: 0,
-            x: 50,
-            y: 30,
-        },
-        visible: {
-            opacity: 1,
-            x: 0,
-            y: 0,
-        }
-    };
-
-    const mobileVariants = {
-        hidden: {
-            opacity: 0,
-            y: 30,
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-        }
-    };
 
     const desktopLayout = (
         <div id={props.project.id} ref={projectItemRef} className={`relative box-border rounded-xl flex ${hoverClasses}`}>
@@ -85,35 +59,7 @@ export default function ProjectItem(props: {project:ProjectType, idx:number}) {
 
     return (
         <>
-        {isMobile
-            ? <motion.div
-                variants={mobileVariants}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                    type: "spring",
-                    bounce: .4,
-                    delay: props.idx * 0.1,
-                    duration: .7
-                }}
-              >
-                {mobileLayout}
-              </motion.div>
-
-            : <motion.div
-                variants={desktopVariants}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                    type: "spring",
-                    bounce: .4,
-                    delay: props.idx * 0.1,
-                    duration: .7
-                }}
-              >
-                {desktopLayout}
-              </motion.div>
-        }
+        {isMobile ? mobileLayout : desktopLayout}
         </>
     )
 }
