@@ -49,7 +49,7 @@ export default function Navbar() {
     const mobileLayout = (
         <nav className='box-border w-dvw fixed top-0 left-0 flex justify-center z-10 backdrop-blur-md bg-(--bg-color)/60'>
             <div className='w-full w-max-view box-border px-6 py-3 flex items-center justify-between gap-8'>
-                <div className='h-full cursor-pointer' onClick={() => handleNavClick("home")}><img id='logo' className='h-full w-auto' src={Logo} alt='logo' /></div>
+                <div className='h-full cursor-pointer' onClick={() => handleNavClick("home")}><img id='logo' className='box-border p-1 h-full w-auto' src={Logo} alt='logo' /></div>
                 <NavMenu />
             </div>
         </nav>
