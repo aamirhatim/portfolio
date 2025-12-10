@@ -30,14 +30,12 @@ export default function CurrentWork() {
     }, []);
 
     return (
-        <section className={`box-border border-[var(--border-color)] p-10 ${isMobile ? 'border-b' : 'border rounded-xl'}`}>
-            <div className='text-lg text-[var(--txt-subtitle-color)]'>{currentWork?.data.start} - Present</div>
-            <div className='text-3xl font-bold text-[var(--txt-title-color)]'>{currentWork?.data.title} <span className='text-[var(--txt-accent-color)]'>@{currentWork?.data.company}</span></div>
-            <div className='box-border mt-4 text-xl'>{currentWork?.data.summary}</div>
+        <section className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}>
+            <div className='text-lg text-(--txt-subtitle-color)'>Current role (since {currentWork?.data.start})</div>
+            <div className='text-3xl title text-(--txt-title-color)'>{currentWork?.data.title} <span className='text-(--txt-accent-color)'>@{currentWork?.data.company}</span></div>
+            <div className='box-border text-xl'>{currentWork?.data.summary}</div>
             {currentWork?.data.skills &&
-                <div className='mt-8'>
-                    <ChipGroup list={currentWork?.data.skills} />
-                </div>
+                <ChipGroup list={currentWork?.data.skills} />
             }
         </section>
     )
