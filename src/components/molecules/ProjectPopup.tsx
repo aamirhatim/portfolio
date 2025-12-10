@@ -79,7 +79,6 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         };
 
         const handleMouseEnter = () => {
-            console.log(`enter ${projectId}`)
             if (!popupRef.current) return;
 
             // Show popup
