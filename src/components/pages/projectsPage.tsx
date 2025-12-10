@@ -30,7 +30,7 @@ export default function ProjectsPage() {
     }, []);
 
     return (
-        <section ref={sectionRef} className={`box-border pt-40 flex flex-col mx-auto ${isMobile ? 'px-4 gap-6' : 'gap-18 max-w-[1000px]'}`}>
+        <section ref={sectionRef} className={`box-border flex flex-col mx-auto ${isMobile ? 'px-4 gap-6' : 'gap-18 max-w-[1000px]'}`}>
             {projectList.map((p, idx) => <ProjectItem key={idx} project={{...p.data, id: p.id as string} as ProjectType} />)}
         </section>
     )
