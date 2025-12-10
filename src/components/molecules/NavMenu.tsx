@@ -65,16 +65,16 @@ export default function NavMenu() {
             <div className="cursor-pointer title text-lg text-(--txt-accent-color)" onClick={() => setNavMenuVis(!navMenuVis)}>{navDisplay}</div>
 
             {navMenuVis &&
-                <div className="absolute top-full right-0 w-max mt-6 p-6 flex flex-col items-center gap-2 rounded-lg bg-(--border-color) shadow-xl">
-                    {navItems.map((nav, idx) => {
-                        return (
-                            <div key={idx} className="cursor-pointer title text-lg text-(--txt-body-color) p-2" onClick={handleClick}>{nav}</div>
-                        )
-                    })}
-
-                    <div className="mt-4">
-                        <SocialsBar />
+                <div className="absolute top-full right-0 w-max px-6 pt-2 pb-4 flex flex-col items-center gap-6 rounded-lg bg-(--border-color) shadow-xl">
+                    <div className="w-full flex flex-col gap-2 items-center">
+                        {navItems.map((nav, idx) => {
+                            return (
+                                <div key={idx} className="cursor-pointer title text-lg text-(--txt-subtitle-color) p-2" onClick={handleClick}>{nav}</div>
+                            )
+                        })}
                     </div>
+
+                    <SocialsBar />
                 </div>
             }
         </div>
