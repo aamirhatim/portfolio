@@ -65,7 +65,7 @@ export default function AboutPage() {
                 <LazyImg
                     imgPath="/aboutme.jpg"
                     className={`border rounded-md ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
-                    placeholderPath="/proj_thumbs/aboutme_thumb.jpg"
+                    placeholderPath="/thumbs/aboutme.jpg"
                     alt={"This is me"}
                 />
 

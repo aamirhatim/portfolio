@@ -269,7 +269,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     <LazyImg
                         imgPath={`/proj_img/${project?.img}`}
                         alt={'Project image'}
-                        placeholderPath={`/proj_thumbs/${project?.img}`}
+                        placeholderPath={`/thumbs/${project?.img}`}
                         className='h-full w-full grayscale-75 opacity-20 rounded-t-xl'
                     />
                 }
