@@ -25,7 +25,7 @@ export default function ExpPatentItem(props: {item: PatentType}) {
             viewport={viewport}
         >
             <div className='flex gap-3 items-center'>
-                <div className='box-border border rounded-sm title text-sm px-2 w-min'>{props.item.status.toUpperCase()}</div>
+                <div className='box-border border rounded-sm title text-sm text-(--txt-subtitle-color) px-2 w-min'>{props.item.status.toUpperCase()}</div>
                 {props.item.status === "granted" && 
                 <a href={props.item.url} target='_blank'>
                     <div className='text-sm underline'>US Patent No. {props.item.number}</div>
