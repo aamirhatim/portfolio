@@ -64,7 +64,7 @@ export default function HomePage() {
                         className="flex flex-col gap-8"
                         initial={{opacity: 0, y: 50}}
                         animate={{opacity: 1, y: 0}}
-                        transition={{delay: .8, duration: .3, type: "spring", bounce: .3}}
+                        transition={{delay: 1, duration: .5, type: "spring", bounce: .3}}
                     >
                         <div className={`title text-3xl ${isMobile ? 'px-4' : 'px-10'}`}>Featured work</div>
                         <div className={`flex flex-col gap-4`}>
