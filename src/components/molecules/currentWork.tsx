@@ -5,6 +5,7 @@ import { FirestoreDocType } from "../../data/datatypes";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { where } from "firebase/firestore";
 import useIsMobile from "../hooks";
+import { motion } from "motion/react";
 
 export default function CurrentWork() {
     // Get context
@@ -13,6 +14,21 @@ export default function CurrentWork() {
     // Init state
     const isMobile = useIsMobile();
     const [currentWork, setCurrentWork] = useState<FirestoreDocType>();
+
+    // Animation config
+    const initial = {
+        opacity: 0,
+        y: 50
+    }
+    const whileInView = {
+        opacity: 1,
+        y: 0,
+        transition: { duration: .2 }
+    }
+    const viewport = {
+        once: true,
+        amount: .5
+    }
 
     // Get current work
     useEffect( () => {
@@ -30,7 +46,12 @@ export default function CurrentWork() {
     }, []);
 
     return (
-        <section className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}>
+        <motion.section
+            className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}
+            initial={initial}
+            whileInView={whileInView}
+            viewport={viewport}
+        >
             {currentWork !== undefined &&
                 <>
                 <div className='text-lg text-(--txt-subtitle-color)'>Current role (since {currentWork.data.start})</div>
@@ -41,6 +62,6 @@ export default function CurrentWork() {
                 }
                 </>
             }
-        </section>
+        </motion.section>
     )
 }
