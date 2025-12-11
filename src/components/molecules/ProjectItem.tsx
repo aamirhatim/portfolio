@@ -25,7 +25,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
         <motion.div
             id={props.project.id}
             ref={projectItemRef}
-            className={`relative box-border w-full flex`}
+            className={`box-border w-full flex`}
             whileHover={hover}
         >
             <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />

@@ -3,6 +3,7 @@ import { useAppContext } from "../../context/appContext";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
 import { AnimatePresence, motion } from "motion/react";
+import ReactDOM from "react-dom";
 
 interface ProjectPopupProps {
     refDiv: React.RefObject<HTMLDivElement|null>,
@@ -22,7 +23,6 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     const [fileUrls, setFileUrls] = useState<string[]>([]);
 
     // Create refs
-    const containerRef = useRef<HTMLDivElement>(null);
     const popupRef = useRef<HTMLDivElement>(null);
 
     // Animations
@@ -92,8 +92,6 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         };
 
         const handleMouseEnter = () => {
-            if (!containerRef.current) return;
-
             // Show popup
             setVis(true);
 
@@ -117,13 +115,9 @@ export default function ProjectPopup(props:ProjectPopupProps) {
             const offsetY = 20;
             const offsetX = 20;
 
-            // Get reference div position
-            const baseY = refDiv.current.offsetTop;
-            const baseX = refDiv.current.offsetLeft;
-
             // Subtract refrence from mouse pos and add some buffer
-            popupRef.current.style.left = `${e.pageX - baseX + offsetX}px`;
-            popupRef.current.style.top = `${e.pageY - baseY + offsetY}px`;
+            popupRef.current.style.left = `${e.pageX + offsetX}px`;
+            popupRef.current.style.top = `${e.pageY + offsetY}px`;
         }
 
         // Add listeners to project's root div
@@ -151,20 +145,24 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         popupRef.current.style.backgroundImage = `url("${fileUrls[0]}")`;
     }, [vis]);
 
-    return (
-        <div ref={containerRef}>
-            <AnimatePresence>
-                {vis &&
-                    <motion.div
-                        ref={popupRef}
-                        className={`absolute box-border border bg-center bg-cover z-100`}
-                        initial={initial}
-                        animate={animate}
-                        exit={exit}
-                    />
-                }
-            </AnimatePresence>
-        </div>
-        
+    // Find portal target
+    const portalRoot = document.getElementById('portal-root') || document.body;
+
+    // Define element to render
+    const popupElement = (
+        <AnimatePresence>
+            {vis &&
+                <motion.div
+                    ref={popupRef}
+                    className={`fixed box-border border bg-center bg-cover z-[9999]`}
+                    initial={initial}
+                    animate={animate}
+                    exit={exit}
+                />
+            }
+        </AnimatePresence>
     );
+
+    // Render element via React portal
+    return ReactDOM.createPortal(popupElement, portalRoot);
 }
