@@ -57,7 +57,7 @@ export default function HomePage() {
                     </div>
                     
                     <div className={`w-full flex text-lg ${isMobile ? 'px-4' : 'px-10'}`}>
-                        <ArrowBtn text="See more" link="/projects" className="!text-(--txt-subtitle-color)"/>
+                        <ArrowBtn text="See more" link="/projects" />
                     </div>
                 </section>
             }
