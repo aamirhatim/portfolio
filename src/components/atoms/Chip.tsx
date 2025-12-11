@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { cssVarToHex } from "../../lib/colorVars";
 
 export interface ChipProps {
     text: string,
@@ -13,14 +14,18 @@ export default function Chip(props:ChipProps) {
         : `${commonClasses} px-2 text-xs`;
 
     // Animation config
+    const initial = {
+        backgroundColor: cssVarToHex('--bg-color')
+    }
     const hover = {
         scale: 1.05,
-        backgroundColor: 'var(--bg-secondary-color)'
+        backgroundColor: cssVarToHex('--bg-secondary-color')
     }
 
     return (
         <motion.div
             className={chipClasses}
+            initial={initial}
             whileHover={hover}
         >
             {props.text}
