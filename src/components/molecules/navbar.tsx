@@ -36,7 +36,7 @@ export default function Navbar() {
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map( (n, idx) => (
-                            <div key={idx} className={`cursor-pointer content-center title text-md hover:text-(--txt-accent-color) transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-accent-color)' : 'text-(--txt-subtitle-color)'}`} onClick={() => handleNavClick(n)}>{n}</div>
+                            <div key={idx} className={`cursor-pointer px-1 py-1 content-center title text-md hover:text-(--txt-highlight-color) border-t-1 transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-subtitle-color) !border-(--txt-subtitle-color)' : 'text-(--txt-subtitle-color) !border-transparent'}`} onClick={() => handleNavClick(n)}>{n}</div>
                         ))
                     }
                 </div>

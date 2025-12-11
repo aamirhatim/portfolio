@@ -5,10 +5,11 @@
     --bg-secondary-color: var(--color-stone-200);
     --txt-body-color: var(--color-stone-900);
     --txt-feature-color: var(--color-stone-900);
-    --txt-title-color: var(--color-slate-900);
+    --txt-title-color: var(--color-indigo-900);
     --txt-subtitle-color: var(--color-stone-500);
-    --txt-accent-color: var(--color-amber-300);
-    --txt-link-color: var(--color-orange-600);
+    --txt-highlight-color: var(--color-indigo-700);
+    --txt-accent-color: var(--color-indigo-600);
+    --txt-link-color: var(--color-indigo-800);
     --txt-inactive-color: var(--color-stone-300);
     --border-color: var(--color-stone-300);
 }
@@ -69,14 +70,14 @@ p {
 }
 
 h2 {
-    color: var(--txt-accent-color);
+    color: var(--txt-title-color);
     font-size: var(--text-3xl);
     margin-top: 3rem;
     margin-bottom: 0.75rem;
 }
 
 h3 {
-    color: var(--txt-feature-color);
+    color: var(--txt-subtitle-color);
     font-size: var(--text-2xl);
     margin-top: 2rem;
     margin-bottom: 0.25rem;

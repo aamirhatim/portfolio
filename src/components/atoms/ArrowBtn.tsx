@@ -18,7 +18,7 @@ export default function ArrowBtn(props:{text:string, link:string, className?:str
         }
     };
 
-    const hoverClasses = `hover:gap-4 hover:ml-2 transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out`;
+    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:gap-4 hover:ml-2 hover:!text-(--txt-highlight-color)`;
     
     return (
         <div onClick={handleNav} className={`${props.className} cursor-pointer w-fit !no-underline flex items-center gap-2 ${hoverClasses}`}>

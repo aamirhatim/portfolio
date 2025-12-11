@@ -62,10 +62,10 @@ export default function NavMenu() {
     
     return (
         <div ref={menuRef} className="relative flex flex-col items-end">
-            <div className="cursor-pointer title text-lg text-(--txt-accent-color)" onClick={() => setNavMenuVis(!navMenuVis)}>{navDisplay}</div>
+            <div className="cursor-pointer title text-lg text-(--txt-subtitle-color)" onClick={() => setNavMenuVis(!navMenuVis)}>{navDisplay}</div>
 
             {navMenuVis &&
-                <div className="absolute top-full right-0 w-max px-6 pt-2 pb-4 flex flex-col items-center gap-6 rounded-lg bg-(--border-color) shadow-xl">
+                <div className="absolute top-1 right-0 w-max px-6 pt-2 pb-4 flex flex-col items-center gap-6 rounded-lg bg-(--bg-secondary-color) shadow-xl">
                     <div className="w-full flex flex-col gap-2 items-center">
                         {navItems.map((nav, idx) => {
                             return (

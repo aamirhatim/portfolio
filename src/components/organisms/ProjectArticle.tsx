@@ -277,7 +277,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             </div>
 
             <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-4' : 'max-w-[800px] mx-auto'}`}>
-                <div className={`mb-5 title text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
+                <div className={`mb-5 title text-6xl text-(--txt-body-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
                 <div className="flex gap-3">
                     {project?.code && <ProjectLink value="Code" url={project.code} newTab={true} showText={true} />}
                     {project?.video && <ProjectLink value="Video" url={project.video} newTab={true} showText={true} />}

@@ -11,7 +11,7 @@ export default function ExpPatentItem(props: {item: PatentType}) {
                 </a>
                 }
             </div>
-            <div className='text-2xl title text-(--txt-title-color)'>{props.item.title}</div>
+            <div className='text-2xl title'>{props.item.title}</div>
             <div className='text-lg'>{props.item.description}</div>
         </div> 
     )
