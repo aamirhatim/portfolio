@@ -32,14 +32,10 @@ export default function PrevWork() {
 
     return (
         <section className="flex flex-col gap-15">
-            {prevWorkList.length > 0 &&
-                <>
-                <div className='title text-4xl text-(--txt-title-color)'>previous roles.</div>
-                <div className='flex flex-col gap-10'>
-                    {prevWorkList.map((job, idx) => <ExpJobItem key={idx} job={job.data as JobType} />)}
-                </div>
-                </>
-            }
+            <div className='title text-4xl text-(--txt-title-color)'>previous roles.</div>
+            <div className='flex flex-col gap-10'>
+                {prevWorkList.length > 0 && prevWorkList.map((job, idx) => <ExpJobItem key={idx} job={job.data as JobType} />)}
+            </div>
         </section>
     )
 }
