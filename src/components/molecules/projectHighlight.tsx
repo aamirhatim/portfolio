@@ -17,7 +17,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     const highlightRef = useRef<HTMLDivElement>(null);
 
     // Define hover styles
-    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-6 hover:text-(--txt-highlight-color)`;
+    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-12 hover:text-(--txt-highlight-color)`;
 
     // Nav handler
     const handleNav = () => {
