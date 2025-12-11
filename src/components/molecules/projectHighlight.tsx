@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
-import { ANIMATION_DURATION_MS } from "../../data/constants";
 import { ProjectType } from "../../data/datatypes"
 import useIsMobile from "../hooks";
 import ChipGroup from "./ChipGroup";
 import { useRef } from "react";
 import ProjectPopup from "./ProjectPopup";
+import { motion } from "motion/react";
+import { cssVarToHex } from "../../lib/colorVars";
 
 export default function ProjectHighlight(props: {project:ProjectType, idx:number}) {
     // Get context
@@ -16,8 +17,30 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     // Create refs
     const highlightRef = useRef<HTMLDivElement>(null);
 
-    // Define hover styles
-    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:pl-12 hover:text-(--txt-highlight-color)`;
+    // Animation config
+    const initial = {
+        opacity: 0,
+        y: 50,
+        color: cssVarToHex('--txt-body-color'),
+        paddingLeft: `${isMobile ? '16px' : '40px'}`,
+        paddingRight: `${isMobile ? '16px' : '40px'}`
+    }
+    const whileInView = {
+        opacity: 1,
+        y: 0,
+        paddingLeft: `${isMobile ? '16px' : '40px'}`,
+        paddingRight: `${isMobile ? '16px' : '40px'}`,
+        transition: { duration: .3, easing: "easeOut" }
+    }
+    const viewport = {
+        once: true,
+        amount: .5
+    }
+    const hover = {
+        paddingLeft: `${isMobile ? '24px' : '48px'}`,
+        color: cssVarToHex('--txt-highlight-color'),
+        transition: { duration: .15 }
+    }
 
     // Nav handler
     const handleNav = () => {
@@ -26,17 +49,31 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
     };
 
     const desktopLayout = (
-        <div ref={highlightRef} className={`relative box-border flex items-center justify-between gap-2 px-10 py-2 border-b border-b-(--border-color) ${hoverClasses}`}>
+        <motion.div
+            ref={highlightRef}
+            className={`relative box-border flex items-center justify-between gap-2 py-2 border-b border-b-(--border-color)`}
+            initial={initial}
+            whileInView={whileInView}
+            viewport={viewport}
+            whileHover={hover}
+        >
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
             <div className="cursor-pointer title text-lg" onClick={handleNav}>{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
-        </div>
+        </motion.div>
     );
 
     const mobileLayout = (
-        <div className="relative cursor-pointer w-full px-4 pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" onClick={handleNav}>
+        <motion.div
+            ref={highlightRef}
+            className="relative cursor-pointer w-full pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" 
+            onClick={handleNav}
+            initial={initial}
+            whileInView={whileInView}
+            viewport={viewport}
+        >
             <div className="title text-lg">{props.project.title}</div>
-        </div>
+        </motion.div>
     )
     
     return (
