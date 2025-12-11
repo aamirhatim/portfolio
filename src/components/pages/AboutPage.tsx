@@ -60,21 +60,21 @@ export default function AboutPage() {
     }, []);
 
     return (
-        <div className="flex flex-col gap-20">
-            <section className={`mt-20 flex ${isMobile ? 'p-4 flex-col' : 'relative'}`}>
+        <div className="px-4 flex flex-col gap-20">
+            <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-[10%] gap-15'}`}>
                 <LazyImg
                     imgPath="/aboutme.jpg"
-                    className={`border rounded-md ${isMobile ? 'w-full h-90' : 'absolute right-[10%] -top-20 w-[40%] h-150'}`}
+                    className={`border rounded-md ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
                     placeholderPath="/proj_thumbs/aboutme_thumb.jpg"
                     alt={"This is me"}
                 />
 
-                <div className={`box-border flex flex-col gap-5 text-lg text-(--txt-feature-color) ${isMobile ? 'p-6' : 'border border-l-0 w-[55%] p-10 pl-[8%] rounded-r-md bg-(--bg-secondary-color) z-1'}`}>
+                <div className={`box-border p-4 flex flex-col gap-5 text-lg text-(--txt-feature-color)`}>
                     {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
                 </div>
             </section>
 
-            <section className='flex flex-col px-4'>
+            <section className='flex flex-col'>
                 <div className="mb-10">
                     <div className='text-3xl font-bold mb-5'>I'm pretty good at</div>
                     <ChipGroup list={topSkills.map(i => i.name)} size="lg" />
