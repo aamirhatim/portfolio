@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesRight } from "@fortawesome/free-solid-svg-icons";
-import { ANIMATION_DURATION_MS } from "../../data/constants";
+import { motion } from "motion/react";
 
 export default function ArrowBtn(props:{text:string, link:string, className?:string, newTab?:boolean}) {
     const navigate = useNavigate();
@@ -18,12 +18,27 @@ export default function ArrowBtn(props:{text:string, link:string, className?:str
         }
     };
 
-    const hoverClasses = `transition-all duration-[${ANIMATION_DURATION_MS}ms] ease-in-out hover:gap-4 hover:ml-2 hover:!text-(--txt-highlight-color)`;
+    // Define animation config
+    const hover = {
+        gap: '16px',
+        marginLeft: '16px',
+        color: 'var(--txt-highlight-color) !important',
+        transition: { duration: .15 }
+    }
+    const tap = {
+        scale: 0.95,
+        transition: { duration: .1 }
+    }
     
     return (
-        <div onClick={handleNav} className={`${props.className} cursor-pointer w-fit !no-underline flex items-center gap-2 ${hoverClasses}`}>
+        <motion.div
+            onClick={handleNav}
+            className={`${props.className} cursor-pointer w-fit !no-underline flex items-center gap-2`}
+            whileHover={hover}
+            whileTap={tap}
+        >
             <div>{props.text}</div>
             <FontAwesomeIcon icon={faAnglesRight} size='sm' />
-        </div>
+        </motion.div>
     )
 }
