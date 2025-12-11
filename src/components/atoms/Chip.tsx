@@ -1,3 +1,5 @@
+import { motion } from "motion/react";
+
 export interface ChipProps {
     text: string,
     size?: string,
@@ -10,9 +12,18 @@ export default function Chip(props:ChipProps) {
         ? `${commonClasses} px-4 py-1 text-xl`
         : `${commonClasses} px-2 text-xs`;
 
+    // Animation config
+    const hover = {
+        scale: 1.05,
+        backgroundColor: 'var(--bg-secondary-color)'
+    }
+
     return (
-        <div className={chipClasses}>
+        <motion.div
+            className={chipClasses}
+            whileHover={hover}
+        >
             {props.text}
-        </div>
+        </motion.div>
     )
 }
