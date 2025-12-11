@@ -12,21 +12,22 @@
     --txt-link-color: var(--color-indigo-800);
     --txt-inactive-color: var(--color-stone-300);
     --border-color: var(--color-stone-300);
+
+    --max-width: 1440px;
 }
 
 * {
     border-color: var(--border-color);
 }
 
-.w-max-view {
-    max-width: 1440px;
-}
-
 body {
+    box-sizing: border-box;
     background-color: var(--bg-color);
     color: var(--txt-body-color);
     height: 100dvh;
     width: 100dvw;
+    max-width: var(--max-width);
+    margin: 0 auto;
 
     font-family: "DM Sans", sans-serif;
     font-optical-sizing: auto;
@@ -58,7 +59,7 @@ p {
 
     font-family: "Source Serif 4", serif;
     font-optical-sizing: auto;
-    font-weight: 300;
+    font-weight: 400;
     font-style: normal;
 }
 
