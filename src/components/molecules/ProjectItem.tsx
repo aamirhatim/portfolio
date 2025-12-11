@@ -5,6 +5,7 @@ import useIsMobile from '../hooks';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
+import { motion } from "motion/react";
 
 export default function ProjectItem(props: {project:ProjectType}) {
     // Get context
@@ -14,8 +15,19 @@ export default function ProjectItem(props: {project:ProjectType}) {
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
 
+    // Animation config
+    const hover = {
+        scale: 1.02,
+        transition: { duration: .1, easing: "easeOut" }
+    }
+
     const desktopLayout = (
-        <div id={props.project.id} ref={projectItemRef} className={`relative box-border w-full flex`}>
+        <motion.div
+            id={props.project.id}
+            ref={projectItemRef}
+            className={`relative box-border w-full flex`}
+            whileHover={hover}
+        >
             <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
 
             <div className='flex flex-col w-full gap-1'>
@@ -33,7 +45,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
                 {props.project.article && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg !text-(--txt-subtitle-color)" />}
                 <ChipGroup list={props.project.skills} />
             </div>
-        </div>
+        </motion.div>
     );
 
     const mobileLayout = (
