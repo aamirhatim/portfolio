@@ -47,15 +47,15 @@ export default function HomePage() {
 
     return (
         <div className="box-border flex flex-col w-full gap-40">
-            <div className={`feature px-10 flex text-(--txt-feature-color) ${isMobile ? 'text-5xl' : 'text-6xl w-[65%]'}`}>{introTxt}</div>
+            <div className={`feature flex text-(--txt-feature-color) ${isMobile ? 'text-5xl px-4' : 'text-6xl w-[65%] px-10'}`}>{introTxt}</div>
 
             <section className="flex flex-col gap-8">
-                <div className="title text-3xl px-10">Featured work</div>
+                <div className={`title text-3xl ${isMobile ? 'px-4' : 'px-10'}`}>Featured work</div>
                 <div className={`flex flex-col gap-4`}>
                     {projSpotlightList.map((p, idx) => <ProjectHighlight key={idx} project={{id: p.id, ...p.data} as ProjectType} idx={idx} />)}
                 </div>
                 
-                <div className={`w-full flex text-lg px-10`}>
+                <div className={`w-full flex text-lg ${isMobile ? 'px-4' : 'px-10'}`}>
                     <ArrowBtn text="See more" link="/projects" className="!text-(--txt-subtitle-color)"/>
                 </div>
             </section>

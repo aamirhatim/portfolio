@@ -28,30 +28,28 @@ export default function Navbar() {
         }
     }
 
-    const desktopLayout = (
-        <nav className='box-border w-dvw fixed top-0 left-0 px-10 flex justify-center z-10 backdrop-blur-md bg-(--bg-color)/60'>
-            <div className='w-full w-max-view box-border py-6 flex items-center gap-8'>
-                <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
-                
-                <div className='flex grow justify-start gap-8 h-full'>
-                    {
-                        navItems.map( (n, idx) => (
-                            <div key={idx} className={`cursor-pointer px-1 py-1 content-center title text-md hover:text-(--txt-highlight-color) border-t-1 transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-subtitle-color) !border-(--txt-subtitle-color)' : 'text-(--txt-subtitle-color) !border-transparent'}`} onClick={() => handleNavClick(n)}>{n}</div>
-                        ))
-                    }
-                </div>
+    const commonClasses = `fixed top-0 left-0 box-border w-dvw flex items-center gap-8 z-10 backdrop-blur-md bg-(--bg-color)/60`;
 
-                <SocialsBar />
+    const desktopLayout = (
+        <nav className={`px-10 py-6 ${commonClasses}`}>
+            <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
+            
+            <div className='flex grow justify-start gap-8 h-full'>
+                {
+                    navItems.map( (n, idx) => (
+                        <div key={idx} className={`cursor-pointer px-1 py-1 content-center title text-md hover:text-(--txt-highlight-color) border-t-1 transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-subtitle-color) !border-(--txt-subtitle-color)' : 'text-(--txt-subtitle-color) !border-transparent'}`} onClick={() => handleNavClick(n)}>{n}</div>
+                    ))
+                }
             </div>
+
+            <SocialsBar />
         </nav>
     );
 
     const mobileLayout = (
-        <nav className='box-border w-dvw fixed top-0 left-0 flex justify-center z-10 backdrop-blur-md bg-(--bg-color)/60'>
-            <div className='w-full w-max-view box-border px-6 py-3 flex items-center justify-between gap-8'>
-                <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
-                <NavMenu />
-            </div>
+        <nav className={`px-6 py-3 justify-between ${commonClasses}`}>
+            <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
+            <NavMenu />
         </nav>
     );
 
