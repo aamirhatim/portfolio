@@ -70,7 +70,7 @@ export default function AboutPage() {
                 />
 
                 <div className={`box-border p-4 flex flex-col gap-5 text-lg text-(--txt-feature-color)`}>
-                    {aboutTxt.map((txt, key) => ( <div key={key}>{txt}</div> ))}
+                    {aboutTxt.map((txt, key) => ( <p key={key}>{txt}</p> ))}
                 </div>
             </section>
 
