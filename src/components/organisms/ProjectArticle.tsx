@@ -3,7 +3,6 @@ import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes
 import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
-import { motion, AnimatePresence } from "framer-motion";
 import useIsMobile from "../hooks";
 import LazyImg from "../atoms/LazyImg";
 import ReactMarkdown from "react-markdown";
@@ -15,7 +14,6 @@ import "katex/dist/katex.min.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl as codeStyle } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ProjectLink from "../atoms/ProjectLink";
-import { ANIMATION_DURATION_MS } from "../../data/constants";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -26,32 +24,6 @@ type ArticleImportFn = () => Promise<ArticleType|undefined>;
 
 // Create a map of all articles so the right one can be imported when queried
 const articleModules: Record<string, ArticleImportFn> = import.meta.glob("/src/data/articles/*.json") as Record<string, ArticleImportFn>;
-
-// Define motion variants for animation
-const slideDist = 250;
-const easing = "easeInOut" as "easeInOut";
-const variants = {
-    exit: (direction: string) => ({
-        x: direction ==="next" ? -1 * slideDist : slideDist,
-        opacity: 0,
-        transition: {
-            duration: 0.25 * ANIMATION_DURATION_MS / 1000,
-            ease: easing,
-        }
-    }),
-    enter: {
-        x: 0,
-        opacity: 1,
-        transition: {
-            duration: 0.25 * ANIMATION_DURATION_MS / 1000,
-            ease: easing,
-        }
-    },
-    initial: (direction: string) => ({
-        x: direction === "next" ? slideDist : -1 * slideDist,
-        opacity: 0,
-    })
-};
 
 // Handler for opening markdown links in a new tab
 const linkRenderer = (props: any) => {
@@ -291,51 +263,41 @@ export default function ProjectArticle(props: ProjectArticleProps) {
     }, [props.projectId, firebaseAppContext]);
 
     return (
-        <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-                key={props.projectId}
-                custom={props.transitionDir}
-                variants={variants}
-                initial="initial"
-                animate="enter"
-                exit="exit"
-                className="relative w-full"
-            >
-                <div className={`absolute h-120 w-full -z-10 ${isMobile ? '-top-40' : '-top-10 px-[10%]'}`}>
-                    {project &&
-                        <LazyImg
-                            imgPath={`/proj_img/${project?.img}`}
-                            alt={'Project image'}
-                            placeholderPath={`/proj_thumbs/${project?.img}`}
-                            className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
-                        />
-                    }
-                    <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
+        <div className="relative w-full">
+            <div className={`absolute h-120 w-full -z-10 ${isMobile ? '-top-40' : '-top-10 px-[10%]'}`}>
+                {project &&
+                    <LazyImg
+                        imgPath={`/proj_img/${project?.img}`}
+                        alt={'Project image'}
+                        placeholderPath={`/proj_thumbs/${project?.img}`}
+                        className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
+                    />
+                }
+                <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
+            </div>
+
+            <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-6' : 'px-[15%]'}`}>
+                <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
+                <div className="flex gap-3">
+                    {project?.code && <ProjectLink value="Code" url={project.code} />}
+                    {project?.video && <ProjectLink value="Video" url={project.video} />}
                 </div>
 
-                <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-6' : 'px-[15%]'}`}>
-                    <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
-                    <div className="flex gap-3">
-                        {project?.code && <ProjectLink value="Code" url={project.code} />}
-                        {project?.video && <ProjectLink value="Video" url={project.video} />}
-                    </div>
+                {article !== undefined
+                    ?   <>
+                            <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
+                            {article.blocks.map((b, key) => createSection(b, key))}
 
-                    {article !== undefined
-                        ?   <>
-                                <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
-                                {article.blocks.map((b, key) => createSection(b, key))}
-
-                                <div>
-                                <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
-                                    <ChipGroup list={project?.skills || []} />
-                                </div>
-                            </>
-                        :   <div className="border border-(--border-color) p-6 rounded-xl">
-                                <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                            <div>
+                            <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                                <ChipGroup list={project?.skills || []} />
                             </div>
-                    }
-                </div>
-            </motion.div>
-        </AnimatePresence>
+                        </>
+                    :   <div className="border border-(--border-color) p-6 rounded-xl">
+                            <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                        </div>
+                }
+            </div>
+        </div>
     )
 }
