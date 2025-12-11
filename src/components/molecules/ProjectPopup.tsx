@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../context/appContext";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
+import { AnimatePresence, motion } from "motion/react";
 
 interface ProjectPopupProps {
     refDiv: React.RefObject<HTMLDivElement|null>,
@@ -21,9 +22,21 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     const [fileUrls, setFileUrls] = useState<string[]>([]);
 
     // Create refs
+    const containerRef = useRef<HTMLDivElement>(null);
     const popupRef = useRef<HTMLDivElement>(null);
 
-    const hoverClasses = `${!vis ? 'opacity-0 h-0 w-0' : 'h-[200px] w-[300px]'} transition-opacity duration-150 ease-in-out`;
+    // Animations
+    const initial = {
+        opacity: 0,
+        height: 0,
+        width: 0
+    };
+    const animate = {
+        opacity: 1,
+        height: '200px',
+        width: '300px'
+    };
+    const exit = initial;
 
     // Get all preview images for project
     useEffect(() => {
@@ -79,13 +92,10 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         };
 
         const handleMouseEnter = () => {
-            if (!popupRef.current) return;
+            if (!containerRef.current) return;
 
             // Show popup
             setVis(true);
-
-            // Set initial preview image
-            popupRef.current.style.backgroundImage = `url("${fileUrls[0]}")`;
 
             // Create interval to cycle through previews
             interval = setInterval(intervalHandler, 1000);
@@ -134,7 +144,27 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         }
     }, [previewsLoaded]);
 
+    // Set initial bg image when vis is enabled
+    useEffect(() => {
+        if (!vis || !popupRef.current || fileUrls.length === 0) return;
+
+        popupRef.current.style.backgroundImage = `url("${fileUrls[0]}")`;
+    }, [vis]);
+
     return (
-        <div ref={popupRef} className={`absolute box-border border z-10 bg-center bg-cover ${hoverClasses}`}></div>
+        <div ref={containerRef}>
+            <AnimatePresence>
+                {vis &&
+                    <motion.div
+                        ref={popupRef}
+                        className={`absolute box-border border bg-center bg-cover z-100`}
+                        initial={initial}
+                        animate={animate}
+                        exit={exit}
+                    />
+                }
+            </AnimatePresence>
+        </div>
+        
     );
 }
