@@ -6,6 +6,7 @@ import ChipGroup from "../molecules/ChipGroup"
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../hooks"
+import { motion, Transition } from "motion/react"
 
 export default function AboutPage() {
     // Get context
@@ -17,6 +18,13 @@ export default function AboutPage() {
     const [topSkills, setTopSkills] = useState<SkillType[]>([]);
     const [midSkills, setMidSkills] = useState<SkillType[]>([]);
     const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
+
+    // Animation config
+    const transition:Transition = {
+        duration: .3,
+        type: "spring",
+        bounce: .2,
+    }
 
     // Get about me text
     useEffect(() => {
@@ -62,19 +70,37 @@ export default function AboutPage() {
     return (
         <div className="px-4 flex flex-col gap-30">
             <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-[10%] gap-15'}`}>
-                <LazyImg
-                    imgPath="/aboutme.jpg"
+                <motion.div
                     className={`border rounded-md ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
-                    placeholderPath="/thumbs/aboutme.jpg"
-                    alt={"This is me"}
-                />
-
-                <div className={`box-border p-4 flex flex-col gap-5 text-lg text-(--txt-feature-color)`}>
+                    initial={{opacity: 0, x: -500}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={transition}
+                >
+                    <LazyImg
+                        imgPath="/aboutme.jpg"
+                        className="h-full w-full"
+                        placeholderPath="/thumbs/aboutme.jpg"
+                        alt={"This is me"}
+                    />
+                </motion.div>
+                
+                <motion.div
+                    className={`box-border p-4 flex flex-col gap-5 text-lg text-(--txt-feature-color)`}
+                    initial={{opacity: 0, x: 500}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={{...transition, delay: .1}}
+                >
                     {aboutTxt.map((txt, key) => ( <p key={key}>{txt}</p> ))}
-                </div>
+                </motion.div>
             </section>
 
-            <section className={`flex flex-col ${isMobile ? '' : 'max-w-[1000px] mx-auto'}`}>
+            <motion.section
+                className={`flex flex-col ${isMobile ? '' : 'max-w-[1000px] mx-auto'}`}
+                initial={{opacity: 0, y: 50}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true, amount: .25}}
+                transition={{...transition, delay: .4}}
+            >
                 <div className="mb-10">
                     <div className='text-3xl font-bold mb-5'>I'm pretty good at</div>
                     <ChipGroup list={topSkills.map(i => i.name)} size="lg" />
@@ -89,7 +115,7 @@ export default function AboutPage() {
                     <div className='text-3xl font-bold mb-5'>I've dabbled in</div>
                     <ChipGroup list={lowSkills.map(i => i.name)} size="lg" />
                 </div>
-            </section>
+            </motion.section>
         </div>
     )
 }
