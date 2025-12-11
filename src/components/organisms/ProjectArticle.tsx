@@ -115,15 +115,15 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             case "title":
                 switch (block.level) {
                     case 0:
-                        e = ( <h2>{block.content}</h2> );
+                        e = ( <h2 className="title">{block.content}</h2> );
                         break;
 
                     case 1:
-                        e = ( <h3>{block.content}</h3> );
+                        e = ( <h3 className="title">{block.content}</h3> );
                         break;
 
                     case 2:
-                        e = ( <h4>{block.content}</h4> );
+                        e = ( <h4 className="title">{block.content}</h4> );
                         break;
                 
                     default:
@@ -270,17 +270,17 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                         imgPath={`/proj_img/${project?.img}`}
                         alt={'Project image'}
                         placeholderPath={`/proj_thumbs/${project?.img}`}
-                        className='h-full w-full grayscale-75 opacity-20 rounded-t-4xl'
+                        className='h-full w-full grayscale-75 opacity-20 rounded-t-xl'
                     />
                 }
                 <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
             </div>
 
-            <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-6' : 'px-[15%]'}`}>
-                <div className={`mb-5 font-bold text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
+            <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-4' : 'max-w-[800px] mx-auto'}`}>
+                <div className={`mb-5 title text-6xl text-(--txt-title-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
                 <div className="flex gap-3">
-                    {project?.code && <ProjectLink value="Code" url={project.code} />}
-                    {project?.video && <ProjectLink value="Video" url={project.video} />}
+                    {project?.code && <ProjectLink value="Code" url={project.code} newTab={true} showText={true} />}
+                    {project?.video && <ProjectLink value="Video" url={project.video} newTab={true} showText={true} />}
                 </div>
 
                 {article !== undefined
@@ -289,7 +289,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                             {article.blocks.map((b, key) => createSection(b, key))}
 
                             <div>
-                            <div className="mt-20 font-bold text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                            <div className="mt-20 title text-lg text-(--txt-title-color) mb-3">Keywords</div>
                                 <ChipGroup list={project?.skills || []} />
                             </div>
                         </>
