@@ -29,12 +29,14 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     const initial = {
         opacity: 0,
         height: 0,
-        width: 0
+        width: 0,
+        transition: { duration: .3 }
     };
     const animate = {
         opacity: 1,
         height: '200px',
-        width: '300px'
+        width: '300px',
+        transition: { duration: .1 }
     };
     const exit = initial;
 
