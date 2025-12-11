@@ -54,7 +54,7 @@ export default function HomePage() {
                     className={`feature flex text-(--txt-feature-color) ${isMobile ? 'text-5xl px-4' : 'text-6xl w-[65%] px-10'}`}
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
-                    transition={{duration: .8}}
+                    transition={{duration: .8, ease: "easeOut"}}
                 >
                     {introTxt}
                 </motion.div>
