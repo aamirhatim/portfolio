@@ -60,7 +60,7 @@ export default function AboutPage() {
     }, []);
 
     return (
-        <div className="px-4 flex flex-col gap-20">
+        <div className="px-4 flex flex-col gap-30">
             <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-[10%] gap-15'}`}>
                 <LazyImg
                     imgPath="/aboutme.jpg"
@@ -74,7 +74,7 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            <section className='flex flex-col'>
+            <section className={`flex flex-col ${isMobile ? '' : 'max-w-[1000px] mx-auto'}`}>
                 <div className="mb-10">
                     <div className='text-3xl font-bold mb-5'>I'm pretty good at</div>
                     <ChipGroup list={topSkills.map(i => i.name)} size="lg" />
