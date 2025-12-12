@@ -72,7 +72,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     
     // Create mouse event listeners once files have been loaded
     useEffect(() => {
-        if (!props.refDiv.current || !previewsLoaded) return;
+        if (!refDiv.current || !previewsLoaded) return;
 
         // Exit if no images are in the cache for this project
         if (fileUrls.length === 0) return;
@@ -111,28 +111,28 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         };
 
         const handleMouseMove = (e:MouseEvent) => {
-            if (!refDiv.current || !popupRef.current) return;
+            if (!popupRef.current) return;
 
             // Define offset
             const offsetY = 20;
             const offsetX = 20;
 
             // Subtract refrence from mouse pos and add some buffer
-            popupRef.current.style.left = `${e.pageX + offsetX}px`;
-            popupRef.current.style.top = `${e.pageY + offsetY}px`;
+            popupRef.current.style.left = `${e.clientX + offsetX}px`;
+            popupRef.current.style.top = `${e.clientY + offsetY}px`;
         }
 
         // Add listeners to project's root div
-        props.refDiv.current.addEventListener('mouseenter', handleMouseEnter);
-        props.refDiv.current.addEventListener('mouseleave', handleMouseLeave);
-        props.refDiv.current.addEventListener('mousemove', handleMouseMove);
+        refDiv.current.addEventListener('mouseenter', handleMouseEnter);
+        refDiv.current.addEventListener('mouseleave', handleMouseLeave);
+        refDiv.current.addEventListener('mousemove', handleMouseMove);
 
         // Cleanup on unmount
         return () => {
-            if (!props.refDiv.current) return;
-            props.refDiv.current.removeEventListener('mouseenter', handleMouseEnter);
-            props.refDiv.current.removeEventListener('mouseleave', handleMouseLeave);
-            props.refDiv.current.removeEventListener('mousemove', handleMouseMove);
+            if (!refDiv.current) return;
+            refDiv.current.removeEventListener('mouseenter', handleMouseEnter);
+            refDiv.current.removeEventListener('mouseleave', handleMouseLeave);
+            refDiv.current.removeEventListener('mousemove', handleMouseMove);
 
             // Clear interval
             clearInterval(interval);
