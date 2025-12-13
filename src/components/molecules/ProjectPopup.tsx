@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppContext } from "../../context/appContext";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import ReactDOM from "react-dom";
 
 interface ProjectPopupProps {
@@ -21,11 +21,15 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     const [vis, setVis] = useState<boolean>(false);
     const [previewsLoaded, setPreviewsLoaded] = useState<boolean>(false);
     const [fileUrls, setFileUrls] = useState<string[]>([]);
+    const [bgImgUrl, setBgImgUrl] = useState<string>("");
 
     // Create refs
-    const popupRef = useRef<HTMLDivElement>(null);
+    const intervalRef = useRef<NodeJS.Timeout|undefined>(undefined);
+    const indexRef = useRef<number>(0);
 
     // Animations
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
     const initial = {
         opacity: 0,
         height: 0,
@@ -40,35 +44,83 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     };
     const exit = initial;
 
+    // Initialize interval to update preview every second
+    const intervalHandler = useCallback(() => {
+        if (fileUrls.length === 0) return;
+
+        // Increment index but reset if beyond bounds of fileUrl array
+        indexRef.current = (indexRef.current + 1) % fileUrls.length;
+
+        // Set bg image
+        setBgImgUrl(fileUrls[indexRef.current]);
+    }, [fileUrls.length, setBgImgUrl]);
+
+    // Handler for mouse enter event
+    const handleMouseEnter = useCallback(() => {
+        setVis(true);           // Show popup
+        indexRef.current = 0;   // Reset interval index
+
+        // Uodate first image
+        if (fileUrls.length > 0) {
+            setBgImgUrl(fileUrls[0]); 
+        }
+
+        // Create interval to cycle through previews
+        intervalRef.current = setInterval(intervalHandler, 1000); 
+    }, [intervalHandler, fileUrls]);
+
+    // Handler for mouse leave event
+    const handleMouseLeave = useCallback(() => {
+        setVis(false);  // Hide popup
+
+        // Clear interval
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+        indexRef.current = 0;
+    }, []);
+
+    // Handler for mouse movement
+    const handleMouseMove = useCallback((e:MouseEvent) => {
+        // Define offset
+        const offsetY = 20;
+        const offsetX = 20;
+
+        // Update mouse position
+        x.set(e.clientX + offsetX);
+        y.set(e.clientY + offsetY);
+    }, []);
+
+    // Helper to get file URLs and update state
+    const getFileUrls = useCallback(async () => {
+        // Get file references
+        const folderPath = `proj_img/${projectId}/previews`;
+        const references = await getStorageFolderReferences(firebaseAppContext, folderPath);
+        if (!references) return;
+
+        // Load images into url cache
+        let urls:string[] = [];
+        const promises = references.map(async r => {
+            const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
+            
+            // Add path to url array
+            if (imgUrl) {
+                urls.push(imgUrl);
+            }
+        });
+
+        // Wait for all cache loads to complete
+        await Promise.all(promises);
+        
+        // Update states
+        setFileUrls(urls);
+        setPreviewsLoaded(true);
+    }, [firebaseAppContext, imgUrlCache, setImgUrlCache, projectId]);
+
     // Get all preview images for project
     useEffect(() => {
-        const getFileUrls = async () => {
-            // Get file references
-            const folderPath = `proj_img/${projectId}/previews`;
-            const references = await getStorageFolderReferences(firebaseAppContext, folderPath);
-            if (!references) return;
-
-            // Load images into url cache
-            let urls:string[] = [];
-            const promises = references.map(async r => {
-                const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
-                
-                // Add path to url array
-                if (imgUrl) {
-                    urls.push(imgUrl);
-                }
-            });
-
-            // Wait for all cache loads to complete
-            await Promise.all(promises);
-            
-            // Update states
-            setFileUrls(urls);
-            setPreviewsLoaded(true);
-        };
-
         getFileUrls();
-    }, []);
+    }, [getFileUrls]);
     
     // Create mouse event listeners once files have been loaded
     useEffect(() => {
@@ -76,51 +128,6 @@ export default function ProjectPopup(props:ProjectPopupProps) {
 
         // Exit if no images are in the cache for this project
         if (fileUrls.length === 0) return;
-
-        // Initialize interval to update preview every second
-        let interval:NodeJS.Timeout;
-        let idx = 0;
-        const intervalHandler = () => {
-            if (!popupRef.current) return;
-            idx++;
-
-            // Reset index if past file url array length
-            if (idx >= fileUrls.length) {
-                idx = 0;
-            }
-
-            // Set bg image
-            popupRef.current.style.backgroundImage = `url("${fileUrls[idx]}")`;
-        };
-
-        const handleMouseEnter = () => {
-            // Show popup
-            setVis(true);
-
-            // Create interval to cycle through previews
-            interval = setInterval(intervalHandler, 1000);
-        };
-
-        const handleMouseLeave = () => {
-            // Hide popup
-            setVis(false);
-
-            // Clear interval
-            clearInterval(interval);
-            idx = 0;
-        };
-
-        const handleMouseMove = (e:MouseEvent) => {
-            if (!popupRef.current) return;
-
-            // Define offset
-            const offsetY = 20;
-            const offsetX = 20;
-
-            // Subtract refrence from mouse pos and add some buffer
-            popupRef.current.style.left = `${e.clientX + offsetX}px`;
-            popupRef.current.style.top = `${e.clientY + offsetY}px`;
-        }
 
         // Add listeners to project's root div
         refDiv.current.addEventListener('mouseenter', handleMouseEnter);
@@ -135,17 +142,11 @@ export default function ProjectPopup(props:ProjectPopupProps) {
             refDiv.current.removeEventListener('mousemove', handleMouseMove);
 
             // Clear interval
-            clearInterval(interval);
-            idx = 0;
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
         }
-    }, [previewsLoaded]);
-
-    // Set initial bg image when vis is enabled
-    useEffect(() => {
-        if (!vis || !popupRef.current || fileUrls.length === 0) return;
-
-        popupRef.current.style.backgroundImage = `url("${fileUrls[0]}")`;
-    }, [vis]);
+    }, [previewsLoaded, fileUrls.length, handleMouseEnter, handleMouseLeave, handleMouseMove]);
 
     // Find portal target
     const portalRoot = document.getElementById('portal-root') || document.body;
@@ -155,8 +156,8 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         <AnimatePresence>
             {vis &&
                 <motion.div
-                    ref={popupRef}
-                    className={`fixed box-border border bg-center bg-cover z-[9999]`}
+                    className={`fixed top-0 left-0 box-border border bg-center bg-cover z-[9999]`}
+                    style={{x, y, backgroundImage: `url("${bgImgUrl}")`}}
                     initial={initial}
                     animate={animate}
                     exit={exit}
@@ -166,5 +167,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     );
 
     // Render element via React portal
-    return ReactDOM.createPortal(popupElement, portalRoot);
+    return useMemo(() => 
+        ReactDOM.createPortal(popupElement, portalRoot), 
+    [popupElement, portalRoot]);
 }
