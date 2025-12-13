@@ -3,7 +3,7 @@ import { useAppContext } from "../../context/appContext";
 import { ProjectType } from "../../data/datatypes"
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import ChipGroup from "./ChipGroup";
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import ProjectPopup from "./ProjectPopup";
 import { motion } from "motion/react";
 import usePreferredColorScheme from "../../lib/hooks/usePreferredColorScheme";
@@ -20,18 +20,21 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
 
     // Animation config
     const motionConfig = useMemo(() => {
+        const defaultPadding = isMobile ? '16px' : '40px';
+        const hoverPadding = isMobile ? '24px' : '48px';
+
         const initial = {
             opacity: 0,
             y: 50,
             color: colorToHex('--txt-body-color'),
-            paddingLeft: `${isMobile ? '16px' : '40px'}`,
-            paddingRight: `${isMobile ? '16px' : '40px'}`
+            paddingLeft: defaultPadding,
+            paddingRight: defaultPadding
         }
         const whileInView = {
             opacity: 1,
             y: 0,
-            paddingLeft: `${isMobile ? '16px' : '40px'}`,
-            paddingRight: `${isMobile ? '16px' : '40px'}`,
+            paddingLeft: defaultPadding,
+            paddingRight: defaultPadding,
             transition: { duration: .3, easing: "easeOut" }
         }
         const viewport = {
@@ -39,19 +42,19 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
             amount: .5
         }
         const hover = {
-            paddingLeft: `${isMobile ? '24px' : '48px'}`,
+            paddingLeft: hoverPadding,
             color: colorToHex('--txt-highlight-color'),
             transition: { duration: .15 }
         }
 
         return {initial, whileInView, viewport, hover}
-    }, [scheme, isMobile]);
+    }, [scheme, isMobile, colorToHex]);
 
     // Nav handler
-    const handleNav = () => {
+    const handleNav = useCallback(() => {
         setNavSelect(`projects/${props.project.id}`);
         navigate(`/projects/${props.project.id}`);
-    };
+    }, [props.project.id, setNavSelect, navigate]);
 
     const desktopLayout = (
         <motion.div
