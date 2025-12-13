@@ -45,7 +45,7 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
         }
 
         return {initial, whileInView, viewport, hover}
-    }, [scheme]);
+    }, [scheme, isMobile]);
 
     // Nav handler
     const handleNav = () => {
