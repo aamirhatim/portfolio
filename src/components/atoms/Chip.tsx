@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { cssVarToHex } from "../../lib/colorVars";
+import usePreferredColorScheme from "../../lib/hooks/usePreferredColorScheme";
+import { useMemo } from "react";
 
 export interface ChipProps {
     text: string,
@@ -7,26 +8,35 @@ export interface ChipProps {
 }
 
 export default function Chip(props:ChipProps) {
-    const commonClasses = `box-border border border-(--txt-subtitle-color) text-(--txt-subtitle-color) rounded-md`;
-    
+    // Get context
+    const { scheme, colorToHex } = usePreferredColorScheme();
+
+    // Define chip style classes
+    const commonClasses = `box-border border text-(--txt-subtitle-color) rounded-md`;
     const chipClasses = props.size === "lg"
         ? `${commonClasses} px-4 py-1 text-xl`
         : `${commonClasses} px-2 text-xs`;
 
     // Animation config
-    const initial = {
-        backgroundColor: cssVarToHex('--bg-color')
-    }
-    const hover = {
-        scale: 1.05,
-        backgroundColor: cssVarToHex('--bg-secondary-color')
-    }
+    const motionConfig = useMemo(() => {
+        // Define variants
+        const initial = {
+            backgroundColor: colorToHex('--bg-color')
+        };
+        const hover = {
+            scale: 1.05,
+            backgroundColor: colorToHex('--bg-secondary-color')
+        };
+
+        return {initial, hover};
+    }, [scheme]);
 
     return (
         <motion.div
+            key={scheme}
             className={chipClasses}
-            initial={initial}
-            whileHover={hover}
+            initial={motionConfig.initial}
+            whileHover={motionConfig.hover}
         >
             {props.text}
         </motion.div>
