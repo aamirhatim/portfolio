@@ -18,12 +18,12 @@ export default function Main() {
     const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
     // Init context
-    const initContext:AppContextInterface = {
+    const initContext = useMemo(():AppContextInterface =>({
         navSelect: nav,
         setNavSelect: setNav,
         imgUrlCache: imgUrls,
         setImgUrlCache: setImgUrls,
-    }
+    }), [nav, imgUrls]);
 
     // Init Firebase app
     const firebaseApp:FirebaseApp = useMemo(() => {
@@ -57,12 +57,10 @@ export default function Main() {
         document.title = pageTitle;
 
         // Scroll to top of page
-        if (typeof window !== 'undefined') {
         window.scrollTo({
             top: 0,
             behavior: 'auto'
         });
-    }
     }, [location.pathname]);
 
     return (
