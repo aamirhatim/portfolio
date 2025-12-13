@@ -5,7 +5,7 @@ import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppCon
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
 import { Outlet, useLocation } from "react-router";
-import useIsMobile from "../hooks";
+import useIsMobile from "../../lib/hooks/useIsMobile";
 import Navbar from "../molecules/Navbar";
 
 export default function Main() {

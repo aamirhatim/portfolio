@@ -3,7 +3,7 @@ import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../molecules/ProjectItem"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes";
-import useIsMobile from "../hooks";
+import useIsMobile from "../../lib/hooks/useIsMobile";
 
 export default function ProjectsPage() {
     // Get context

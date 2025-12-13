@@ -3,7 +3,7 @@ import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes
 import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
-import useIsMobile from "../hooks";
+import useIsMobile from "../../lib/hooks/useIsMobile";
 import LazyImg from "../atoms/LazyImg";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";

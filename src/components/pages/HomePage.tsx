@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { where } from "firebase/firestore"
-import useIsMobile from "../hooks"
+import useIsMobile from "../../lib/hooks/useIsMobile"
 import { motion } from "motion/react"
 
 export default function HomePage() {

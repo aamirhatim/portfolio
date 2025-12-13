@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import Logo from '../../assets/logo.svg?react'
 import { useAppContext } from '../../context/appContext'
-import useIsMobile from '../hooks'
+import useIsMobile from '../../lib/hooks/useIsMobile'
 import NavMenu from './NavMenu'
 import SocialsBar from './socialsBar'
 

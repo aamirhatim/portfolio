@@ -5,7 +5,7 @@ import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import ChipGroup from "../molecules/ChipGroup"
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
-import useIsMobile from "../hooks"
+import useIsMobile from "../../lib/hooks/useIsMobile"
 import { motion, Transition } from "motion/react"
 
 export default function AboutPage() {

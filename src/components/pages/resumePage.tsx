@@ -1,4 +1,4 @@
-import useIsMobile from "../hooks"
+import useIsMobile from "../../lib/hooks/useIsMobile"
 import CurrentWork from "../molecules/currentWork"
 import Patents from "../molecules/patents"
 import PrevWork from "../molecules/prevWork"

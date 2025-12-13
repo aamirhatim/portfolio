@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
 import { ProjectType } from "../../data/datatypes"
-import useIsMobile from "../hooks";
+import useIsMobile from "../../lib/hooks/useIsMobile";
 import ChipGroup from "./ChipGroup";
 import { useMemo, useRef } from "react";
 import ProjectPopup from "./ProjectPopup";

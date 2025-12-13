@@ -1,7 +1,7 @@
 import { ProjectType } from '../../data/datatypes'
 import ChipGroup from './ChipGroup'
 import ProjectLink from '../atoms/ProjectLink'
-import useIsMobile from '../hooks';
+import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
