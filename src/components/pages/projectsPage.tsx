@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import ProjectItem from "../molecules/ProjectItem"
@@ -13,18 +13,20 @@ export default function ProjectsPage() {
     // Init state
     const [projectList, setProjectList] = useState<FirestoreDocType[]>([]);
 
+    // Fetch projects
+    const getProjects = useCallback(async () => {
+        const projectList = await getDocumentsFromCollection(firebaseAppContext, "projects");
+        if (!projectList) {
+            setProjectList([]);
+            return;
+        }
+        setProjectList(projectList);
+    }, [setProjectList]);
+
     // Get list of projects
     useEffect( () => {
-        const getProjects = async () => {
-            const projectList = await getDocumentsFromCollection(firebaseAppContext, "projects");
-            if (!projectList) {
-                setProjectList([]);
-                return;
-            }
-            setProjectList(projectList);
-        };
         getProjects();
-    }, []);
+    }, [getProjects]);
 
     return (
         <section className={`box-border flex flex-col px-4 ${isMobile ? 'gap-6 w-full' : 'gap-18 max-w-[800px] mx-auto'}`}>

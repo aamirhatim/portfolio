@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { FirestoreDocType, JobType } from "../../data/datatypes"
 import ExpJobItem from "../atoms/ExpJobItem"
@@ -28,23 +28,25 @@ export default function PrevWork() {
         amount: .1
     }
 
-    // Get list of previous jobs
-    useEffect( () => {
+    // Helper to fetch prev work
+    const getPrevWork = useCallback(async () => {
         const queryOptions = [
             where("isCurrent", "==", false),
             orderBy("order", "desc")
-        ]
+        ];
 
-        const getPrevWork = async () => {
-            const prevWork = await getDocumentsFromCollection(firebaseAppContext, "jobs", queryOptions);
-            if (!prevWork) {
-                setPrevWorkList([]);
-                return;
-            }
-            setPrevWorkList(prevWork);
+        const prevWork = await getDocumentsFromCollection(firebaseAppContext, "jobs", queryOptions);
+        if (!prevWork) {
+            setPrevWorkList([]);
+            return;
         };
+        setPrevWorkList(prevWork);
+    }, [firebaseAppContext, setPrevWorkList]);
+
+    // Get list of previous jobs
+    useEffect( () => {
         getPrevWork();
-    }, []);
+    }, [getPrevWork]);
 
     return (
         <>

@@ -31,16 +31,17 @@ export default function ProjectViewer() {
     const isFirstProject = currentIndex === 0;
     const isLastProject = currentIndex === projectList.length - 1;
 
+    // Helper to fetch project list
+    const getProjectList = useCallback(async () => {
+        const projectDocs = await getDocumentsFromCollection(firebaseAppContext, "projects");
+        const newList = projectDocs?.map(p => p.id) || [];
+        setProjectList(newList);
+    }, [firebaseAppContext, setProjectList]);
+
     // Get list of all projects
     useEffect(() => {
-        const getProjectList = async () => {
-            const projectDocs = await getDocumentsFromCollection(firebaseAppContext, "projects");
-            const newList = projectDocs?.map(p => p.id) || [];
-            setProjectList(newList);
-        };
-
         getProjectList();
-    }, []);
+    }, [getProjectList]);
 
     // Define nav buttons
     const navProject = useCallback((direction: "next"|"prev") => {

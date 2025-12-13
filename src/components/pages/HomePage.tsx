@@ -1,7 +1,7 @@
 import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { where } from "firebase/firestore"
@@ -17,34 +17,34 @@ export default function HomePage() {
     const [introTxt, setIntroTxt] = useState<string>("");
     const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
 
-    // Get intro text
+    // Fetch intro text
+    const getIntroTxt = useCallback(async () => {
+        const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
+        if (!txt) {
+            setIntroTxt("");
+            return;
+        }
+        setIntroTxt(txt[0].data.text);
+    }, [setIntroTxt]);
+
+    // Fetch spotlight projects
+    const getSpotlights = useCallback(async () => {
+        const filter = where("spotlight", "==", true);
+
+        const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
+        if (!spotlights) {
+            setProjSpotlightList([]);
+            return;
+        }
+        setProjSpotlightList(spotlights);
+    }, [setProjSpotlightList]);
+
+    // Get intro and projects
     useEffect(() => {
-        const getIntroTxt = async () => {
-            const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
-            if (!txt) {
-                setIntroTxt("");
-                return;
-            }
-            setIntroTxt(txt[0].data.text);
-        };
+        
         getIntroTxt();
-    }, []);
-
-    // Get list of spotlight projects
-    useEffect( () => {
-        const getSpotlights = async () => {
-            const filter = where("spotlight", "==", true);
-
-            const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
-            if (!spotlights) {
-                setProjSpotlightList([]);
-                return;
-            }
-            setProjSpotlightList(spotlights);
-        };
         getSpotlights();
-    }, []);
-
+    }, [getIntroTxt, getSpotlights]);
 
     return (
         <>

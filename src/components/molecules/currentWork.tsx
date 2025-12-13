@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import ChipGroup from "./ChipGroup"
 import { FirestoreDocType } from "../../data/datatypes";
@@ -30,20 +30,21 @@ export default function CurrentWork() {
         amount: .5
     }
 
+    // Helper to fetch current work
+    const getCurrentJob = useCallback(async () => {
+        const filter = where("isCurrent", "==", true);
+        const currentJob = await getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]);
+        if (!currentJob) {
+            setCurrentWork(undefined);
+            return;
+        }
+        setCurrentWork(currentJob[0]);
+    }, [firebaseAppContext, setCurrentWork]);
+
     // Get current work
     useEffect( () => {
-        const filter = where("isCurrent", "==", true);
-
-        const getCurrentJob = async () => {
-            const currentJob = await getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]);
-            if (!currentJob) {
-                setCurrentWork(undefined);
-                return;
-            }
-            setCurrentWork(currentJob[0]);
-        };
         getCurrentJob();
-    }, []);
+    }, [getCurrentJob]);
 
     return (
         <motion.section

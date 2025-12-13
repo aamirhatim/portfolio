@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import { FirestoreDocType, PatentType } from '../../data/datatypes'
 import ExpPatentItem from '../atoms/ExpPatentItem'
@@ -28,18 +28,20 @@ export default function Patents() {
         amount: .1
     }
 
+    // Fetch patents
+    const getPatents = useCallback(async () => {
+        const patents = await getDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]);
+        if (!patents) {
+            setPatentList([]);
+            return;
+        }
+        setPatentList(patents);
+    }, [firebaseAppContext, setPatentList]);
+
     // Get list of patents
     useEffect( () => {
-        const getPatents = async () => {
-            const patents = await getDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]);
-            if (!patents) {
-                setPatentList([]);
-                return;
-            }
-            setPatentList(patents);
-        };
         getPatents();
-    }, []);
+    }, [getPatents]);
     
     return (
         <>
