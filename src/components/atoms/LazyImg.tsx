@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { useAppContext } from "../../context/appContext";
@@ -15,7 +15,7 @@ interface LazyImgProps {
 export default function LazyImg(props:LazyImgProps) {
     // Get context
     const fireBaseAppContext = useFirebaseAppContext();
-    const firebaseStorage = getStorage(fireBaseAppContext);
+    const firebaseStorage = useMemo(() => getStorage(fireBaseAppContext), [fireBaseAppContext]);
     const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
@@ -26,10 +26,13 @@ export default function LazyImg(props:LazyImgProps) {
 
     // Create refs
     const imgRef = useRef<HTMLImageElement>(null);
-    const overlayRef = useRef<HTMLDivElement>(null);
+
+    // Define styling
+    const imgClasses = `${props.fill ? 'object-fill' : 'object-cover'} ${props.positionClass}`;
+    const overlayOpacityClasses = (gotFinalUrl && imgLoaded) ? 'opacity-0' : 'opacity-100';
 
     // Image loader helper
-    const loadImage = async () => {
+    const loadImage = useCallback(async () => {
         let cache = imgUrlCache;
         let url:string;
 
@@ -47,7 +50,7 @@ export default function LazyImg(props:LazyImgProps) {
 
                 // Save URL to cache
                 cache.set(props.imgPath, url);
-                setImgUrlCache(cache);
+                setImgUrlCache(new Map(cache));
             } catch (error) {
                 console.error("Failed to load image or get download URL:", error);
                 setImgUrl(placeholder);
@@ -59,7 +62,7 @@ export default function LazyImg(props:LazyImgProps) {
         // Set final image url
         setGotFinalUrl(true);
         setImgUrl(url);
-    };
+    }, [imgUrlCache, firebaseStorage, props.imgPath, placeholder]);
 
     // useEffect for setting up observer
     useEffect(() => {
@@ -90,19 +93,7 @@ export default function LazyImg(props:LazyImgProps) {
             if (imgRef.current) {observer.unobserve(imgRef.current)};
             observer.disconnect();
         }
-    }, [props.imgPath, props.placeholderPath]);
-
-    // Handle overlay opacity when final image completes loading
-    useEffect(() => {
-        if (!overlayRef.current) return;
-        if (!gotFinalUrl) return;
-
-        if (imgLoaded) {
-            overlayRef.current.style.opacity = "0";
-        } else {
-            overlayRef.current.style.opacity = "1";
-        }
-    }, [imgLoaded, gotFinalUrl]);
+    }, [loadImage, imgRef, props.imgPath, props.placeholderPath]);
 
     return (
         <div className={`overflow-clip ${props.className}`}>
@@ -120,9 +111,9 @@ export default function LazyImg(props:LazyImgProps) {
                         console.error(`Error loading image: ${imgUrl}`);
                         setImgUrl(placeholder);
                     }}
-                    className={`h-full w-full ${props.fill ? 'object-fill' : 'object-cover'} ${props.positionClass}`}
+                    className={`h-full w-full ${imgClasses}`}
                 />
-                <div ref={overlayRef} className={`absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500`}></div>
+                <div className={`absolute top-0 left-0 h-full w-full backdrop-blur-md transition-opacity duration-500 ${overlayOpacityClasses}`}></div>
             </div>
         </div>
     )
