@@ -67,7 +67,7 @@ export default function Main() {
         <FirebaseAppContext.Provider value={firebaseApp}>
             <AppContext.Provider value={initContext}>
                 <Navbar />
-                <div className={`w-full mx-auto pb-10 ${isMobile ? 'pt-25' : 'pt-40'}`}>
+                <div className={`w-full mx-auto pb-40 ${isMobile ? 'pt-25' : 'pt-40'}`}>
                     <Outlet />
                 </div>
             </AppContext.Provider>
