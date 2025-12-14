@@ -6,7 +6,8 @@ import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
-import { motion } from "motion/react"
+import { motion, stagger, Transition } from "motion/react"
+import ScrollHint from "../atoms/ScrollHint"
 
 export default function HomePage() {
     // Get context
@@ -14,17 +15,18 @@ export default function HomePage() {
 
     // Init state
     const isMobile = useIsMobile();
-    const [introTxt, setIntroTxt] = useState<string>("");
+    const [introTxt, setIntroTxt] = useState<string[]>([]);
     const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
 
     // Fetch intro text
     const getIntroTxt = useCallback(async () => {
         const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
         if (!txt) {
-            setIntroTxt("");
+            setIntroTxt([]);
             return;
         }
-        setIntroTxt(txt[0].data.text);
+        const words = txt[0].data.text.split(" ");
+        setIntroTxt(words);
     }, [setIntroTxt]);
 
     // Fetch spotlight projects
@@ -41,30 +43,71 @@ export default function HomePage() {
 
     // Get intro and projects
     useEffect(() => {
-        
         getIntroTxt();
         getSpotlights();
     }, [getIntroTxt, getSpotlights]);
 
+    // Animation config
+    const containerTransition:Transition = {
+        delayChildren: stagger(0.03)
+    };
+    const childTransition:Transition = {
+        duration: 0.5
+    }
+    const container = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: containerTransition
+        }
+    };
+    const child = {
+        hidden: {
+            opacity: 0,
+            y: 20
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: childTransition
+        }
+    };
+
     return (
         <>
-        {introTxt !== "" &&
-            <div className="box-border flex flex-col w-full gap-40">
-                <motion.div
-                    className={`feature flex text-(--txt-feature-color) ${isMobile ? 'text-5xl px-4' : 'text-6xl w-[65%] px-10'}`}
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    transition={{duration: .8, ease: "easeOut"}}
-                >
-                    {introTxt}
-                </motion.div>
+        {introTxt.length > 0 &&
+            <div className="box-border flex flex-col w-full gap-5">
+                <div className="relative h-(--outlet-height) flex flex-col items-center justify-between">
+                    <motion.div
+                        className={`box-border feature w-full h-full flex flex-wrap content-start text-(--txt-feature-color) ${isMobile ? 'text-5xl px-4 gap-x-3 gap-y-2' : 'text-6xl pl-10 pr-[20%] gap-x-4 gap-y-6'}`}
+                        variants={container}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        {introTxt.map((word, idx) => (
+                            <motion.div
+                                key={idx}
+                                className="h-min"
+                                variants={child}
+                            >
+                                {word}
+                            </motion.div>
+                        ))}
+                    </motion.div>
+
+                    <div className="box-border pb-10">
+                        <ScrollHint classname="text-(--txt-subtitle-color)" />
+                    </div>
+                </div>
+                
 
                 {projSpotlightList.length > 0 &&
                     <motion.section
                         className="flex flex-col gap-8"
                         initial={{opacity: 0, y: 50}}
-                        animate={{opacity: 1, y: 0}}
-                        transition={{delay: 1, duration: .5, type: "spring", bounce: .3}}
+                        whileInView={{opacity: 1, y: 0}}
+                        viewport={{once: true, amount: .15}}
+                        transition={{duration: .5, type: "spring", bounce: .3}}
                     >
                         <div className={`title text-3xl ${isMobile ? 'px-4' : 'px-10'}`}>Featured work</div>
                         <div className={`flex flex-col gap-4`}>
