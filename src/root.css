@@ -8,9 +8,7 @@
     --txt-title-color: var(--color-indigo-900);
     --txt-subtitle-color: var(--color-stone-500);
     --txt-highlight-color: var(--color-indigo-700);
-    /* --txt-accent-color: var(--color-indigo-600); */
     --txt-link-color: var(--color-indigo-800);
-    /* --txt-inactive-color: var(--color-stone-300); */
     --border-color: var(--color-stone-300);
 
     --max-width: 1440px;
@@ -25,9 +23,7 @@
         --txt-title-color: var(--color-emerald-600);
         --txt-subtitle-color: var(--color-stone-400);
         --txt-highlight-color: var(--color-emerald-500);
-        /* --txt-accent-color: var(--color-indigo-600); */
         --txt-link-color: var(--color-emerald-500);
-        /* --txt-inactive-color: var(--color-stone-300); */
         --border-color: var(--color-stone-500);
     }
 }
