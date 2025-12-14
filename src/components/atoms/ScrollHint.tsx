@@ -9,12 +9,12 @@ export default function ScrollHint(props: {classname?:string}) {
 
     // Animation config
     const bounceTransition:Transition = {
-        delay: 2,
+        delay: 3,
         duration: .6,
         times: [0, .6, 1],
         repeat: Infinity,
         repeatType: "loop",
-        repeatDelay: 1.5,
+        repeatDelay: 2,
         ease: ["easeOut", [0.17, 2.76, 0.52, 0.99]]
     };
     const animate = {
