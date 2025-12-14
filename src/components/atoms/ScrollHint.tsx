@@ -11,19 +11,18 @@ export default function ScrollHint(props: {classname?:string}) {
     const bounceTransition:Transition = {
         delay: 3,
         duration: .6,
-        times: [0, .6, 1],
         repeat: Infinity,
         repeatType: "loop",
         repeatDelay: 2,
-        ease: ["easeOut", [0.17, 2.76, 0.52, 0.99]]
+        ease: ["easeOut"]
     };
     const animate = {
-        y: [20, 0, 20],
-        opacity: [1, .2, 1],
+        y: [0, 30],
+        opacity: [0, .5, 0],
         transition: bounceTransition
     };
     const initial = {
-        opacity: 1,
+        opacity: 0,
         transition: { duration: 1.5 }
     };
     const exit = {
