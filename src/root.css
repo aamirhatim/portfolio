@@ -16,15 +16,15 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color: var(--color-stone-800);
+        --bg-color: var(--color-stone-950);
         --bg-secondary-color: var(--color-stone-700);
         --txt-body-color: var(--color-stone-200);
         --txt-feature-color: var(--color-stone-200);
         --txt-title-color: var(--color-emerald-600);
-        --txt-subtitle-color: var(--color-stone-400);
+        --txt-subtitle-color: var(--color-stone-300);
         --txt-highlight-color: var(--color-emerald-500);
         --txt-link-color: var(--color-emerald-500);
-        --border-color: var(--color-stone-500);
+        --border-color: var(--color-stone-400);
     }
 }
 
