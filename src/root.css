@@ -12,6 +12,7 @@
     --border-color: var(--color-stone-300);
 
     --max-width: 1440px;
+    --outlet-height: calc(100vh - var(--spacing) * 40);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +26,12 @@
         --txt-highlight-color: var(--color-emerald-500);
         --txt-link-color: var(--color-emerald-500);
         --border-color: var(--color-stone-400);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    :root {
+        --outlet-height: calc(100vh - var(--spacing) * 20);
     }
 }
 
