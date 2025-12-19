@@ -11,14 +11,14 @@ import Navbar from "../molecules/Navbar";
 export default function Main() {
     // Get context
     const location = useLocation();
-    
+
     // Init state
     const isMobile = useIsMobile();
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
     const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
     // Init context
-    const initContext = useMemo(():AppContextInterface =>({
+    const initContext = useMemo((): AppContextInterface => ({
         navSelect: nav,
         setNavSelect: setNav,
         imgUrlCache: imgUrls,
@@ -26,8 +26,8 @@ export default function Main() {
     }), [nav, imgUrls]);
 
     // Init Firebase app
-    const firebaseApp:FirebaseApp = useMemo(() => {
-        const isLocal:boolean = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const firebaseApp: FirebaseApp = useMemo(() => {
+        const isLocal: boolean = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
         const app = initializeApp(firebaseConfig);
 
         if (isLocal) {
