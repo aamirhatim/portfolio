@@ -33,7 +33,6 @@ export default function ProjectsPage() {
             return acc;
         }, {});
 
-        console.log(projectsByYear);
         setProjectList(projectsByYear);
     }, [firebaseAppContext, setProjectList]);
 
