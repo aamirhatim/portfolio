@@ -8,7 +8,7 @@ import ProjectPopup from "./ProjectPopup";
 import { motion } from "motion/react";
 import usePreferredColorScheme from "../../lib/hooks/usePreferredColorScheme";
 
-export default function ProjectHighlight(props: {project:ProjectType, idx:number}) {
+export default function ProjectHighlight(props: { project: ProjectType, idx: number }) {
     // Get context
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
@@ -20,8 +20,8 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
 
     // Animation config
     const motionConfig = useMemo(() => {
-        const defaultPadding = isMobile ? '16px' : '40px';
-        const hoverPadding = isMobile ? '24px' : '48px';
+        const defaultPadding = '0';
+        const hoverPadding = '16px';
 
         const initial = {
             opacity: 0,
@@ -47,8 +47,8 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
             transition: { duration: .15 }
         }
 
-        return {initial, whileInView, viewport, hover}
-    }, [scheme, isMobile, colorToHex]);
+        return { initial, whileInView, viewport, hover }
+    }, [scheme, colorToHex]);
 
     // Nav handler
     const handleNav = useCallback(() => {
@@ -61,9 +61,6 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
             ref={highlightRef}
             key={scheme}
             className={`relative box-border flex items-center justify-between gap-2 py-2 border-b border-b-(--border-color)`}
-            initial={motionConfig.initial}
-            whileInView={motionConfig.whileInView}
-            viewport={motionConfig.viewport}
             whileHover={motionConfig.hover}
         >
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
@@ -76,19 +73,17 @@ export default function ProjectHighlight(props: {project:ProjectType, idx:number
         <motion.div
             ref={highlightRef}
             key={scheme}
-            className="relative cursor-pointer w-full pb-4 flex flex-col gap-2 border-b border-b-(--border-color)" 
+            className="relative cursor-pointer w-full pb-4 flex flex-col gap-2 border-b border-b-(--border-color)"
             onClick={handleNav}
-            initial={motionConfig.initial}
-            whileInView={motionConfig.whileInView}
-            viewport={motionConfig.viewport}
+            whileHover={motionConfig.hover}
         >
             <div className="title text-lg">{props.project.title}</div>
         </motion.div>
     )
-    
+
     return (
         <>
-        {isMobile ? mobileLayout : desktopLayout}
+            {isMobile ? mobileLayout : desktopLayout}
         </>
     )
 }
