@@ -53,7 +53,7 @@ export default function ProjectsPage() {
                 {projects.map((p, idx) => <ProjectItem key={idx} project={p} />)}
             </section>
         )
-    }, []);
+    }, [isMobile]);
 
     // Get list of projects
     useEffect(() => {
@@ -61,7 +61,7 @@ export default function ProjectsPage() {
     }, [getProjects]);
 
     return (
-        <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-6 w-full' : 'gap-20 max-w-[800px] mx-auto'}`}>
+        <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-20 max-w-[800px] mx-auto'}`}>
             {Object.keys(projectList).length > 0 &&
                 Object.entries(projectList).reverse().map(([year, projects]) => createProjectSection(projects, year))
             }
