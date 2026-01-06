@@ -2,6 +2,7 @@ import { DocumentData, WhereFilterOp } from "firebase/firestore"
 
 export type ProjectType = {
     id: string,
+    publishDate: string,
     title: string,
     subtitle: string,
     description: string,
@@ -60,7 +61,7 @@ export type TableBlockType = BaseArticleBlock & {
     content: string[][],
 }
 
-export type ArticleBlockType = 
+export type ArticleBlockType =
     | ParagraphBlockType
     | ImageBlockType
     | CodeBlockType
@@ -94,7 +95,7 @@ export type JobType = {
 export type EducationType = {
     id: string,
     degree: {
-        short:string,
+        short: string,
         long: string,
     },
     field: string,
