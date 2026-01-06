@@ -7,7 +7,7 @@ import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
 import { motion } from "motion/react";
 
-export default function ProjectItem(props: {project:ProjectType}) {
+export default function ProjectItem(props: { project: ProjectType }) {
     // Get context
     const isMobile = useIsMobile();
     const hasLinks = props.project.code || props.project.video || props.project.article;
@@ -23,7 +23,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
     const whileInView = {
         opacity: 1,
         y: 0,
-        transition: { duration: .3, easing: "easeOut" }
+        transition: { duration: .2, easing: "easeOut" }
     }
     const viewport = {
         once: true,
@@ -75,7 +75,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
             <ChipGroup list={props.project.skills} />
             <div className='text-lg'>{props.project.description}</div>
 
-            
+
             {hasLinks &&
                 <div className='flex gap-3 justify-center'>
                     {props.project.code && <ProjectLink value='Code' url={props.project.code} showText={true} />}
@@ -88,7 +88,7 @@ export default function ProjectItem(props: {project:ProjectType}) {
 
     return (
         <>
-        {isMobile ? mobileLayout : desktopLayout}
+            {isMobile ? mobileLayout : desktopLayout}
         </>
     )
 }
