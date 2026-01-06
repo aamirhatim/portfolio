@@ -4,7 +4,7 @@ import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useCallback, useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
-import { where } from "firebase/firestore"
+import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 import { motion, stagger, Transition } from "motion/react"
 
@@ -30,15 +30,17 @@ export default function HomePage() {
 
     // Fetch spotlight projects
     const getSpotlights = useCallback(async () => {
-        const filter = where("spotlight", "==", true);
-
-        const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
+        const filter = [
+            where("spotlight", "==", true),
+            orderBy("publishDate", "desc")
+        ];
+        const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", filter);
         if (!spotlights) {
             setProjSpotlightList([]);
             return;
         }
         setProjSpotlightList(spotlights);
-    }, [setProjSpotlightList]);
+    }, [firebaseAppContext, setProjSpotlightList]);
 
     // Get intro and projects
     useEffect(() => {
