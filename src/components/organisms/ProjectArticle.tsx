@@ -20,7 +20,7 @@ type ProjectArticleProps = {
     transitionDir: "next" | "prev",
 }
 
-type ArticleImportFn = () => Promise<ArticleType|undefined>;
+type ArticleImportFn = () => Promise<ArticleType | undefined>;
 
 // Create a map of all articles so the right one can be imported when queried
 const articleModules: Record<string, ArticleImportFn> = import.meta.glob("/src/data/articles/*.json") as Record<string, ArticleImportFn>;
@@ -39,10 +39,10 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
     // Init state
     const [project, setProject] = useState<ProjectType>();
-    const [article, setArticle] = useState<ArticleType|undefined>(undefined);
+    const [article, setArticle] = useState<ArticleType | undefined>(undefined);
 
     // Create section for article block
-    const createSection = (block:ArticleBlockType, key:number) => {
+    const createSection = (block: ArticleBlockType, key: number) => {
         let e = <></>;
 
         switch (block.type) {
@@ -54,7 +54,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                             children={block.content}
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeKatex]}
-                            components={{a: linkRenderer}}
+                            components={{ a: linkRenderer }}
                         />
                     </div>
                 );
@@ -79,7 +79,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     case "xl":
                         size = 'w-[500px]';
                         break;
-                
+
                     default:
                         break;
                 };
@@ -115,17 +115,17 @@ export default function ProjectArticle(props: ProjectArticleProps) {
             case "title":
                 switch (block.level) {
                     case 0:
-                        e = ( <h2 className="title">{block.content}</h2> );
+                        e = (<h2 className="title">{block.content}</h2>);
                         break;
 
                     case 1:
-                        e = ( <h3 className="title">{block.content}</h3> );
+                        e = (<h3 className="title">{block.content}</h3>);
                         break;
 
                     case 2:
-                        e = ( <h4 className="title">{block.content}</h4> );
+                        e = (<h4 className="title">{block.content}</h4>);
                         break;
-                
+
                     default:
                         break;
                 };
@@ -133,16 +133,16 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
             case "list":
                 // Create list item objects
-                const listItems = block.items.map((i, liKey) => 
+                const listItems = block.items.map((i, liKey) =>
                     <li key={liKey}>
                         <ReactMarkdown
                             children={i}
                             remarkPlugins={[remarkGfm, remarkMath]}
                             rehypePlugins={[rehypeKatex]}
                             components={{
-                                p: ({children}) => <>{children}</>,  // Remove <p> tag from list items
+                                p: ({ children }) => <>{children}</>,  // Remove <p> tag from list items
                                 a: linkRenderer
-                            }} 
+                            }}
                         />
                     </li>
                 );
@@ -194,7 +194,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                     </div>
                 );
                 break;
-        
+
             default:
                 break;
         };
@@ -273,7 +273,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                         className='h-full w-full grayscale-75 opacity-20 rounded-t-xl'
                     />
                 }
-                <div className="absolute top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
+                <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
             </div>
 
             <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-4' : 'max-w-[800px] mx-auto'}`}>
@@ -284,18 +284,18 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 </div>
 
                 {article !== undefined
-                    ?   <>
-                            <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
-                            {article.blocks.map((b, key) => createSection(b, key))}
+                    ? <>
+                        <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
+                        {article.blocks.map((b, key) => createSection(b, key))}
 
-                            <div>
+                        <div>
                             <div className="mt-20 title text-lg text-(--txt-title-color) mb-3">Keywords</div>
-                                <ChipGroup list={project?.skills || []} />
-                            </div>
-                        </>
-                    :   <div className="border border-(--border-color) p-6 rounded-xl">
-                            <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                            <ChipGroup list={project?.skills || []} />
                         </div>
+                    </>
+                    : <div className="border border-(--border-color) p-6 rounded-xl">
+                        <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                    </div>
                 }
             </div>
         </div>
