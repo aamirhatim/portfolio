@@ -1,0 +1,172 @@
+I. Object types
+
+Below are the types of text that you will find in an article as well as how to convert the text into a JSON object. The objects are:
+- Paragraph
+- Title
+- List
+- Formula
+- Code
+- Image
+
+a. JSON object representations
+
+{
+    “type”: “paragraph”,
+    “content”: string
+},
+{
+	“type”: “title”,
+	“level”: 0 || 1 || 2,
+	“content”: string
+},
+{
+	“type”: “list”,
+	“title”: string,
+	“border”: boolean,
+	“ordered”: boolean,
+	“items”: string[]
+},
+{
+	“type”: “formula”,
+	“content”: string
+},
+{
+	“type”: “code”,
+	“language”: string,
+	“content”: string
+},
+{
+	“type”: “image”,
+	“url”: string,
+	“size”: “sm” || “md” || “lg” || “xl”,
+	“caption”: string
+}
+
+II. Detection & Conversion
+
+a. Publish Date
+The publish date of the article is always the very first line of the file. It will only contain a month's name and the year (e.g. “March 2020”). It will be represented as a regular text with no title hashes. Be sure that the publish date is NOT included in the rest of the text “blocks” of the final JSON object.
+
+b. Titles
+Use the following guide for determining the `level` property for titles:
+#	-> “level”: 0
+##	-> “level”: 1
+###	-> “level”: 2
+
+DO NOT treat four hash marks (####) as a title - this is reserved for a list object title.
+
+c. Paragraphs
+Paragraphs will not have any hashes preceding them. If you encounter a line break between text, treat that as the end of one paragraph block and the beginning of another.
+
+d. Lists
+Lists can be represented using bullets, dashes or numbers. Lists with bullets or dashes are unordered lists. Lists with numbers are always ordered lists. If a list has a title, it will be defined by 4 hash marks (####). Here is an example of a list:
+
+#### List title
+- item
+- item
+
+e. Formulas
+Formulas will be defined using the common LaTeX or KaTeX styles, primarily the single or double $ characters enclosing the entire formula.
+
+f. Images
+Images will always follow the this format: (url)(size)[caption]
+
+g. Code 
+Code blocks will always be enclosed by 3 tick marks, with the beginning tick set having the programming language immediately after it. Here is an example:
+
+```python
+# python code here
+```
+
+III. Other Notes
+An article is assumed to always be in markdown format. If you notice that it isn’t in markdown, stop the conversion and let me know
+Give all lists a border by default
+Hyperlinks will be represented in standard markdown format
+
+IV. Example
+
+a. Markdown (input):
+
+January 2026
+
+# Article title
+
+(test_photo.jpg)(md)[This is a caption of the test photo]
+
+This is some text after the title.
+
+## Section 1
+
+#### Title for a list
+- item 1
+- item 2
+
+### Math stuff
+
+$A = \pi r^2$
+
+#### Here’s an ordered list
+1. Item 1
+2. Item 2
+3. Item 3
+
+```python
+If __name__ == “__main__”:
+main()
+```
+
+b. Converted JSON (output):
+
+{
+	“publishDate”: “January 2026”,
+	“blocks”: [
+        {
+            “type”: “title”,
+            “level”: 0,
+            “content”: “Article title”
+        },
+        {
+            “type”: “image”,
+            “size”: “md”,
+            “url”: “test_photo.jpg”,
+            “caption”: “This is a caption of the test photo”
+        },
+        {
+            “type”: “paragraph”,
+            “content”: “This is some text after the title.”
+        },
+        {
+            “type”: “title”,
+            “level”: 1,
+            “content”: “Section 1”
+        },
+        {
+            “type”: “list”,
+            “title”: “Title for a list”,
+            “border”: true,
+            “ordered”: false,
+            “items”: [“item 1”, “item 2”]
+        },
+        {
+            “type”: “title”,
+            “level”: 2,
+            “content”: “Math stuff”
+        },
+        {
+            “type”: “formula”,
+            “content”: “$A = \pi r^2$”
+        },
+        {
+            “type”: “list”,
+            “title”: “Here’s an ordered list”,
+            “border”: true,
+            “ordered”: false,
+            “items”: [“Item 1”, “Item 2”, “Item 3”]
+        },
+        {
+            “type”: “code”,
+            “language”: “python”,
+            “content”: “If __name__ == \“__main__\”:\n\tmain()”
+        }
+    ]
+}
