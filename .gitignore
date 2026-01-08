@@ -35,3 +35,4 @@ backups
 emulators_data
 *.rules
 serviceAccountKey.json
+firebase-export-*/
