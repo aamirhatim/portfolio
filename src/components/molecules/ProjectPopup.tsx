@@ -6,11 +6,11 @@ import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import ReactDOM from "react-dom";
 
 interface ProjectPopupProps {
-    refDiv: React.RefObject<HTMLDivElement|null>,
-    projectId:string,
+    refDiv: React.RefObject<HTMLDivElement | null>,
+    projectId: string,
 }
 
-export default function ProjectPopup(props:ProjectPopupProps) {
+export default function ProjectPopup(props: ProjectPopupProps) {
     const { refDiv, projectId } = props;
 
     // Get context
@@ -24,7 +24,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     const [bgImgUrl, setBgImgUrl] = useState<string>("");
 
     // Create refs
-    const intervalRef = useRef<NodeJS.Timeout|undefined>(undefined);
+    const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const indexRef = useRef<number>(0);
 
     // Animations
@@ -62,11 +62,11 @@ export default function ProjectPopup(props:ProjectPopupProps) {
 
         // Uodate first image
         if (fileUrls.length > 0) {
-            setBgImgUrl(fileUrls[0]); 
+            setBgImgUrl(fileUrls[0]);
         }
 
         // Create interval to cycle through previews
-        intervalRef.current = setInterval(intervalHandler, 1000); 
+        intervalRef.current = setInterval(intervalHandler, 1000);
     }, [intervalHandler, fileUrls]);
 
     // Handler for mouse leave event
@@ -81,7 +81,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     }, []);
 
     // Handler for mouse movement
-    const handleMouseMove = useCallback((e:MouseEvent) => {
+    const handleMouseMove = useCallback((e: MouseEvent) => {
         // Define offset
         const offsetY = 20;
         const offsetX = 20;
@@ -99,19 +99,33 @@ export default function ProjectPopup(props:ProjectPopupProps) {
         if (!references) return;
 
         // Load images into url cache
-        let urls:string[] = [];
+        let urls: string[] = [];
         const promises = references.map(async r => {
             const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
-            
+
             // Add path to url array
             if (imgUrl) {
+                // Ensure image is fully loaded by the browser
+                await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Attempt to decode the image to ensure it's ready to be rendered
+                        if ('decode' in img) {
+                            img.decode().then(resolve).catch(resolve); // Proceed even if decode fails
+                        } else {
+                            resolve(true);
+                        }
+                    };
+                    img.onerror = reject;
+                    img.src = imgUrl;
+                });
                 urls.push(imgUrl);
             }
         });
 
-        // Wait for all cache loads to complete
+        // Wait for all cache loads and preloads to complete
         await Promise.all(promises);
-        
+
         // Update states
         setFileUrls(urls);
         setPreviewsLoaded(true);
@@ -121,7 +135,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     useEffect(() => {
         getFileUrls();
     }, [getFileUrls]);
-    
+
     // Create mouse event listeners once files have been loaded
     useEffect(() => {
         if (!refDiv.current || !previewsLoaded) return;
@@ -157,7 +171,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
             {vis &&
                 <motion.div
                     className={`fixed top-0 left-0 box-border border bg-center bg-cover z-[9999]`}
-                    style={{x, y, backgroundImage: `url("${bgImgUrl}")`}}
+                    style={{ x, y, backgroundImage: `url("${bgImgUrl}")` }}
                     initial={initial}
                     animate={animate}
                     exit={exit}
@@ -167,7 +181,7 @@ export default function ProjectPopup(props:ProjectPopupProps) {
     );
 
     // Render element via React portal
-    return useMemo(() => 
-        ReactDOM.createPortal(popupElement, portalRoot), 
-    [popupElement, portalRoot]);
+    return useMemo(() =>
+        ReactDOM.createPortal(popupElement, portalRoot),
+        [popupElement, portalRoot]);
 }
