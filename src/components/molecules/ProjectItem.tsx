@@ -74,6 +74,8 @@ export default function ProjectItem(props: { project: ProjectType }) {
                     </div>
                 </div>
 
+                <div className={'text-lg italic text-(--txt-subtitle-color) mb-4'}>{props.project.subtitle}</div>
+
                 <div className='text-xl text-(--txt-subtitle-color) w-full mb-4'>{props.project.description}</div>
                 {hasArticle && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg" />}
                 <ChipGroup list={props.project.skills} />
@@ -88,7 +90,11 @@ export default function ProjectItem(props: { project: ProjectType }) {
             whileInView={whileInView}
             viewport={viewport}
         >
-            <div className={'title text-2xl'}>{props.project.title}</div>
+            <div>
+                <div className={'title text-2xl'}>{props.project.title}</div>
+                <div className={'text-lg italic text-(--txt-subtitle-color)'}>{props.project.subtitle}</div>
+            </div>
+
             <ChipGroup list={props.project.skills} />
             <div className='text-lg'>{props.project.description}</div>
 
