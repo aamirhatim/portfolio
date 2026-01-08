@@ -4,13 +4,30 @@ import ProjectLink from '../atoms/ProjectLink'
 import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from "motion/react";
+
+// Create a map of all articles so we can check if one exists for the project
+const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function ProjectItem(props: { project: ProjectType }) {
     // Get context
     const isMobile = useIsMobile();
-    const hasLinks = props.project.code || props.project.video || props.project.article;
+
+    // State to check if an article exists
+    const [hasArticle, setHasArticle] = useState(false);
+
+    // Check if an article exists for the project
+    useEffect(() => {
+        const articlePath = `/src/data/articles/${props.project.id}.json`;
+        if (articleModules[articlePath]) {
+            setHasArticle(true);
+        } else {
+            setHasArticle(false);
+        }
+    }, [props.project.id]);
+
+    const hasLinks = props.project.code || props.project.video || hasArticle;
 
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
@@ -53,12 +70,12 @@ export default function ProjectItem(props: { project: ProjectType }) {
                     <div className='flex gap-2 pr-10'>
                         {props.project.code && <ProjectLink value='code' url={props.project.code} newTab={true} />}
                         {props.project.video && <ProjectLink value='video' url={props.project.video} newTab={true} />}
-                        {props.project.article && <ProjectLink value='blog' url={`/projects/${props.project.id}`} />}
+                        {hasArticle && <ProjectLink value='blog' url={`/projects/${props.project.id}`} />}
                     </div>
                 </div>
 
                 <div className='text-xl text-(--txt-subtitle-color) w-full mb-4'>{props.project.description}</div>
-                {props.project.article && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg" />}
+                {hasArticle && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg" />}
                 <ChipGroup list={props.project.skills} />
             </div>
         </motion.div>
@@ -80,7 +97,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
                 <div className='flex gap-3 justify-center'>
                     {props.project.code && <ProjectLink value='Code' url={props.project.code} showText={true} />}
                     {props.project.video && <ProjectLink value='Video' url={props.project.video} showText={true} />}
-                    {props.project.article && <ProjectLink value='Article' url={`/projects/${props.project.id}`} showText={true} />}
+                    {hasArticle && <ProjectLink value='Article' url={`/projects/${props.project.id}`} showText={true} />}
                 </div>
             }
         </motion.div>
