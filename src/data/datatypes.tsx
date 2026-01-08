@@ -8,7 +8,6 @@ export type ProjectType = {
     description: string,
     skills: string[],
     img: string,
-    article?: boolean,
     code?: string,
     video?: string,
 }
