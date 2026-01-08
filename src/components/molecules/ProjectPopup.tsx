@@ -170,7 +170,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         <AnimatePresence>
             {vis &&
                 <motion.div
-                    className={`fixed top-0 left-0 box-border border bg-center bg-cover z-[9999]`}
+                    className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999]`}
                     style={{ x, y, backgroundImage: `url("${bgImgUrl}")` }}
                     initial={initial}
                     animate={animate}
