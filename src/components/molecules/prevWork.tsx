@@ -5,6 +5,7 @@ import ExpJobItem from "../atoms/ExpJobItem"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import { motion } from "motion/react"
+import AnimateInView from "../atoms/AnimateInView"
 
 export default function PrevWork() {
     // Get context
@@ -44,25 +45,25 @@ export default function PrevWork() {
     }, [firebaseAppContext, setPrevWorkList]);
 
     // Get list of previous jobs
-    useEffect( () => {
+    useEffect(() => {
         getPrevWork();
     }, [getPrevWork]);
 
     return (
         <>
-        {prevWorkList.length > 0 &&
-            <motion.section
-                className="flex flex-col gap-15"
-                initial={initial}
-                whileInView={whileInView}
-                viewport={viewport}
-            >
-                <div className='title text-4xl text-(--txt-title-color)'>previous roles.</div>
-                <div className='flex flex-col gap-10'>
-                    {prevWorkList.map((job, idx) => <ExpJobItem key={idx} job={job.data as JobType} />)}
-                </div>
-            </motion.section>
-        }
+            {prevWorkList.length > 0 &&
+                <motion.section
+                    className="flex flex-col gap-15"
+                    initial={initial}
+                    whileInView={whileInView}
+                    viewport={viewport}
+                >
+                    <div className='title text-4xl text-(--txt-title-color)'>previous roles.</div>
+                    <div className='flex flex-col gap-10'>
+                        {prevWorkList.map((job, idx) => <AnimateInView key={idx}><ExpJobItem job={job.data as JobType} /></AnimateInView>)}
+                    </div>
+                </motion.section>
+            }
         </>
     )
 }
