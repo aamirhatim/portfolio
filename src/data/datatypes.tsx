@@ -88,7 +88,7 @@ export type JobType = {
     start: string,
     end?: string,
     skills?: Array<string>,
-    summary?: string,
+    detail?: string,
 }
 
 export type EducationType = {
