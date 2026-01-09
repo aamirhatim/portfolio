@@ -24,22 +24,11 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
         const hoverPadding = '16px';
 
         const initial = {
-            opacity: 0,
-            y: 50,
+            opacity: 1,
+            y: 0,
             color: colorToHex('--txt-body-color'),
             paddingLeft: defaultPadding,
             paddingRight: defaultPadding
-        }
-        const whileInView = {
-            opacity: 1,
-            y: 0,
-            paddingLeft: defaultPadding,
-            paddingRight: defaultPadding,
-            transition: { duration: .3, easing: "easeOut" }
-        }
-        const viewport = {
-            once: true,
-            amount: .5
         }
         const hover = {
             paddingLeft: hoverPadding,
@@ -47,7 +36,7 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
             transition: { duration: .15 }
         }
 
-        return { initial, whileInView, viewport, hover }
+        return { initial, hover }
     }, [scheme, colorToHex]);
 
     // Nav handler
@@ -61,6 +50,7 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
             ref={highlightRef}
             key={scheme}
             className={`relative box-border flex items-center justify-between gap-2 py-2 border-b border-b-(--border-color)`}
+            initial={motionConfig.initial}
             whileHover={motionConfig.hover}
         >
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
@@ -75,6 +65,7 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
             key={scheme}
             className="relative cursor-pointer w-full pb-4 flex flex-col gap-2 border-b border-b-(--border-color)"
             onClick={handleNav}
+            initial={motionConfig.initial}
             whileHover={motionConfig.hover}
         >
             <div className="title text-lg">{props.project.title}</div>
