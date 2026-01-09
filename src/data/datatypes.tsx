@@ -10,6 +10,7 @@ export type ProjectType = {
     img: string,
     code?: string,
     video?: string,
+    spotlight?: boolean,
 }
 
 export type BaseArticleBlock = {
