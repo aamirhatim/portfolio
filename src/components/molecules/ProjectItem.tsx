@@ -33,19 +33,6 @@ export default function ProjectItem(props: { project: ProjectType }) {
     const projectItemRef = useRef<HTMLDivElement>(null);
 
     // Animation config
-    const initial = {
-        opacity: 0,
-        y: 50
-    }
-    const whileInView = {
-        opacity: 1,
-        y: 0,
-        transition: { duration: .2, easing: "easeOut" }
-    }
-    const viewport = {
-        once: true,
-        amount: .5
-    }
     const hover = {
         scale: 1.02,
         transition: { duration: .1, easing: "easeOut" }
@@ -57,9 +44,6 @@ export default function ProjectItem(props: { project: ProjectType }) {
             ref={projectItemRef}
             className={`box-border w-full flex`}
             whileHover={hover}
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
         >
             <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
 
@@ -84,12 +68,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
     );
 
     const mobileLayout = (
-        <motion.div
-            className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl'
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
-        >
+        <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl'>
             <div>
                 <div className={'title text-2xl'}>{props.project.title}</div>
                 <div className={'text-lg italic text-(--txt-subtitle-color)'}>{props.project.subtitle}</div>
@@ -106,7 +85,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
                     {hasArticle && <ProjectLink value='Article' url={`/projects/${props.project.id}`} showText={true} />}
                 </div>
             }
-        </motion.div>
+        </div>
     );
 
     return (

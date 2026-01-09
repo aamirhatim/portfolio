@@ -5,7 +5,7 @@ import ProjectItem from "../molecules/ProjectItem"
 import { ProjectType } from "../../data/datatypes";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import { orderBy } from "firebase/firestore";
-import { motion } from "motion/react";
+import AnimateInView from "../atoms/AnimateInView";
 
 export default function ProjectsPage() {
     // Get context
@@ -39,17 +39,8 @@ export default function ProjectsPage() {
     const createProjectSection = useCallback((projects: ProjectType[], year: string) => {
         return (
             <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-18'}`}>
-                <motion.h2
-                    className='!m-0'
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: .1 }}
-                    transition={{ duration: .2, ease: "easeOut" }}
-                >
-                    {year}
-                </motion.h2>
-
-                {projects.map((p, idx) => <ProjectItem key={idx} project={p} />)}
+                <AnimateInView><h2 className='!m-0'>{year}</h2></AnimateInView>
+                {projects.map((p, idx) => <AnimateInView key={idx}><ProjectItem project={p} /></AnimateInView>)}
             </section>
         )
     }, [isMobile]);
