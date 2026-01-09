@@ -42,27 +42,30 @@ export default function CurrentWork() {
     }, [firebaseAppContext, setCurrentWork]);
 
     // Get current work
-    useEffect( () => {
+    useEffect(() => {
         getCurrentJob();
     }, [getCurrentJob]);
 
     return (
-        <motion.section
-            className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
-        >
+        <>
             {currentWork !== undefined &&
-                <>
-                <div className='text-lg text-(--txt-subtitle-color)'>Current role (since {currentWork.data.start})</div>
-                <div className='text-3xl title'>{currentWork.data.title} <span className='text-(--txt-subtitle-color)'>@{currentWork.data.company}</span></div>
-                <div className='box-border text-xl'>{currentWork.data.summary}</div>
-                {currentWork.data.skills &&
-                    <ChipGroup list={currentWork.data.skills} />
-                }
-                </>
+                <motion.section
+                    className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}
+                    initial={initial}
+                    whileInView={whileInView}
+                    viewport={viewport}
+                >
+                    <div className='title text-4xl text-(--txt-title-color) mb-10'>current role.</div>
+                    <div>
+                        <div className='text-md text-(--txt-subtitle-color) mb-2'>{currentWork.data.start} - Present</div>
+                        <div className='text-3xl title'>{currentWork.data.title} <span className='text-(--txt-subtitle-color)'>@{currentWork.data.company}</span></div>
+                    </div>
+                    <div className='box-border text-xl'>{currentWork.data.summary}</div>
+                    {currentWork.data.skills &&
+                        <ChipGroup list={currentWork.data.skills} />
+                    }
+                </motion.section>
             }
-        </motion.section>
+        </>
     )
 }
