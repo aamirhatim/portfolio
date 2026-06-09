@@ -3,7 +3,7 @@
   "private": true,
   "version": "9.0.0",
   "type": "module",
-  "homepage": "https://aamirhatim.com",
+  "homepage": "https://aamirhusain.me",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
