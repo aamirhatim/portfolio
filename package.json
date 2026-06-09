@@ -15,15 +15,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
-    "@fortawesome/free-brands-svg-icons": "^6.7.2",
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
-    "@fortawesome/react-fontawesome": "^0.2.2",
     "@tailwindcss/vite": "^4.1.13",
     "colorjs.io": "^0.5.2",
     "firebase": "^12.4.0",
     "katex": "^0.16.25",
     "lodash": "^4.17.21",
+    "lucide-react": "^1.17.0",
     "motion": "^12.23.26",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

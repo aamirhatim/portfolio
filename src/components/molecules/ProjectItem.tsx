@@ -6,8 +6,7 @@ import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef, useState, useEffect } from 'react';
 import { motion } from "motion/react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStarOfLife } from '@fortawesome/free-solid-svg-icons';
+import { Asterisk } from 'lucide-react';
 
 // Create a map of all articles so we can check if one exists for the project
 const articleModules = import.meta.glob("/src/data/articles/*.json");
@@ -56,7 +55,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
                         <div className={'title text-2xl'}>{project.title}</div>
                         {project.spotlight && (
                             <div className='absolute top-0 right-full pt-1 pr-4 !text-(--txt-highlight-color)'>
-                                <FontAwesomeIcon icon={faStarOfLife} size='xs' />
+                                <Asterisk size={12} />
                             </div>
                         )}
                     </div>
@@ -81,7 +80,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
         <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl relative'>
             {project.spotlight && (
                 <div className='absolute top-4 right-4 !text-(--txt-highlight-color)'>
-                    <FontAwesomeIcon icon={faStarOfLife} size='sm' />
+                    <Asterisk size={16} />
                 </div>
             )}
             <div>

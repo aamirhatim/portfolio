@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesDown } from "@fortawesome/free-solid-svg-icons";
+import { ChevronsDown } from "lucide-react";
 import { AnimatePresence, motion, Transition } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -60,7 +59,7 @@ export default function ScrollHint(props: {classname?:string}) {
                     animate={animate}
                     exit={exit}
                 >
-                    <FontAwesomeIcon icon={faAnglesDown} size='lg' />
+                    <ChevronsDown size={28} />
                 </motion.div>
             }
         </AnimatePresence>

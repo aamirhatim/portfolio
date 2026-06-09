@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnglesRight } from "@fortawesome/free-solid-svg-icons";
+import { ChevronsRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo } from "react";
 import usePreferredColorScheme from "../../lib/hooks/usePreferredColorScheme";
@@ -49,7 +48,7 @@ export default function ArrowBtn(props:{text:string, link:string, className?:str
             whileTap={motionConfig.tap}
         >
             <div>{props.text}</div>
-            <FontAwesomeIcon icon={faAnglesRight} size='sm' />
+            <ChevronsRight size={16} />
         </motion.div>
     )
 }

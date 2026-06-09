@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router"
 import ProjectArticle from "../organisms/ProjectArticle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
@@ -75,11 +74,11 @@ export default function ProjectViewer() {
 
             <div className="flex w-full px-[15%] py-20 justify-between">
                 <div className={`${arrowClasses} left-0 justify-end ${isFirstProject && 'opacity-30'}`} onClick={() => navProject("prev")}>
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
+                    <CircleArrowLeft size={32} />
                 </div>
 
                 <div className={`${arrowClasses} right-0 justify-start ${isLastProject && 'opacity-30'}`} onClick={() => navProject("next")}>
-                    <FontAwesomeIcon icon={faArrowAltCircleRight} size="2xl" />
+                    <CircleArrowRight size={32} />
                 </div>
             </div>
         </div>
