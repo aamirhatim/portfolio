@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAppContext } from "../../context/appContext";
+
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
@@ -15,7 +15,6 @@ export default function ProjectPopup(props: ProjectPopupProps) {
 
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
-    const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
     const [vis, setVis] = useState<boolean>(false);
@@ -101,7 +100,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         // Load images into url cache
         let urls: string[] = [];
         const promises = references.map(async r => {
-            const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
+            const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath);
 
             // Add path to url array
             if (imgUrl) {
@@ -129,7 +128,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         // Update states
         setFileUrls(urls);
         setPreviewsLoaded(true);
-    }, [firebaseAppContext, imgUrlCache, setImgUrlCache, projectId]);
+    }, [firebaseAppContext, projectId]);
 
     // Get all preview images for project
     useEffect(() => {

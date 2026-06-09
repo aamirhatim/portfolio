@@ -50,12 +50,21 @@ export default function Navbar() {
             transition={transition}
         >
             <nav className='box-border px-10 w-full mx-auto max-w-(--max-width) flex items-center gap-8'>
-                <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
+                <button aria-label="Home" className="cursor-pointer appearance-none bg-transparent border-none p-0" onClick={() => handleNavClick("home")}>
+                    <Logo className='h-5 w-auto fill-(--txt-body-color)' />
+                </button>
 
                 <div className='flex grow justify-start gap-8 h-full'>
                     {
                         navItems.map((n, idx) => (
-                            <div key={idx} className={`cursor-pointer px-1 py-1 content-center title text-md hover:text-(--txt-highlight-color) border-t-1 transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-subtitle-color) !border-(--txt-subtitle-color)' : 'text-(--txt-subtitle-color) !border-transparent'}`} onClick={() => handleNavClick(n)}>{n}</div>
+                            <button
+                                key={idx}
+                                aria-label={n}
+                                className={`cursor-pointer appearance-none bg-transparent px-1 py-1 content-center title text-md hover:text-(--txt-highlight-color) border-t-1 transition-colors ${appContext.navSelect.startsWith(n) ? 'text-(--txt-subtitle-color) !border-(--txt-subtitle-color)' : 'text-(--txt-subtitle-color) !border-transparent'}`}
+                                onClick={() => handleNavClick(n)}
+                            >
+                                {n}
+                            </button>
                         ))
                     }
                 </div>
@@ -72,7 +81,9 @@ export default function Navbar() {
             animate={animationConfig.animate}
             transition={transition}
         >
-            <Logo className='cursor-pointer h-5 w-auto fill-(--txt-body-color)' onClick={() => handleNavClick("home")} />
+            <button aria-label="Home" className="cursor-pointer appearance-none bg-transparent border-none p-0" onClick={() => handleNavClick("home")}>
+                <Logo className='h-5 w-auto fill-(--txt-body-color)' />
+            </button>
             <NavMenu />
         </motion.div>
     );

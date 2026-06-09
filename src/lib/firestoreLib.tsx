@@ -86,29 +86,28 @@ export async function getFileFromFirebaseStorage(firebaseApp:FirebaseApp, filepa
 }
 
 
+const globalImgCache = new Map<string, string>();
+
 // Load Firebase Storage image URL into cache
-export async function loadImgIntoCache(firebaseApp:FirebaseApp, imgPath:string, imgCache:Map<string, string>, setImgCache:(value: React.SetStateAction<Map<string, string>>) => void) {
+export async function loadImgIntoCache(firebaseApp:FirebaseApp, imgPath:string) {
     const storage = getStorage(firebaseApp);
-    let cache = imgCache;
 
     // Check image cache
-    if (!cache.has(imgPath)) {
+    if (!globalImgCache.has(imgPath)) {
         // Get url from Firebase Storage
         try {
             const imgRefFromStorage = ref(storage, imgPath);
             const url = await getDownloadURL(imgRefFromStorage);
 
             // Save URL to cache
-            cache.set(imgPath, url);
-            setImgCache(cache);
+            globalImgCache.set(imgPath, url);
             return url;
         } catch (error) {
             console.error("Failed to load image or get download URL:", error);
             return null;
         }
     } else {
-        console.log(`Image already cached, skipping: ${imgPath}`);
-        return cache.get(imgPath);
+        return globalImgCache.get(imgPath);
     }
 }
 

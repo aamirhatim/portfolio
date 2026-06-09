@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
-import { useAppContext } from "../../context/appContext";
 
 interface LazyImgProps {
     imgPath: string,
@@ -12,11 +11,13 @@ interface LazyImgProps {
     placeholderPath?: string,
 }
 
+// Module-level cache to share across instances without triggering React context re-renders
+const moduleImgCache = new Map<string, string>();
+
 export default function LazyImg(props:LazyImgProps) {
     // Get context
     const fireBaseAppContext = useFirebaseAppContext();
     const firebaseStorage = useMemo(() => getStorage(fireBaseAppContext), [fireBaseAppContext]);
-    const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
     const placeholder = props.placeholderPath ? props.placeholderPath : "/placeholder.gif";
@@ -33,24 +34,19 @@ export default function LazyImg(props:LazyImgProps) {
 
     // Image loader helper
     const loadImage = useCallback(async () => {
-        let cache = imgUrlCache;
         let url:string;
 
-        // Check cache first
-        if (cache.has(props.imgPath)) {
-            // console.log(`Cache HIT for: ${props.imgPath}`);
-            url = cache.get(props.imgPath)!;
+        // Check module cache first
+        if (moduleImgCache.has(props.imgPath)) {
+            url = moduleImgCache.get(props.imgPath)!;
         } else {
-            // console.log(`Cache MISS for: ${props.imgPath}. Fetching from Firebase...`);
-
             // Get url from Firebase Storage
             try {
                 const imgRefFromStorage = ref(firebaseStorage, props.imgPath);
                 url = await getDownloadURL(imgRefFromStorage);
 
                 // Save URL to cache
-                cache.set(props.imgPath, url);
-                setImgUrlCache(new Map(cache));
+                moduleImgCache.set(props.imgPath, url);
             } catch (error) {
                 console.error("Failed to load image or get download URL:", error);
                 setImgUrl(placeholder);
@@ -62,7 +58,7 @@ export default function LazyImg(props:LazyImgProps) {
         // Set final image url
         setGotFinalUrl(true);
         setImgUrl(url);
-    }, [imgUrlCache, firebaseStorage, props.imgPath, placeholder]);
+    }, [firebaseStorage, props.imgPath, placeholder]);
 
     // useEffect for setting up observer
     useEffect(() => {

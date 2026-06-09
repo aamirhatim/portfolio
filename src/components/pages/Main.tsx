@@ -15,15 +15,12 @@ export default function Main() {
     // Init state
     const isMobile = useIsMobile();
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
-    const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
 
     // Init context
     const initContext = useMemo(():AppContextInterface =>({
         navSelect: nav,
         setNavSelect: setNav,
-        imgUrlCache: imgUrls,
-        setImgUrlCache: setImgUrls,
-    }), [nav, imgUrls]);
+    }), [nav]);
 
     // Init Firebase app
     const firebaseApp:FirebaseApp = useMemo(() => {

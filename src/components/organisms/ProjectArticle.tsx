@@ -5,15 +5,14 @@ import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import LazyImg from "../atoms/LazyImg";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { nightOwl as codeStyle } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ProjectLink from "../atoms/ProjectLink";
+import ArticleParagraph from "../atoms/ArticleParagraph";
+import ArticleImage from "../atoms/ArticleImage";
+import ArticleCode from "../atoms/ArticleCode";
+import ArticleTitle from "../atoms/ArticleTitle";
+import ArticleList from "../atoms/ArticleList";
+import ArticleFormula from "../atoms/ArticleFormula";
+import ArticleTable from "../atoms/ArticleTable";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -24,13 +23,6 @@ type ArticleImportFn = () => Promise<ArticleType | undefined>;
 
 // Create a map of all articles so the right one can be imported when queried
 const articleModules: Record<string, ArticleImportFn> = import.meta.glob("/src/data/articles/*.json") as Record<string, ArticleImportFn>;
-
-// Handler for opening markdown links in a new tab
-const linkRenderer = (props: any) => {
-    return (
-        <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
-    );
-}
 
 export default function ProjectArticle(props: ProjectArticleProps) {
     // Get context
@@ -43,172 +35,23 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
     // Create section for article block
     const createSection = (block: ArticleBlockType, key: number) => {
-        let e = <></>;
-
         switch (block.type) {
             case "paragraph":
-
-                e = (
-                    <div className={`${isMobile && 'p-hyphen'}`}>
-                        <ReactMarkdown
-                            children={block.content}
-                            remarkPlugins={[remarkGfm, remarkMath]}
-                            rehypePlugins={[rehypeKatex]}
-                            components={{ a: linkRenderer }}
-                        />
-                    </div>
-                );
-                break;
-
+                return <ArticleParagraph key={key} block={block} />;
             case "image":
-                const imgPath = `/article_img/${block.url}`;
-                let size = 'w-full';
-                switch (block.size) {
-                    case "sm":
-                        size = 'w-[100px]';
-                        break;
-
-                    case "md":
-                        size = 'w-[250px]';
-                        break;
-
-                    case "lg":
-                        size = 'w-[400px]';
-                        break;
-
-                    case "xl":
-                        size = 'w-[500px]';
-                        break;
-
-                    default:
-                        break;
-                };
-                e = (
-                    <div className={`flex flex-col justify-center items-center gap-3 w-full w-max-[500px] px-6 py-6`}>
-                        <LazyImg
-                            imgPath={imgPath}
-                            alt={block.url}
-                            fill={true}
-                            className={`rounded-xl h-full ${size}`}
-                        />
-                        {block.caption && <div>{block.caption}</div>}
-                    </div>
-                );
-                break;
-
+                return <ArticleImage key={key} block={block} />;
             case "code":
-                e = (
-                    <div className="rounded-xl overflow-clip">
-                        <div className="text-sm">
-                            <SyntaxHighlighter
-                                language={block.language}
-                                style={codeStyle}
-                                PreTag={"div"}
-                            >
-                                {block.content}
-                            </SyntaxHighlighter>
-                        </div>
-                    </div>
-                );
-                break;
-
+                return <ArticleCode key={key} block={block} />;
             case "title":
-                switch (block.level) {
-                    case 0:
-                        e = (<h2 className="title">{block.content}</h2>);
-                        break;
-
-                    case 1:
-                        e = (<h3 className="title">{block.content}</h3>);
-                        break;
-
-                    case 2:
-                        e = (<h4 className="title">{block.content}</h4>);
-                        break;
-
-                    default:
-                        break;
-                };
-                break;
-
+                return <ArticleTitle key={key} block={block} />;
             case "list":
-                // Create list item objects
-                const listItems = block.items.map((i, liKey) =>
-                    <li key={liKey}>
-                        <ReactMarkdown
-                            children={i}
-                            remarkPlugins={[remarkGfm, remarkMath]}
-                            rehypePlugins={[rehypeKatex]}
-                            components={{
-                                p: ({ children }) => <>{children}</>,  // Remove <p> tag from list items
-                                a: linkRenderer
-                            }}
-                        />
-                    </li>
-                );
-
-                e = (
-                    <div>
-                        {block.title && <h4 className="!mt-0 mb-2">{block.title}</h4>}
-                        {block.ordered
-                            ? <ol className="list-decimal list-inside pl-6">{listItems}</ol>
-                            : <ul className="list-disc list-inside pl-6">{listItems}</ul>
-                        }
-                    </div>
-                );
-                break;
-
+                return <ArticleList key={key} block={block} />;
             case "formula":
-                e = (
-                    <div className="w-full text-lg text-center">
-                        <BlockMath
-                            math={block.content}
-                            errorColor={"#cc0000"}
-                        />
-                    </div>
-                );
-                break;
-
+                return <ArticleFormula key={key} block={block} />;
             case "table":
-                e = (
-                    <div className="w-full flex justify-center py-4">
-                        <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2 bg-(--bg-layer-color)">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {block.headers.map((h, key) => <th key={key}>{h}</th>)}
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    {block.content.map((row, rowKey) => (
-                                        <tr key={rowKey}>
-                                            {row.map((td, tdKey) => (
-                                                <td key={tdKey} className={`${rowKey === 0 && '!pt-4'}`}>{td}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                );
-                break;
-
+                return <ArticleTable key={key} block={block} />;
             default:
-                break;
-        };
-
-        if (block.border) {
-            return (
-                <div key={key} className="w-full flex justify-center my-6">
-                    <div className={`border border-(--border-color) rounded-xl p-6 ${isMobile ? 'w-full' : 'w-[80%]'}`}>{e}</div>
-                </div>
-            );
-        } else {
-            return (
-                <div key={key}>{e}</div>
-            );
+                return <div key={key}>Unsupported block type</div>;
         }
     };
 
