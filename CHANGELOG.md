@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.0] - 2026-06-09 18:19:00
+
+### Changed
+- Migrated icons from FontAwesome to Lucide and custom SVGs to optimize bundle size.
+- Added native SVG assets for GitHub, LinkedIn, Instagram, and WordPress in `socialsBar.tsx`.
+- Refactored `ProjectLink.tsx` to use a clean `renderIcon` helper with `lucide-react`.
+
+### Removed
+- Uninstalled `@fortawesome` packages and unused simple-icons dependencies.
 ## [9.0.0] - 2026-06-09 17:14:00
 
 ### Added
