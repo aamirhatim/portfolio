@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import useMountTransition from "../../lib/hooks/useMountTransition";
 import ReactDOM from "react-dom";
 
 interface ProjectPopupProps {
@@ -25,23 +25,11 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     // Create refs
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const indexRef = useRef<number>(0);
+    const popupRef = useRef<HTMLDivElement>(null);
+    const mousePos = useRef({ x: 0, y: 0 });
 
-    // Animations
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const initial = {
-        opacity: 0,
-        height: 0,
-        width: 0,
-        transition: { duration: .3 }
-    };
-    const animate = {
-        opacity: 1,
-        height: '200px',
-        width: '300px',
-        transition: { duration: .1 }
-    };
-    const exit = initial;
+    // Exit animation hook
+    const hasTransitionedIn = useMountTransition(vis, 300);
 
     // Initialize interval to update preview every second
     const intervalHandler = useCallback(() => {
@@ -59,7 +47,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         setVis(true);           // Show popup
         indexRef.current = 0;   // Reset interval index
 
-        // Uodate first image
+        // Update first image
         if (fileUrls.length > 0) {
             setBgImgUrl(fileUrls[0]);
         }
@@ -85,9 +73,12 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         const offsetY = 20;
         const offsetX = 20;
 
-        // Update mouse position
-        x.set(e.clientX + offsetX);
-        y.set(e.clientY + offsetY);
+        mousePos.current = { x: e.clientX + offsetX, y: e.clientY + offsetY };
+        
+        // Directly update DOM to avoid react re-renders
+        if (popupRef.current) {
+            popupRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`;
+        }
     }, []);
 
     // Helper to get file URLs and update state
@@ -164,19 +155,20 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     // Find portal target
     const portalRoot = document.getElementById('portal-root') || document.body;
 
+    // Determine visibility class based on mount status and transition state
+    // We add the styles only when both vis && hasTransitionedIn are true
+    const isShowing = vis && hasTransitionedIn;
+    const visibilityClasses = isShowing ? 'opacity-100 h-[200px] w-[300px]' : 'opacity-0 h-0 w-0';
+
     // Define element to render
     const popupElement = (
-        <AnimatePresence>
-            {vis &&
-                <motion.div
-                    className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999]`}
-                    style={{ x, y, backgroundImage: `url("${bgImgUrl}")` }}
-                    initial={initial}
-                    animate={animate}
-                    exit={exit}
-                />
-            }
-        </AnimatePresence>
+        (vis || hasTransitionedIn) && (
+            <div
+                ref={popupRef}
+                className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
+                style={{ transform: `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`, backgroundImage: `url("${bgImgUrl}")` }}
+            />
+        )
     );
 
     // Render element via React portal

@@ -5,7 +5,6 @@ import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef, useState, useEffect } from 'react';
-import { motion } from "motion/react";
 import { Asterisk } from 'lucide-react';
 
 // Create a map of all articles so we can check if one exists for the project
@@ -34,18 +33,11 @@ export default function ProjectItem(props: { project: ProjectType }) {
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
 
-    // Animation config
-    const hover = {
-        scale: 1.02,
-        transition: { duration: .1, easing: "easeOut" }
-    }
-
     const desktopLayout = (
-        <motion.div
+        <div
             id={project.id}
             ref={projectItemRef}
-            className={`box-border w-full flex`}
-            whileHover={hover}
+            className={`box-border w-full flex transition-all duration-150 ease-out hover:scale-[1.02]`}
         >
             <ProjectPopup refDiv={projectItemRef} projectId={project.id} />
 
@@ -73,7 +65,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
                 {hasArticle && <ArrowBtn text="Read the article" link={`/projects/${project.id}`} className="mb-4 text-lg" />}
                 <ChipGroup list={project.skills} />
             </div>
-        </motion.div>
+        </div>
     );
 
     const mobileLayout = (

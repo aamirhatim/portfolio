@@ -4,7 +4,6 @@ import { useAppContext } from '../../context/appContext'
 import useIsMobile from '../../lib/hooks/useIsMobile'
 import NavMenu from './NavMenu'
 import SocialsBar from './socialsBar'
-import { motion, Transition } from 'motion/react'
 
 const navItems: string[] = [
     "about",
@@ -30,24 +29,14 @@ export default function Navbar() {
     }
 
     const commonClasses = `fixed left-0 box-border w-full flex z-10 backdrop-blur-md bg-(--bg-color)/60`;
-
-    // Aniamtion config
-    const transition: Transition = {
-        duration: 1,
-        type: "spring",
-        bounce: .3
-    };
-    const animationConfig = {
-        initial: { opacity: 0, top: -50 },
-        animate: { opacity: 1, top: 0 }
-    };
+    
+    // Inline animation style to replicate the spring
+    const animationStyle = { animation: 'slideDown 0.5s ease-out forwards' };
 
     const desktopLayout = (
-        <motion.div
+        <div
             className={`py-6 ${commonClasses}`}
-            initial={animationConfig.initial}
-            animate={animationConfig.animate}
-            transition={transition}
+            style={animationStyle}
         >
             <nav className='box-border px-10 w-full mx-auto max-w-(--max-width) flex items-center gap-8'>
                 <button aria-label="Home" className="cursor-pointer appearance-none bg-transparent border-none p-0" onClick={() => handleNavClick("home")}>
@@ -71,21 +60,19 @@ export default function Navbar() {
 
                 <SocialsBar />
             </nav>
-        </motion.div>
+        </div>
     );
 
     const mobileLayout = (
-        <motion.div
+        <div
             className={`px-6 py-3 items-center justify-between ${commonClasses}`}
-            initial={animationConfig.initial}
-            animate={animationConfig.animate}
-            transition={transition}
+            style={animationStyle}
         >
             <button aria-label="Home" className="cursor-pointer appearance-none bg-transparent border-none p-0" onClick={() => handleNavClick("home")}>
                 <Logo className='h-5 w-auto fill-(--txt-body-color)' />
             </button>
             <NavMenu />
-        </motion.div>
+        </div>
     );
 
     return (

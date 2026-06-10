@@ -1,28 +1,16 @@
-import { motion } from "motion/react";
-
-// Animation config
-const initial = {
-    opacity: 0,
-    y: 50
-}
-const whileInView = {
-    opacity: 1,
-    y: 0,
-    transition: { duration: .2 }
-}
-const viewport = {
-    once: true,
-    amount: .25
-}
+import { useRef } from 'react';
+import useIntersectionObserver from '../../lib/hooks/useIntersectionObserver';
 
 export default function AnimateInView({ children }: { children: React.ReactNode }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const isVisible = useIntersectionObserver(ref, { threshold: 0.25 }, true);
+
     return (
-        <motion.div
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
+        <div
+            ref={ref}
+            className={`transition-all duration-300 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}
         >
             {children}
-        </motion.div>
+        </div>
     )
 }

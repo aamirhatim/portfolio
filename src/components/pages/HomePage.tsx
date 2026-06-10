@@ -6,7 +6,6 @@ import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
-import { motion, stagger, Transition } from "motion/react"
 
 export default function HomePage() {
     // Get context
@@ -48,66 +47,29 @@ export default function HomePage() {
         getSpotlights();
     }, [getIntroTxt, getSpotlights]);
 
-    // Animation config
-    const containerTransition: Transition = {
-        delayChildren: stagger(0.03)
-    };
-    const childTransition: Transition = {
-        duration: 0.5,
-        ease: "easeOut"
-    }
-    const container = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: containerTransition
-        }
-    };
-    const child = {
-        hidden: {
-            opacity: 0,
-            y: 20
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: childTransition
-        }
-    };
-
     return (
         <>
             {introTxt.length > 0 &&
                 <div className="box-border flex flex-col w-full gap-5">
-                    <motion.div
+                    <div
                         className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) ${isMobile ? 'mb-20 text-5xl px-4 gap-x-3 gap-y-2' : 'mb-50 text-6xl pl-10 pr-[20%] gap-x-4 gap-y-6'}`}
-                        variants={container}
-                        initial="hidden"
-                        animate="visible"
                     >
                         {introTxt.map((word, idx) => (
-                            <motion.div
+                            <div
                                 key={idx}
-                                className="h-min"
-                                variants={child}
+                                className="h-min opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
+                                style={{ animationDelay: `${idx * 0.03}s` }}
                             >
                                 {word}
-                            </motion.div>
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
 
 
                     {projSpotlightList.length > 0 &&
-                        <motion.section
-                            className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'}`}
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                delay: 1.5,
-                                duration: .5,
-                                ease: "easeOut",
-                                delayChildren: stagger(.5)
-                            }}
+                        <section
+                            className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
+                            style={{ animationDelay: '1.5s' }}
                         >
                             <div className={`title text-3xl mb-4`}>Featured work</div>
 
@@ -116,7 +78,7 @@ export default function HomePage() {
                             <div className={`w-full flex text-lg`}>
                                 <ArrowBtn text="See more" link="/projects" />
                             </div>
-                        </motion.section>
+                        </section>
                     }
                 </div>
             }
