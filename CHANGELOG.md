@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.1] - 2026-06-09 21:13:00
+
+### Fixed
+- Resolved a bug where the project popup hover event was missed on initial load.
+
+### Changed
+- Updated social icons (GitHub, LinkedIn, WordPress, Instagram) to use `currentColor`, ensuring a seamless transition to white in dark mode.
+
 ## [9.2.0] - 2026-06-09 20:50:00
 
 ### Changed
