@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
-    "colorjs.io": "^0.6.1",
     "firebase": "^12.4.0",
     "katex": "^0.17.0",
     "lodash": "^4.17.21",
