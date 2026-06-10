@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.4] - 2026-06-10 09:13:20
+
+### Changed
+- Relocated the social icons bar (`SocialsBar`) out of the desktop navigation header and placed it centered at the bottom of the About page content.
+- Kept the socials bar in the mobile navigation menu drawer (`NavMenu.tsx`) for responsive ease-of-use.
+
 ## [9.2.3] - 2026-06-10 09:05:00
 
 ### Fixed
