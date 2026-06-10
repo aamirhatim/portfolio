@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { GitHubContributionDay } from "../../data/datatypes";
+import useIsMobile from "../../lib/hooks/useIsMobile";
 
 const CACHE_KEY = "github_contributions_cache";
 const CACHE_TIME_KEY = "github_contributions_cache_time";
@@ -74,21 +75,24 @@ export default function GithubContributionTracker() {
         return `${yyyy}-${mm}-${dd}`;
     };
 
+    const isMobile = useIsMobile();
+
     // Calculate dates
     const today = new Date();
-    const twelveMonthsAgo = new Date();
-    twelveMonthsAgo.setMonth(today.getMonth() - 12);
+    const monthsToShow = isMobile ? 6 : 12;
+    const startPeriodDate = new Date();
+    startPeriodDate.setMonth(today.getMonth() - monthsToShow);
 
-    // Adjust twelveMonthsAgo to the preceding Sunday to align columns correctly
-    const dayOfWeek = twelveMonthsAgo.getDay();
-    twelveMonthsAgo.setDate(twelveMonthsAgo.getDate() - dayOfWeek);
+    // Adjust startPeriodDate to the preceding Sunday to align columns correctly
+    const dayOfWeek = startPeriodDate.getDay();
+    startPeriodDate.setDate(startPeriodDate.getDate() - dayOfWeek);
 
-    const twelveMonthsAgoStr = formatDateString(twelveMonthsAgo);
+    const startPeriodDateStr = formatDateString(startPeriodDate);
 
     // Generate mock data if error/offline
     const generateMockData = () => {
         const mockList: GitHubContributionDay[] = [];
-        const iterDate = new Date(twelveMonthsAgo);
+        const iterDate = new Date(startPeriodDate);
         const endIter = new Date(today);
 
         while (iterDate <= endIter) {
@@ -126,8 +130,8 @@ export default function GithubContributionTracker() {
         return mockList;
     };
 
-    // Use fetched data, filtered to 12 months, or fallback to mock data
-    const filtered = contributions.filter(c => c.date >= twelveMonthsAgoStr);
+    // Use fetched data, filtered to dynamic months, or fallback to mock data
+    const filtered = contributions.filter(c => c.date >= startPeriodDateStr);
     const displayData = (error || (!loading && filtered.length === 0)) ? generateMockData() : filtered;
 
     // Group display data into weeks
@@ -195,7 +199,7 @@ export default function GithubContributionTracker() {
                     <div className="h-6 w-48 bg-stone-200 dark:bg-stone-800 rounded-sm" />
                     <div className="h-4 w-20 bg-stone-200 dark:bg-stone-800 rounded-sm" />
                 </div>
-                <div className="h-[75px] bg-stone-200 dark:bg-stone-800 rounded-sm max-w-[800px] w-full" />
+                <div className={`h-[75px] bg-stone-200 dark:bg-stone-800 rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`} />
             </div>
         );
     }
@@ -221,12 +225,14 @@ export default function GithubContributionTracker() {
             </div>
 
             <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-700">
-                <div className="max-w-[800px] min-w-[700px]">
+                <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
                     {/* Month labels grid */}
-                    <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
+                    <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1 h-4 relative" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
                         {monthLabels.map((ml, idx) => (
-                            <div key={idx} style={{ gridColumn: `span ${ml.colSpan}` }} className="text-left font-medium overflow-hidden text-ellipsis whitespace-nowrap">
-                                {ml.label}
+                            <div key={idx} style={{ gridColumn: `span ${ml.colSpan}` }} className="relative h-full">
+                                <span className={`absolute top-0 font-medium whitespace-nowrap ${idx === monthLabels.length - 1 ? 'right-0' : 'left-0'}`}>
+                                    {ml.label}
+                                </span>
                             </div>
                         ))}
                     </div>
