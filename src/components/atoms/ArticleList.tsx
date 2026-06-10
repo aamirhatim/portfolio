@@ -3,7 +3,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { ListBlockType } from "../../data/datatypes";
-import { linkRenderer, BlockWrapper } from "../../lib/articleUtils";
+import { LinkRenderer, BlockWrapper } from "../../lib/articleUtils";
 
 export default function ArticleList({ block }: { block: ListBlockType }) {
     const listItems = block.items.map((i, liKey) =>
@@ -14,7 +14,7 @@ export default function ArticleList({ block }: { block: ListBlockType }) {
                 rehypePlugins={[rehypeKatex]}
                 components={{
                     p: ({ children }) => <>{children}</>,
-                    a: linkRenderer
+                    a: LinkRenderer
                 }}
             />
         </li>

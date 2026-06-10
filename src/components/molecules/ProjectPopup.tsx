@@ -17,36 +17,36 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     const firebaseAppContext = useFirebaseAppContext();
 
     // Init state
-    const [vis, setVis] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const [fileUrls, setFileUrls] = useState<string[]>([]);
-    const [bgImgUrl, setBgImgUrl] = useState<string>("");
+    const [bgImgIndex, setBgImgIndex] = useState<number>(0);
+
+    const vis = isHovered && fileUrls.length > 0;
+    const [prevVis, setPrevVis] = useState(vis);
+
+    if (vis !== prevVis) {
+        setPrevVis(vis);
+        setBgImgIndex(0);
+    }
+
+    const bgImgUrl = fileUrls[bgImgIndex % fileUrls.length] || "";
 
     // Create refs
-    const indexRef = useRef<number>(0);
     const popupRef = useRef<HTMLDivElement>(null);
-    const mousePos = useRef({ x: 0, y: 0 });
 
     // Exit animation hook
     const hasTransitionedIn = useMountTransition(vis, 300);
 
-    // Manage visibility and background image cycling
+    // Manage background image cycling
     useEffect(() => {
-        if (isHovered && fileUrls.length > 0) {
-            setVis(true);
-            indexRef.current = 0;
-            setBgImgUrl(fileUrls[0]);
+        if (!vis || fileUrls.length <= 1) return;
 
-            const id = setInterval(() => {
-                indexRef.current = (indexRef.current + 1) % fileUrls.length;
-                setBgImgUrl(fileUrls[indexRef.current]);
-            }, 1000);
+        const id = setInterval(() => {
+            setBgImgIndex(prev => (prev + 1) % fileUrls.length);
+        }, 1000);
 
-            return () => clearInterval(id);
-        } else {
-            setVis(false);
-        }
-    }, [isHovered, fileUrls]);
+        return () => clearInterval(id);
+    }, [vis, fileUrls]);
 
     // Handler for mouse enter event
     const handleMouseEnter = useCallback(() => {
@@ -59,62 +59,60 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     }, []);
 
     // Handler for mouse movement
+    // Position using CSS variables set directly on the DOM in the mouse event handler to bypass React rendering loops and satisfy ref access rules
     const handleMouseMove = useCallback((e: MouseEvent) => {
         // Define offset
         const offsetY = 20;
         const offsetX = 20;
 
-        mousePos.current = { x: e.clientX + offsetX, y: e.clientY + offsetY };
-        
-        // Directly update DOM to avoid react re-renders
         if (popupRef.current) {
-            popupRef.current.style.transform = `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`;
+            popupRef.current.style.setProperty('--mouse-x', `${e.clientX + offsetX}px`);
+            popupRef.current.style.setProperty('--mouse-y', `${e.clientY + offsetY}px`);
         }
     }, []);
 
-    // Helper to get file URLs and update state
-    const getFileUrls = useCallback(async () => {
-        // Get file references
+    // Get all preview images for project
+    useEffect(() => {
+        let active = true;
         const folderPath = `proj_img/${projectId}/previews`;
-        const references = await getStorageFolderReferences(firebaseAppContext, folderPath);
-        if (!references) return;
 
-        // Load images into url cache
-        let urls: string[] = [];
-        const promises = references.map(async r => {
-            const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath);
+        getStorageFolderReferences(firebaseAppContext, folderPath).then(async (references) => {
+            if (!active || !references) return;
 
-            // Add path to url array
-            if (imgUrl) {
-                // Ensure image is fully loaded by the browser
-                await new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        // Attempt to decode the image to ensure it's ready to be rendered
-                        if ('decode' in img) {
-                            img.decode().then(resolve).catch(resolve); // Proceed even if decode fails
-                        } else {
-                            resolve(true);
-                        }
-                    };
-                    img.onerror = reject;
-                    img.src = imgUrl;
-                });
-                urls.push(imgUrl);
+            const urls: string[] = [];
+            const promises = references.map(async r => {
+                const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath);
+
+                if (imgUrl && active) {
+                    // Ensure image is fully loaded by the browser
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            // Attempt to decode the image to ensure it's ready to be rendered
+                            if ('decode' in img) {
+                                img.decode().then(resolve).catch(resolve); // Proceed even if decode fails
+                            } else {
+                                resolve(true);
+                            }
+                        };
+                        img.onerror = reject;
+                        img.src = imgUrl;
+                    });
+                    urls.push(imgUrl);
+                }
+            });
+
+            // Wait for all cache loads and preloads to complete
+            await Promise.all(promises);
+            if (active) {
+                setFileUrls(urls);
             }
         });
 
-        // Wait for all cache loads and preloads to complete
-        await Promise.all(promises);
-
-        // Update states
-        setFileUrls(urls);
+        return () => {
+            active = false;
+        };
     }, [firebaseAppContext, projectId]);
-
-    // Get all preview images for project
-    useEffect(() => {
-        getFileUrls();
-    }, [getFileUrls]);
 
     // Create mouse event listeners
     useEffect(() => {
@@ -142,19 +140,20 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     const isShowing = vis && hasTransitionedIn;
     const visibilityClasses = isShowing ? 'opacity-100 h-[200px] w-[300px]' : 'opacity-0 h-0 w-0';
 
-    // Define element to render
-    const popupElement = (
-        (vis || hasTransitionedIn) && (
-            <div
-                ref={popupRef}
-                className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
-                style={{ transform: `translate(${mousePos.current.x}px, ${mousePos.current.y}px)`, backgroundImage: `url("${bgImgUrl}")` }}
-            />
-        )
-    );
-
     // Render element via React portal
-    return useMemo(() =>
-        ReactDOM.createPortal(popupElement, portalRoot),
-        [popupElement, portalRoot]);
+    return useMemo(() => {
+        const popupElement = (
+            (vis || hasTransitionedIn) && (
+                <div
+                    ref={popupRef}
+                    className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
+                    style={{
+                        transform: `translate(var(--mouse-x, 0px), var(--mouse-y, 0px))`,
+                        backgroundImage: `url("${bgImgUrl}")`
+                    }}
+                />
+            )
+        );
+        return ReactDOM.createPortal(popupElement, portalRoot);
+    }, [vis, hasTransitionedIn, bgImgUrl, visibilityClasses, portalRoot]);
 }

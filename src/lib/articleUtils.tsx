@@ -1,6 +1,6 @@
 import useIsMobile from "./hooks/useIsMobile";
 
-export const linkRenderer = (props: any) => {
+export const LinkRenderer = (props: { href?: string, children?: React.ReactNode }) => {
     return (
         <a href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
     );

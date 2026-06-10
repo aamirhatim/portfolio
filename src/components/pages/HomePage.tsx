@@ -1,7 +1,7 @@
 import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
@@ -16,36 +16,35 @@ export default function HomePage() {
     const [introTxt, setIntroTxt] = useState<string[]>([]);
     const [projSpotlightList, setProjSpotlightList] = useState<FirestoreDocType[]>([]);
 
-    // Fetch intro text
-    const getIntroTxt = useCallback(async () => {
-        const txt = await getDocumentsFromCollection(firebaseAppContext, "intro");
-        if (!txt) {
-            setIntroTxt([]);
-            return;
-        }
-        const words = txt[0].data.text.split(" ");
-        setIntroTxt(words);
-    }, [setIntroTxt]);
+    // Get intro and projects
+    useEffect(() => {
+        let active = true;
 
-    // Fetch spotlight projects
-    const getSpotlights = useCallback(async () => {
+        getDocumentsFromCollection(firebaseAppContext, "introText").then((textDoc) => {
+            if (!active) return;
+            if (textDoc && textDoc.length > 0) {
+                const text = textDoc[0].data.text as string;
+                setIntroTxt(text.split(" "));
+            }
+        });
+
         const filter = [
             where("spotlight", "==", true),
             orderBy("publishDate", "desc")
         ];
-        const spotlights = await getDocumentsFromCollection(firebaseAppContext, "projects", filter);
-        if (!spotlights) {
-            setProjSpotlightList([]);
-            return;
-        }
-        setProjSpotlightList(spotlights);
-    }, [firebaseAppContext, setProjSpotlightList]);
+        getDocumentsFromCollection(firebaseAppContext, "projects", filter).then((spotlights) => {
+            if (!active) return;
+            if (!spotlights) {
+                setProjSpotlightList([]);
+            } else {
+                setProjSpotlightList(spotlights);
+            }
+        });
 
-    // Get intro and projects
-    useEffect(() => {
-        getIntroTxt();
-        getSpotlights();
-    }, [getIntroTxt, getSpotlights]);
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     return (
         <>

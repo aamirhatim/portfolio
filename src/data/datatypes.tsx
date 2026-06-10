@@ -122,5 +122,5 @@ export type FirestoreDocType = {
 export type FirestoreQueryProps = {
     fieldName: string,
     comparison: WhereFilterOp,
-    value: any,
+    value: unknown,
 }

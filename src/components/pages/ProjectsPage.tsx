@@ -6,6 +6,7 @@ import { ProjectType } from "../../data/datatypes";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import { orderBy } from "firebase/firestore";
 import AnimateInView from "../atoms/AnimateInView";
+import lodash from "lodash";
 
 export default function ProjectsPage() {
     // Get context
@@ -15,26 +16,31 @@ export default function ProjectsPage() {
     // Init state
     const [projectList, setProjectList] = useState<Record<string, ProjectType[]>>({});
 
-    // Fetch projects
-    const getProjects = useCallback(async () => {
-        const filter = orderBy("publishDate", "desc");
-        const projectList = await getDocumentsFromCollection(firebaseAppContext, "projects", [filter]);
-        if (!projectList) {
-            setProjectList({});
-            return;
-        }
+    // Get list of projects
+    useEffect(() => {
+        let active = true;
+        const queryOptions = [
+            orderBy("publishDate", "desc")
+        ];
 
-        // Categorize by year
-        const projectsByYear = projectList.reduce((acc: Record<string, ProjectType[]>, p) => {
-            const project = { ...p.data, id: p.id } as ProjectType;
-            const year = project.publishDate.split("-")[0];
-            if (!acc[year]) acc[year] = [];
-            acc[year].push(project);
-            return acc;
-        }, {});
+        getDocumentsFromCollection(firebaseAppContext, "projects", queryOptions).then((projectDocs) => {
+            if (!active) return;
+            if (!projectDocs) {
+                setProjectList({});
+            } else {
+                // Group projects by year
+                const projectsByYear = lodash.groupBy(
+                    projectDocs.map(p => ({ ...p.data, id: p.id } as ProjectType)),
+                    p => p.publishDate.split("-")[0]
+                );
+                setProjectList(projectsByYear);
+            }
+        });
 
-        setProjectList(projectsByYear);
-    }, [firebaseAppContext, setProjectList]);
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     const createProjectSection = useCallback((projects: ProjectType[], year: string) => {
         return (
@@ -44,11 +50,6 @@ export default function ProjectsPage() {
             </section>
         )
     }, [isMobile]);
-
-    // Get list of projects
-    useEffect(() => {
-        getProjects();
-    }, [getProjects]);
 
     return (
         <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-20 max-w-[800px] mx-auto'}`}>

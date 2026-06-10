@@ -30,17 +30,19 @@ export default function ProjectViewer() {
     const isFirstProject = currentIndex === 0;
     const isLastProject = currentIndex === projectList.length - 1;
 
-    // Helper to fetch project list
-    const getProjectList = useCallback(async () => {
-        const projectDocs = await getDocumentsFromCollection(firebaseAppContext, "projects");
-        const newList = projectDocs?.map(p => p.id) || [];
-        setProjectList(newList);
-    }, [firebaseAppContext, setProjectList]);
-
     // Get list of all projects
     useEffect(() => {
-        getProjectList();
-    }, [getProjectList]);
+        let active = true;
+        getDocumentsFromCollection(firebaseAppContext, "projects").then((projectDocs) => {
+            if (!active) return;
+            const newList = projectDocs?.map(p => p.id) || [];
+            setProjectList(newList);
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     // Define nav buttons
     const navProject = useCallback((direction: "next"|"prev") => {
@@ -66,7 +68,7 @@ export default function ProjectViewer() {
         const nextProjectId = projectList[newIndex];
         navigate(`/projects/${nextProjectId}`);
         setNavSelect(`projects/${nextProjectId}`);
-    }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
+    }, [currentIndex, projectList, navigate, isFirstProject, isLastProject, setNavSelect]);
 
     return (
         <div className="h-full w-full flex flex-col justify-between z-90 mx-auto">

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { FirestoreDocType, JobType } from "../../data/datatypes";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
@@ -14,21 +14,23 @@ export default function CurrentWork() {
     const isMobile = useIsMobile();
     const [currentWork, setCurrentWork] = useState<FirestoreDocType>();
 
-    // Helper to fetch current work
-    const getCurrentJob = useCallback(async () => {
-        const filter = where("isCurrent", "==", true);
-        const currentJob = await getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]);
-        if (!currentJob) {
-            setCurrentWork(undefined);
-            return;
-        }
-        setCurrentWork(currentJob[0]);
-    }, [firebaseAppContext, setCurrentWork]);
-
     // Get current work
     useEffect(() => {
-        getCurrentJob();
-    }, [getCurrentJob]);
+        let active = true;
+        const filter = where("isCurrent", "==", true);
+        getDocumentsFromCollection(firebaseAppContext, "jobs", [filter]).then((currentJob) => {
+            if (!active) return;
+            if (!currentJob) {
+                setCurrentWork(undefined);
+            } else {
+                setCurrentWork(currentJob[0]);
+            }
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     return (
         <>

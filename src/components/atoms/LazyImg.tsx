@@ -82,11 +82,12 @@ export default function LazyImg(props:LazyImgProps) {
         );
 
         // Start observing the image element
-        observer.observe(imgRef.current);
+        const currentImgRef = imgRef.current;
+        observer.observe(currentImgRef);
 
         // Disconnect observer on dismount
         return () => {
-            if (imgRef.current) {observer.unobserve(imgRef.current)};
+            if (currentImgRef) {observer.unobserve(currentImgRef)};
             observer.disconnect();
         }
     }, [loadImage, imgRef, props.imgPath, props.placeholderPath]);

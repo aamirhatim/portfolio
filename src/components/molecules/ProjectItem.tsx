@@ -4,7 +4,7 @@ import ProjectLink from '../atoms/ProjectLink'
 import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { Asterisk } from 'lucide-react';
 
 // Create a map of all articles so we can check if one exists for the project
@@ -15,18 +15,9 @@ export default function ProjectItem(props: { project: ProjectType }) {
     const isMobile = useIsMobile();
     const project = props.project;
 
-    // State to check if an article exists
-    const [hasArticle, setHasArticle] = useState(false);
-
     // Check if an article exists for the project
-    useEffect(() => {
-        const articlePath = `/src/data/articles/${props.project.id}.json`;
-        if (articleModules[articlePath]) {
-            setHasArticle(true);
-        } else {
-            setHasArticle(false);
-        }
-    }, [props.project.id]);
+    const articlePath = `/src/data/articles/${props.project.id}.json`;
+    const hasArticle = !!articleModules[articlePath];
 
     const hasLinks = project.code || project.video || hasArticle;
 

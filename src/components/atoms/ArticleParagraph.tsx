@@ -4,7 +4,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import { ParagraphBlockType } from "../../data/datatypes";
-import { linkRenderer, BlockWrapper } from "../../lib/articleUtils";
+import { LinkRenderer, BlockWrapper } from "../../lib/articleUtils";
 
 export default function ArticleParagraph({ block }: { block: ParagraphBlockType }) {
     const isMobile = useIsMobile();
@@ -16,7 +16,7 @@ export default function ArticleParagraph({ block }: { block: ParagraphBlockType 
                     children={block.content}
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeKatex]}
-                    components={{ a: linkRenderer }}
+                    components={{ a: LinkRenderer }}
                 />
             </div>
         </BlockWrapper>

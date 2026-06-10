@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, MouseEvent as ReactMouseEvent } from "react";
 import { useAppContext } from "../../context/appContext";
 import SocialsBar from "./socialsBar";
 import { useNavigate } from "react-router";
@@ -17,28 +17,29 @@ export default function NavMenu() {
 
     // Init state
     const [navMenuVis, setNavMenuVis] = useState<boolean>(false);
-    const [navDisplay, setNavDisplay] = useState<string>("");
+    const [navDisplay, setNavDisplay] = useState<string>(() =>
+        appContext.navSelect.startsWith("projects/") ? "projects" : appContext.navSelect
+    );
+    const [prevNavSelect, setPrevNavSelect] = useState(appContext.navSelect);
+
+    if (appContext.navSelect !== prevNavSelect) {
+        setPrevNavSelect(appContext.navSelect);
+        const nextDisplay = appContext.navSelect.startsWith("projects/") ? "projects" : appContext.navSelect;
+        setNavDisplay(nextDisplay);
+    }
 
     // Create refs
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleClick = (e:any) => {
+    const handleClick = (e: ReactMouseEvent<HTMLDivElement>) => {
         e.preventDefault();
 
-        const path = e.target.innerText === "home" ? "/" : e.target.innerText
-        appContext.setNavSelect(e.target.innerText);
+        const text = e.currentTarget.innerText;
+        const path = text === "home" ? "/" : text;
+        appContext.setNavSelect(text);
         navigate(path);
         setNavMenuVis(false);
     };
-
-    // Handle nav indicator formatting
-    useEffect(() => {
-        if (appContext.navSelect.startsWith("projects/")) {
-            setNavDisplay("projects");
-        } else {
-            setNavDisplay(appContext.navSelect);
-        }
-    }, [appContext.navSelect]);
 
     // Handle clicks outside menu
     useEffect(() => {

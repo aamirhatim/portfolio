@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import ExpEduItem from '../atoms/ExpEduItem'
 import { EducationType, FirestoreDocType } from '../../data/datatypes';
@@ -13,20 +13,22 @@ export default function Schooling() {
     // Init state
     const [eduList, setEduList] = useState<FirestoreDocType[]>([]);
 
-    // Helper to fetch school items
-    const getEdu = useCallback(async () => {
-        const edu = await getDocumentsFromCollection(firebaseAppContext, "education", [orderBy("end", "desc")]);
-        if (!edu) {
-            setEduList([]);
-            return;
-        }
-        setEduList(edu);
-    }, [firebaseAppContext, setEduList]);
-
     // Get list of education
     useEffect(() => {
-        getEdu();
-    }, [getEdu]);
+        let active = true;
+        getDocumentsFromCollection(firebaseAppContext, "education", [orderBy("end", "desc")]).then((edu) => {
+            if (!active) return;
+            if (!edu) {
+                setEduList([]);
+            } else {
+                setEduList(edu);
+            }
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     return (
         <>

@@ -42,7 +42,7 @@ const usePreferredColorScheme = () => {
         // Convert to hex
         const hex = color.to('srgb').toString({ format: 'hex' });
         return hex;
-    }, []);
+    }, [getComputedStyles]);
 
     // Init state
     const [scheme, setScheme] = useState<ColorScheme>(getScheme);

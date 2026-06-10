@@ -66,7 +66,7 @@ export async function getFileFromFirebaseStorage(firebaseApp:FirebaseApp, filepa
     let url:string;
     try {
         url = await getDownloadURL(fileRef);
-    } catch (error) {
+    } catch {
         console.error("Error getting file download url for file:", filepath);
         return null;
     }
@@ -79,7 +79,7 @@ export async function getFileFromFirebaseStorage(firebaseApp:FirebaseApp, filepa
             return null;
         }
         return response;
-    } catch (error) {
+    } catch {
         console.error("Error fetching file:", filepath);
         return null;
     }
@@ -120,7 +120,7 @@ export async function getStorageFolderReferences(firebaseApp:FirebaseApp, folder
     try {
         const result = await listAll(folderRef);
         return result.items;
-    } catch (error) {
+    } catch {
         console.error(`Unable to get files in folder: ${folderPath}`);
         return null;
     }

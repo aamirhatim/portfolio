@@ -5,9 +5,10 @@ import { useEffect, useState, RefObject } from 'react';
  */
 export default function useIntersectionObserver(
     ref: RefObject<Element | null>,
-    options: IntersectionObserverInit = { threshold: 0, root: null, rootMargin: '0px' },
+    options: IntersectionObserverInit = {},
     triggerOnce: boolean = false
 ) {
+    const { threshold = 0, root = null, rootMargin = '0px' } = options;
     const [isIntersecting, setIsIntersecting] = useState(false);
 
     useEffect(() => {
@@ -19,14 +20,14 @@ export default function useIntersectionObserver(
             if (entry.isIntersecting && triggerOnce) {
                 observer.unobserve(element);
             }
-        }, options);
+        }, { threshold, root, rootMargin });
 
         observer.observe(element);
 
         return () => {
             observer.disconnect();
         };
-    }, [ref, options.threshold, options.root, options.rootMargin, triggerOnce]);
+    }, [ref, threshold, root, rootMargin, triggerOnce]);
 
     return isIntersecting;
 }

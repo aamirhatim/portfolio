@@ -16,6 +16,15 @@ export default function Main() {
     const isMobile = useIsMobile();
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
 
+    const [prevPathname, setPrevPathname] = useState(location.pathname);
+
+    // Sync navigation state during render on pathname changes to prevent post-mount cascading renders
+    if (location.pathname !== prevPathname) {
+        setPrevPathname(location.pathname);
+        const nextNav = location.pathname === "/" ? "home" : location.pathname.substring(1);
+        setNav(nextNav);
+    }
+
     // Init context
     const initContext = useMemo(():AppContextInterface =>({
         navSelect: nav,
@@ -38,13 +47,6 @@ export default function Main() {
 
     // Handle broswer navigation (back/forward)
     useEffect(() => {
-        if (location.pathname === "/") {
-            setNav("home");
-        } else {
-            const newNav = location.pathname.substring(1);
-            setNav(newNav);
-        }
-
         // Update document title
         let pageTitle = "Aamir Husain";
         if (location.pathname !== "/" && !location.pathname.startsWith("/projects/")) {
