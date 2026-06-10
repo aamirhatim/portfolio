@@ -20,7 +20,7 @@ export default function HomePage() {
     useEffect(() => {
         let active = true;
 
-        getDocumentsFromCollection(firebaseAppContext, "introText").then((textDoc) => {
+        getDocumentsFromCollection(firebaseAppContext, "intro").then((textDoc) => {
             if (!active) return;
             if (textDoc && textDoc.length > 0) {
                 const text = textDoc[0].data.text as string;
