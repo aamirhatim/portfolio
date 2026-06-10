@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.3] - 2026-06-10 09:05:00
+
+### Fixed
+- Fixed Firestore query error on the home page by aligning the collection query to `intro` (matching security rules).
+
+### Changed
+- Removed unused `colorjs.io` dependency.
+
+### Removed
+- Deleted unused `usePreferredColorScheme.tsx` hook.
+
 ## [9.2.2] - 2026-06-10 08:51:30
 
 ### Fixed
