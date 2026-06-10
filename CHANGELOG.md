@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.5] - 2026-06-10 09:27:30
+
+### Fixed
+- Resolved transient "transparent box" and flickering glitches in `ProjectPopup` by rendering all preloaded images concurrently in DOM overlay layers and cross-fading them via CSS opacity transitions.
+- Resolved top-left viewport coordinates jump behavior in `ProjectPopup` by introducing a coordinate initialization state (`hasCoords`), keeping the popup hidden until cursor movement initializes valid coordinates.
+
 ## [9.2.4] - 2026-06-10 09:13:20
 
 ### Changed
