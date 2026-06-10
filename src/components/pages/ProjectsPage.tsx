@@ -46,7 +46,7 @@ export default function ProjectsPage() {
     const createProjectSection = useCallback((projects: ProjectType[], year: string) => {
         return (
             <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-18'}`}>
-                <AnimateInView><h2 className='!m-0'>{year}</h2></AnimateInView>
+                <AnimateInView><h2>{year}</h2></AnimateInView>
                 {projects.map((p, idx) => <AnimateInView key={idx}><ProjectItem project={p} /></AnimateInView>)}
             </section>
         )

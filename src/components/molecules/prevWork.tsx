@@ -39,7 +39,7 @@ export default function PrevWork() {
         <>
             {prevWorkList.length > 0 &&
                 <section className="flex flex-col gap-15">
-                    <AnimateInView><div className='title text-4xl text-(--txt-title-color)'>previous roles.</div></AnimateInView>
+                    <AnimateInView><h2 className='title text-4xl text-(--txt-title-color)'>previous roles.</h2></AnimateInView>
                     <div className='flex flex-col gap-10'>
                         {prevWorkList.map((job, idx) => <AnimateInView key={idx}><ExpJobItem job={job.data as JobType} /></AnimateInView>)}
                     </div>

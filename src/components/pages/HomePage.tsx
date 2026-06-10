@@ -70,7 +70,7 @@ export default function HomePage() {
                             className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
                             style={{ animationDelay: '1.5s' }}
                         >
-                            <div className={`title text-3xl mb-4`}>Featured work</div>
+                            <h2 className={`title text-3xl mb-4`}>Featured work</h2>
 
                             {projSpotlightList.map((p, idx) => <ProjectHighlight key={idx} project={{ id: p.id, ...p.data } as ProjectType} idx={idx} />)}
 

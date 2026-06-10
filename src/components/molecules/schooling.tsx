@@ -34,7 +34,7 @@ export default function Schooling() {
         <>
             {eduList.length > 0 &&
                 <section className='flex flex-col gap-15'>
-                    <AnimateInView><div className='title text-4xl text-(--txt-title-color)'>education.</div></AnimateInView>
+                    <AnimateInView><h2 className='title text-4xl text-(--txt-title-color)'>education.</h2></AnimateInView>
                     <div className='flex flex-col gap-10'>
                         {eduList.map((edu, idx) => <AnimateInView key={idx}><ExpEduItem item={edu.data as EducationType} /></AnimateInView>)}
                     </div>

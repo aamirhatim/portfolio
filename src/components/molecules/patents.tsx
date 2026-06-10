@@ -34,7 +34,7 @@ export default function Patents() {
         <>
             {patentList.length > 0 &&
                 <section className='box-border flex flex-col gap-15'>
-                    <AnimateInView><div className='title text-4xl text-(--txt-title-color)'>patents.</div></AnimateInView>
+                    <AnimateInView><h2 className='title text-4xl text-(--txt-title-color)'>patents.</h2></AnimateInView>
                     <div className='flex flex-col gap-10'>
                         {patentList.map((p, idx) => <AnimateInView key={idx}><ExpPatentItem item={p.data as PatentType} /></AnimateInView>)}
                     </div>

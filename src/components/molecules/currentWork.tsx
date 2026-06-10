@@ -36,7 +36,7 @@ export default function CurrentWork() {
         <>
             {currentWork !== undefined &&
                 <section className={`flex flex-col gap-6 border-b ${isMobile ? 'py-20' : 'pb-20'}`}>
-                    <div className='title text-4xl text-(--txt-title-color) mb-8'>current role.</div>
+                    <h2 className='title text-4xl text-(--txt-title-color) mb-8'>current role.</h2>
 
                     <ExpJobItem job={currentWork.data as JobType} showDetail={true} />
                 </section>

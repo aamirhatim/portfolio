@@ -35,7 +35,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
             <div className='flex flex-col w-full gap-1'>
                 <div className='flex flex-wrap items-center gap-6'>
                     <div className='relative'>
-                        <div className={'title text-2xl'}>{project.title}</div>
+                        <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
                         {project.spotlight && (
                             <div className='absolute top-0 right-full pt-1 pr-4 !text-(--txt-highlight-color)'>
                                 <Asterisk size={12} />
@@ -67,7 +67,7 @@ export default function ProjectItem(props: { project: ProjectType }) {
                 </div>
             )}
             <div>
-                <div className={'title text-2xl'}>{project.title}</div>
+                <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
                 <div className={'text-lg italic text-(--txt-subtitle-color)'}>{project.subtitle}</div>
             </div>
 
