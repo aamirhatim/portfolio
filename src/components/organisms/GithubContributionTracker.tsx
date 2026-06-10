@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GitHubContributionDay } from "../../data/datatypes";
 import useIsMobile from "../../lib/hooks/useIsMobile";
+import ArrowBtn from "../atoms/ArrowBtn";
 
 const CACHE_KEY = "github_contributions_cache";
 const CACHE_TIME_KEY = "github_contributions_cache_time";
@@ -173,8 +174,7 @@ export default function GithubContributionTracker() {
         monthLabels[monthLabels.length - 1].colSpan = currentSpan;
     }
 
-    // Sum total contributions
-    const totalContributions = displayData.reduce((sum, day) => sum + day.contributionCount, 0);
+
 
     const getLevelClass = (level: string) => {
         switch (level) {
@@ -195,10 +195,6 @@ export default function GithubContributionTracker() {
     if (loading && !error) {
         return (
             <div className="w-full animate-pulse mb-8 select-none">
-                <div className="flex items-center justify-between mb-3">
-                    <div className="h-6 w-48 bg-stone-200 dark:bg-stone-800 rounded-sm" />
-                    <div className="h-4 w-20 bg-stone-200 dark:bg-stone-800 rounded-sm" />
-                </div>
                 <div className={`h-[75px] bg-stone-200 dark:bg-stone-800 rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`} />
             </div>
         );
@@ -206,24 +202,6 @@ export default function GithubContributionTracker() {
 
     return (
         <div className="w-full mb-8 select-none">
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                    <span className="font-semibold text-lg text-(--txt-title-color)">GitHub Contributions</span>
-                    <span className="text-xs text-(--txt-subtitle-color)">
-                        ({totalContributions} contributions)
-                        {error && <span className="ml-2 text-amber-600 dark:text-amber-500 font-medium">(offline)</span>}
-                    </span>
-                </div>
-                <a
-                    href="https://github.com/aamirhatim"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium hover:underline text-(--txt-link-color)"
-                >
-                    @aamirhatim
-                </a>
-            </div>
-
             <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-700">
                 <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
                     {/* Month labels grid */}
@@ -250,6 +228,14 @@ export default function GithubContributionTracker() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </div>
+
+            {/* Bottom Row metadata & link */}
+            <div className="flex mt-2 w-full">
+                <div className="w-full flex justify-between gap-2 text-(--txt-subtitle-color)">
+                    <ArrowBtn text="See my work on GitHub" link="https://github.com/aamirhatim" />
+                    {error && <span className="text-amber-600 dark:text-amber-500 font-medium">(offline)</span>}
                 </div>
             </div>
         </div>
