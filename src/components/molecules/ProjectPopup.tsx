@@ -18,12 +18,11 @@ export default function ProjectPopup(props: ProjectPopupProps) {
 
     // Init state
     const [vis, setVis] = useState<boolean>(false);
-    const [previewsLoaded, setPreviewsLoaded] = useState<boolean>(false);
+    const [isHovered, setIsHovered] = useState<boolean>(false);
     const [fileUrls, setFileUrls] = useState<string[]>([]);
     const [bgImgUrl, setBgImgUrl] = useState<string>("");
 
     // Create refs
-    const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const indexRef = useRef<number>(0);
     const popupRef = useRef<HTMLDivElement>(null);
     const mousePos = useRef({ x: 0, y: 0 });
@@ -31,40 +30,32 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     // Exit animation hook
     const hasTransitionedIn = useMountTransition(vis, 300);
 
-    // Initialize interval to update preview every second
-    const intervalHandler = useCallback(() => {
-        if (fileUrls.length === 0) return;
+    // Manage visibility and background image cycling
+    useEffect(() => {
+        if (isHovered && fileUrls.length > 0) {
+            setVis(true);
+            indexRef.current = 0;
+            setBgImgUrl(fileUrls[0]);
 
-        // Increment index but reset if beyond bounds of fileUrl array
-        indexRef.current = (indexRef.current + 1) % fileUrls.length;
+            const id = setInterval(() => {
+                indexRef.current = (indexRef.current + 1) % fileUrls.length;
+                setBgImgUrl(fileUrls[indexRef.current]);
+            }, 1000);
 
-        // Set bg image
-        setBgImgUrl(fileUrls[indexRef.current]);
-    }, [fileUrls.length, setBgImgUrl]);
+            return () => clearInterval(id);
+        } else {
+            setVis(false);
+        }
+    }, [isHovered, fileUrls]);
 
     // Handler for mouse enter event
     const handleMouseEnter = useCallback(() => {
-        setVis(true);           // Show popup
-        indexRef.current = 0;   // Reset interval index
-
-        // Update first image
-        if (fileUrls.length > 0) {
-            setBgImgUrl(fileUrls[0]);
-        }
-
-        // Create interval to cycle through previews
-        intervalRef.current = setInterval(intervalHandler, 1000);
-    }, [intervalHandler, fileUrls]);
+        setIsHovered(true);
+    }, []);
 
     // Handler for mouse leave event
     const handleMouseLeave = useCallback(() => {
-        setVis(false);  // Hide popup
-
-        // Clear interval
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-        indexRef.current = 0;
+        setIsHovered(false);
     }, []);
 
     // Handler for mouse movement
@@ -118,7 +109,6 @@ export default function ProjectPopup(props: ProjectPopupProps) {
 
         // Update states
         setFileUrls(urls);
-        setPreviewsLoaded(true);
     }, [firebaseAppContext, projectId]);
 
     // Get all preview images for project
@@ -126,31 +116,23 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         getFileUrls();
     }, [getFileUrls]);
 
-    // Create mouse event listeners once files have been loaded
+    // Create mouse event listeners
     useEffect(() => {
-        if (!refDiv.current || !previewsLoaded) return;
-
-        // Exit if no images are in the cache for this project
-        if (fileUrls.length === 0) return;
+        if (!refDiv.current) return;
 
         // Add listeners to project's root div
-        refDiv.current.addEventListener('mouseenter', handleMouseEnter);
-        refDiv.current.addEventListener('mouseleave', handleMouseLeave);
-        refDiv.current.addEventListener('mousemove', handleMouseMove);
+        const currentRef = refDiv.current;
+        currentRef.addEventListener('mouseenter', handleMouseEnter);
+        currentRef.addEventListener('mouseleave', handleMouseLeave);
+        currentRef.addEventListener('mousemove', handleMouseMove);
 
         // Cleanup on unmount
         return () => {
-            if (!refDiv.current) return;
-            refDiv.current.removeEventListener('mouseenter', handleMouseEnter);
-            refDiv.current.removeEventListener('mouseleave', handleMouseLeave);
-            refDiv.current.removeEventListener('mousemove', handleMouseMove);
-
-            // Clear interval
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            currentRef.removeEventListener('mouseenter', handleMouseEnter);
+            currentRef.removeEventListener('mouseleave', handleMouseLeave);
+            currentRef.removeEventListener('mousemove', handleMouseMove);
         }
-    }, [previewsLoaded, fileUrls.length, handleMouseEnter, handleMouseLeave, handleMouseMove]);
+    }, [refDiv, handleMouseEnter, handleMouseLeave, handleMouseMove]);
 
     // Find portal target
     const portalRoot = document.getElementById('portal-root') || document.body;
