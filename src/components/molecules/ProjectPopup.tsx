@@ -20,6 +20,8 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const [fileUrls, setFileUrls] = useState<string[]>([]);
     const [bgImgIndex, setBgImgIndex] = useState<number>(0);
+    const [hasCoords, setHasCoords] = useState<boolean>(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
     const vis = isHovered && fileUrls.length > 0;
     const [prevVis, setPrevVis] = useState(vis);
@@ -28,8 +30,6 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         setPrevVis(vis);
         setBgImgIndex(0);
     }
-
-    const bgImgUrl = fileUrls[bgImgIndex % fileUrls.length] || "";
 
     // Create refs
     const popupRef = useRef<HTMLDivElement>(null);
@@ -56,6 +56,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     // Handler for mouse leave event
     const handleMouseLeave = useCallback(() => {
         setIsHovered(false);
+        setHasCoords(false);
     }, []);
 
     // Handler for mouse movement
@@ -64,11 +65,20 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         // Define offset
         const offsetY = 20;
         const offsetX = 20;
+        const x = e.clientX + offsetX;
+        const y = e.clientY + offsetY;
 
         if (popupRef.current) {
-            popupRef.current.style.setProperty('--mouse-x', `${e.clientX + offsetX}px`);
-            popupRef.current.style.setProperty('--mouse-y', `${e.clientY + offsetY}px`);
+            popupRef.current.style.setProperty('--mouse-x', `${x}px`);
+            popupRef.current.style.setProperty('--mouse-y', `${y}px`);
         }
+        setHasCoords(prev => {
+            if (!prev) {
+                setMousePos({ x, y });
+                return true;
+            }
+            return prev;
+        });
     }, []);
 
     // Get all preview images for project
@@ -79,7 +89,6 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         getStorageFolderReferences(firebaseAppContext, folderPath).then(async (references) => {
             if (!active || !references) return;
 
-            const urls: string[] = [];
             const promises = references.map(async r => {
                 const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath);
 
@@ -98,14 +107,15 @@ export default function ProjectPopup(props: ProjectPopupProps) {
                         img.onerror = reject;
                         img.src = imgUrl;
                     });
-                    urls.push(imgUrl);
+                    return imgUrl;
                 }
+                return null;
             });
 
             // Wait for all cache loads and preloads to complete
-            await Promise.all(promises);
+            const results = await Promise.all(promises);
             if (active) {
-                setFileUrls(urls);
+                setFileUrls(results.filter((url): url is string => url !== null));
             }
         });
 
@@ -136,8 +146,8 @@ export default function ProjectPopup(props: ProjectPopupProps) {
     const portalRoot = document.getElementById('portal-root') || document.body;
 
     // Determine visibility class based on mount status and transition state
-    // We add the styles only when both vis && hasTransitionedIn are true
-    const isShowing = vis && hasTransitionedIn;
+    // We add the styles only when both vis && hasTransitionedIn && hasCoords are true
+    const isShowing = vis && hasTransitionedIn && hasCoords;
     const visibilityClasses = isShowing ? 'opacity-100 h-[200px] w-[300px]' : 'opacity-0 h-0 w-0';
 
     // Render element via React portal
@@ -146,14 +156,25 @@ export default function ProjectPopup(props: ProjectPopupProps) {
             (vis || hasTransitionedIn) && (
                 <div
                     ref={popupRef}
-                    className={`fixed top-0 left-0 box-border rounded-xl border bg-center bg-cover z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
+                    className={`fixed top-0 left-0 box-border rounded-xl border overflow-hidden z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
                     style={{
-                        transform: `translate(var(--mouse-x, 0px), var(--mouse-y, 0px))`,
-                        backgroundImage: `url("${bgImgUrl}")`
+                        transform: `translate(var(--mouse-x, ${mousePos.x}px), var(--mouse-y, ${mousePos.y}px))`,
                     }}
-                />
+                >
+                    {fileUrls.map((url, index) => (
+                        <div
+                            key={url}
+                            className={`absolute inset-0 bg-center bg-cover transition-opacity duration-500 ${
+                                index === bgImgIndex % fileUrls.length ? 'opacity-100' : 'opacity-0'
+                            }`}
+                            style={{
+                                backgroundImage: `url("${url}")`
+                            }}
+                        />
+                    ))}
+                </div>
             )
         );
         return ReactDOM.createPortal(popupElement, portalRoot);
-    }, [vis, hasTransitionedIn, bgImgUrl, visibilityClasses, portalRoot]);
+    }, [vis, hasTransitionedIn, fileUrls, bgImgIndex, mousePos, visibilityClasses, portalRoot]);
 }
