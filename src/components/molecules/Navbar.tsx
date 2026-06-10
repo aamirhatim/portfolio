@@ -3,7 +3,6 @@ import Logo from '../../assets/logo.svg?react'
 import { useAppContext } from '../../context/appContext'
 import useIsMobile from '../../lib/hooks/useIsMobile'
 import NavMenu from './NavMenu'
-import SocialsBar from './socialsBar'
 
 const navItems: string[] = [
     "about",
@@ -57,8 +56,6 @@ export default function Navbar() {
                         ))
                     }
                 </div>
-
-                <SocialsBar />
             </nav>
         </div>
     );

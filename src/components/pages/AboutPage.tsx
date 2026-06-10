@@ -6,6 +6,7 @@ import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
+import SocialsBar from "../molecules/socialsBar"
 
 
 export default function AboutPage() {
@@ -101,6 +102,10 @@ export default function AboutPage() {
                     <ChipGroup list={lowSkills.map(i => i.name)} size="lg" />
                 </div>
             </section> */}
+
+            <div className="flex justify-center w-full pb-10">
+                <SocialsBar />
+            </div>
         </div>
     )
 }
