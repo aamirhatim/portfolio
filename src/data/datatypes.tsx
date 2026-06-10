@@ -124,3 +124,10 @@ export type FirestoreQueryProps = {
     comparison: WhereFilterOp,
     value: unknown,
 }
+
+export type GitHubContributionDay = {
+    color: string;
+    contributionCount: number;
+    contributionLevel: "NONE" | "FIRST_QUARTILE" | "SECOND_QUARTILE" | "THIRD_QUARTILE" | "FOURTH_QUARTILE";
+    date: string;
+};
