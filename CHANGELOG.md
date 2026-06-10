@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.2] - 2026-06-10 08:51:30
+
+### Fixed
+- Fixed typescript MouseEvent type shadowing in `NavMenu.tsx` to resolve compile errors.
+- Resolved `react-hooks/exhaustive-deps` in `useIntersectionObserver.tsx` by destructuring configuration options.
+- Resolved `react-hooks/refs` in `ProjectPopup.tsx` by using CSS custom properties for position rendering.
+
+### Changed
+- Refactored codebase to completely remove all legacy `eslint-disable` and `eslint-disable-next-line` comments.
+- Renamed lowercase component `linkRenderer` to `LinkRenderer` for React Fast Refresh export compliance.
+- Moved synchronous state updates in effects to render-phase state adjustments in `useMountTransition.tsx`, `Main.tsx`, and `NavMenu.tsx`.
+- Derived `hasArticle` state directly from static imports during rendering in `ProjectItem.tsx`.
+- Standardized data-fetching components to use async inlined queries with active flags to prevent race conditions and satisfy `react-hooks/set-state-in-effect`.
+- Upgraded project toolchain dependencies (Vite 8, React 19, Tailwind 4, KaTeX 0.17) and cleaned up deprecated animation imports.
+
 ## [9.2.1] - 2026-06-09 21:13:00
 
 ### Fixed
