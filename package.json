@@ -1,7 +1,7 @@
 {
   "name": "portfolio",
   "private": true,
-  "version": "9.1.0",
+  "version": "9.2.0",
   "type": "module",
   "homepage": "https://aamirhusain.me",
   "scripts": {

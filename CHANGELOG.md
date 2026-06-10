@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.0] - 2026-06-09 20:50:00
+
+### Changed
+- Replaced `motion`/`react` animations with native CSS transitions and Tailwind utility classes across components to optimize bundle size and execution.
+- Created `useMountTransition` and `useIntersectionObserver` hooks to handle mount animations natively without third-party dependencies.
+
+### Removed
+- Uninstalled `motion` dependency.
+- Removed unused `ScrollHint` and `Sidebar` components.
+
 ## [9.1.0] - 2026-06-09 18:19:00
 
 ### Changed
