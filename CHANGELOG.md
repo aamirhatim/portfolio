@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.3.0] - 2026-06-11 14:39:00
+
+### Added
+- Implemented a premium Featured Work Spotlight Carousel component (`FeaturedWorkCarousel`) on the Projects page that cycles spotlighted projects with smooth cross-fading, mobile touch gestures, and keyboard accessibility.
+- Implemented responsive, theme-adaptive `GithubContributionTracker` component showing GitHub contributions calendar grid with relative positioning layout for month labels and fallback mock data.
+
+### Changed
+- Unified typography styles in `root.css` by separating structural margins from global heading elements (`h2`, `h3`, `h4`).
+- Migrated legacy `div` header structures to semantic headings (`h2` and `h3`) across home page, project details, and resume details.
+- Refactored `Chip` component to accept custom tailwind and CSS classes via props.
+- Integrated absolute positioning for GitHub contribution tracker months to prevent scroll clipping.
+
 ## [9.2.5] - 2026-06-10 09:27:30
 
 ### Fixed
