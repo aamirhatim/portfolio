@@ -7,6 +7,7 @@ import useIsMobile from "../../lib/hooks/useIsMobile";
 import { orderBy } from "firebase/firestore";
 import AnimateInView from "../atoms/AnimateInView";
 import GithubContributionTracker from "../organisms/GithubContributionTracker";
+import FeaturedWorkCarousel from "../organisms/FeaturedWorkCarousel";
 import lodash from "lodash";
 
 export default function ProjectsPage() {
@@ -53,10 +54,15 @@ export default function ProjectsPage() {
     }, [isMobile]);
 
     return (
-        <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-20 max-w-[800px] mx-auto'}`}>
+        <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-15 max-w-[800px] mx-auto'}`}>
+            <AnimateInView>
+                <FeaturedWorkCarousel />
+            </AnimateInView>
+
             <AnimateInView>
                 <GithubContributionTracker />
             </AnimateInView>
+
             {Object.keys(projectList).length > 0 &&
                 Object.entries(projectList).reverse().map(([year, projects]) => createProjectSection(projects, year))
             }
