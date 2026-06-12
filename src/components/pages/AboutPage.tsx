@@ -67,7 +67,7 @@ export default function AboutPage() {
         <div className="px-4 flex flex-col gap-30">
             <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-15 gap-10'}`}>
                 <div
-                    className={`border rounded-md overflow-clip ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
+                    className={`rounded-md overflow-clip ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
                 >
                     <LazyImg
                         imgPath="/aboutme.jpg"

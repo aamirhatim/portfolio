@@ -156,7 +156,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
             (vis || hasTransitionedIn) && (
                 <div
                     ref={popupRef}
-                    className={`fixed top-0 left-0 box-border rounded-xl border overflow-hidden z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
+                    className={`fixed top-0 left-0 box-border rounded-xl border border-(--border-color) overflow-hidden z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
                     style={{
                         transform: `translate(var(--mouse-x, ${mousePos.x}px), var(--mouse-y, ${mousePos.y}px))`,
                     }}
