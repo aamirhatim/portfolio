@@ -124,8 +124,8 @@ export default function FeaturedWorkCarousel() {
 
     if (loading) {
         return (
-            <div className={`w-full bg-stone-950 border-y md:border border-stone-800 ${isMobile ? '-mx-4 w-[calc(100%+2rem)] rounded-none' : 'rounded-xl'} h-[280px] animate-pulse flex items-center justify-center select-none`}>
-                <div className="h-6 w-32 bg-stone-800/80 rounded-sm" />
+            <div className={`w-full bg-(--bg-card) border-y md:border border-(--border-color) ${isMobile ? '-mx-4 w-[calc(100%+2rem)] rounded-none' : 'rounded-xl'} h-[280px] animate-pulse flex items-center justify-center select-none`}>
+                <div className="h-6 w-32 bg-(--bg-secondary-color)/80 rounded-sm" />
             </div>
         );
     }
@@ -135,13 +135,13 @@ export default function FeaturedWorkCarousel() {
     }
 
     return (
-        <div className={`flex flex-col mb-8 select-none ${isMobile ? '-mx-4 w-[calc(100%+2rem)]' : 'w-full'}`}>
+        <div className={`flex flex-col select-none ${isMobile ? '-mx-4 w-[calc(100%+2rem)]' : 'w-full'}`}>
             {/* Carousel Container */}
             <div
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                className={`relative w-full overflow-hidden bg-stone-950 border-y md:border border-stone-800 touch-pan-y ${isMobile ? 'rounded-none' : 'rounded-xl shadow-xs'
-                    } h-[280px]`}
+                className={`relative w-full overflow-hidden bg-(--bg-card) touch-pan-y ${isMobile ? 'rounded-none' : 'rounded-md shadow-xs'
+                    } h-[320px]`}
             >
                 {spotlights.map((project, idx) => {
                     const isActive = idx === currentIndex;
@@ -170,7 +170,7 @@ export default function FeaturedWorkCarousel() {
                             tabIndex={isActive && hasArticle ? 0 : -1}
                             aria-label={hasArticle ? `Read article about ${project.title}` : undefined}
                             className={`absolute inset-0 w-full h-full flex transition-opacity duration-700 ease-in-out ${isActive ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
-                                } ${hasArticle ? "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-stone-500" : ""}`}
+                                } ${hasArticle ? "cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-(--border-focus)" : ""}`}
                         >
                             {/* Background Image */}
                             {project.img && (
@@ -211,14 +211,14 @@ export default function FeaturedWorkCarousel() {
                 <div className="hidden md:flex justify-center items-center gap-3 mt-4 select-none">
                     <button
                         onClick={prevSlide}
-                        className="p-1 rounded-full border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-900 text-stone-500 dark:text-stone-400 hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
                         aria-label="Previous spotlight slide"
                     >
                         <ChevronLeft size={16} />
                     </button>
                     <button
                         onClick={nextSlide}
-                        className="p-1 rounded-full border border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-900 text-stone-500 dark:text-stone-400 hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
                         aria-label="Next spotlight slide"
                     >
                         <ChevronRight size={16} />

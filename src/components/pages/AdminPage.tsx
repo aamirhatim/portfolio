@@ -70,7 +70,7 @@ export default function AdminPage() {
                 onSubmit={handleLogin}
                 className="flex flex-col gap-8 w-full max-w-sm"
             >
-                {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
+                {error && <p className="text-(--feedback-error) text-sm text-center font-medium">{error}</p>}
 
                 <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold text-[var(--txt-subtitle-color)]">Email</label>

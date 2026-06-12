@@ -63,7 +63,7 @@ export default function Navbar() {
                         user && (
                             <button
                                 aria-label="Logout"
-                                className="cursor-pointer appearance-none bg-transparent px-1 py-1 content-center title text-md hover:text-red-500 text-red-500 border-t-1 border-transparent transition-colors ml-auto"
+                                className="cursor-pointer appearance-none bg-transparent px-1 py-1 content-center title text-md hover:text-(--feedback-error) text-(--feedback-error) border-t-1 border-transparent transition-colors ml-auto"
                                 onClick={async () => {
                                     await logoutAdmin(firebaseApp);
                                     navigate("/");

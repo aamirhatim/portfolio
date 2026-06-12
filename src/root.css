@@ -3,13 +3,27 @@
 :root {
     --bg-color: var(--color-stone-50);
     --bg-secondary-color: var(--color-stone-200);
+    --bg-card: var(--color-white);
+    --bg-interactive-hover: var(--color-stone-100);
     --txt-body-color: var(--color-stone-900);
     --txt-feature-color: var(--color-stone-900);
     --txt-title-color: var(--color-indigo-900);
     --txt-subtitle-color: var(--color-stone-500);
     --txt-highlight-color: var(--color-indigo-700);
     --txt-link-color: var(--color-indigo-800);
+    --txt-link-hover: var(--color-indigo-950);
     --border-color: var(--color-stone-300);
+    --border-focus: var(--color-indigo-500);
+    --feedback-error: var(--color-red-600);
+    --feedback-warning: var(--color-amber-600);
+
+    /* Brand accent scale */
+    --color-accent-solid: var(--color-indigo-700);
+    --color-accent-subtle: var(--color-indigo-500);
+    --color-accent-bg-subtle: var(--color-indigo-100);
+    --color-accent-bg-muted: var(--color-indigo-300);
+    --color-accent-bg-strong: var(--color-indigo-500);
+    --color-accent-bg-max: var(--color-indigo-700);
 
     --max-width: 1440px;
     --outlet-height: calc(100vh - var(--spacing) * 40);
@@ -18,14 +32,28 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-color: var(--color-stone-950);
-        --bg-secondary-color: var(--color-stone-700);
+        --bg-secondary-color: var(--color-stone-900);
+        --bg-card: var(--color-stone-900);
+        --bg-interactive-hover: var(--color-stone-800);
         --txt-body-color: var(--color-stone-200);
         --txt-feature-color: var(--color-stone-200);
         --txt-title-color: var(--color-emerald-600);
         --txt-subtitle-color: var(--color-stone-300);
         --txt-highlight-color: var(--color-emerald-500);
         --txt-link-color: var(--color-emerald-500);
-        --border-color: var(--color-stone-400);
+        --txt-link-hover: var(--color-emerald-400);
+        --border-color: var(--color-stone-800);
+        --border-focus: var(--color-emerald-500);
+        --feedback-error: var(--color-red-500);
+        --feedback-warning: var(--color-amber-500);
+
+        /* Brand accent scale */
+        --color-accent-solid: var(--color-emerald-500);
+        --color-accent-subtle: var(--color-emerald-600);
+        --color-accent-bg-subtle: rgba(4, 120, 87, 0.2);
+        --color-accent-bg-muted: rgba(4, 120, 87, 0.5);
+        --color-accent-bg-strong: var(--color-emerald-600);
+        --color-accent-bg-max: var(--color-emerald-400);
     }
 }
 

@@ -120,7 +120,7 @@ export default function GithubContributionTracker() {
             }
 
             mockList.push({
-                color: "#ebedf0",
+                color: "var(--bg-secondary-color)",
                 contributionCount,
                 contributionLevel,
                 date: dateStr,
@@ -179,23 +179,23 @@ export default function GithubContributionTracker() {
     const getLevelClass = (level: string) => {
         switch (level) {
             case "FIRST_QUARTILE":
-                return "bg-indigo-100 dark:bg-emerald-950/70";
+                return "bg-(--color-accent-bg-subtle)";
             case "SECOND_QUARTILE":
-                return "bg-indigo-300 dark:bg-emerald-800/85";
+                return "bg-(--color-accent-bg-muted)";
             case "THIRD_QUARTILE":
-                return "bg-indigo-500 dark:bg-emerald-600";
+                return "bg-(--color-accent-bg-strong)";
             case "FOURTH_QUARTILE":
-                return "bg-indigo-700 dark:bg-emerald-400";
+                return "bg-(--color-accent-bg-max)";
             case "NONE":
             default:
-                return "bg-stone-200 dark:bg-stone-800/60";
+                return "bg-(--bg-secondary-color)";
         }
     };
 
     if (loading && !error) {
         return (
             <div className="w-full animate-pulse mb-8 select-none">
-                <div className={`h-[75px] bg-stone-200 dark:bg-stone-800 rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`} />
+                <div className={`h-[75px] bg-(--bg-secondary-color) rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`} />
             </div>
         );
     }
@@ -235,7 +235,7 @@ export default function GithubContributionTracker() {
             <div className="flex mt-2 w-full">
                 <div className="w-full flex justify-between gap-2 text-(--txt-subtitle-color)">
                     <ArrowBtn text="See my work on GitHub" link="https://github.com/aamirhatim" />
-                    {error && <span className="text-amber-600 dark:text-amber-500 font-medium">(offline)</span>}
+                    {error && <span className="text-(--feedback-warning) font-medium">(offline)</span>}
                 </div>
             </div>
         </div>

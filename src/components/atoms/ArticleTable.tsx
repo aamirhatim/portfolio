@@ -5,7 +5,7 @@ export default function ArticleTable({ block }: { block: TableBlockType }) {
     return (
         <BlockWrapper border={block.border}>
             <div className="w-full flex justify-center py-4">
-                <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2 bg-(--bg-layer-color)">
+                <div className="border border-(--border-color) rounded-xl w-max max-w-full p-2 bg-(--bg-secondary-color)">
                     <table>
                         <thead>
                             <tr>
