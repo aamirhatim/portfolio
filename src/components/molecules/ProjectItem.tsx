@@ -5,85 +5,84 @@ import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
-import { motion } from "motion/react";
+import { Asterisk } from 'lucide-react';
+
+// Create a map of all articles so we can check if one exists for the project
+const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function ProjectItem(props: { project: ProjectType }) {
     // Get context
     const isMobile = useIsMobile();
-    const hasLinks = props.project.code || props.project.video || props.project.article;
+    const project = props.project;
+
+    // Check if an article exists for the project
+    const articlePath = `/src/data/articles/${props.project.id}.json`;
+    const hasArticle = !!articleModules[articlePath];
+
+    const hasLinks = project.code || project.video || hasArticle;
 
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
 
-    // Animation config
-    const initial = {
-        opacity: 0,
-        y: 50
-    }
-    const whileInView = {
-        opacity: 1,
-        y: 0,
-        transition: { duration: .2, easing: "easeOut" }
-    }
-    const viewport = {
-        once: true,
-        amount: .5
-    }
-    const hover = {
-        scale: 1.02,
-        transition: { duration: .1, easing: "easeOut" }
-    }
-
     const desktopLayout = (
-        <motion.div
-            id={props.project.id}
+        <div
+            id={project.id}
             ref={projectItemRef}
-            className={`box-border w-full flex`}
-            whileHover={hover}
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
+            className={`box-border w-full flex transition-all duration-150 ease-out hover:scale-[1.02]`}
         >
-            <ProjectPopup refDiv={projectItemRef} projectId={props.project.id} />
+            <ProjectPopup refDiv={projectItemRef} projectId={project.id} />
 
             <div className='flex flex-col w-full gap-1'>
                 <div className='flex flex-wrap items-center gap-6'>
-                    <div className={'title text-2xl'}>{props.project.title}</div>
+                    <div className='relative'>
+                        <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
+                        {project.spotlight && (
+                            <div className='absolute top-0 right-full pt-1 pr-4 !text-(--txt-highlight-color)'>
+                                <Asterisk size={12} />
+                            </div>
+                        )}
+                    </div>
 
                     <div className='flex gap-2 pr-10'>
-                        {props.project.code && <ProjectLink value='code' url={props.project.code} newTab={true} />}
-                        {props.project.video && <ProjectLink value='video' url={props.project.video} newTab={true} />}
-                        {props.project.article && <ProjectLink value='blog' url={`/projects/${props.project.id}`} />}
+                        {project.code && <ProjectLink value='code' url={project.code} newTab={true} />}
+                        {project.video && <ProjectLink value='video' url={project.video} newTab={true} />}
+                        {hasArticle && <ProjectLink value='blog' url={`/projects/${project.id}`} />}
                     </div>
                 </div>
 
-                <div className='text-xl text-(--txt-subtitle-color) w-full mb-4'>{props.project.description}</div>
-                {props.project.article && <ArrowBtn text="Read the article" link={`/projects/${props.project.id}`} className="mb-4 text-lg" />}
-                <ChipGroup list={props.project.skills} />
+                <div className={'text-lg italic text-(--txt-subtitle-color) mb-4'}>{project.subtitle}</div>
+
+                <div className='text-xl text-(--txt-subtitle-color) w-full mb-4'>{project.description}</div>
+                {hasArticle && <ArrowBtn text="Read the article" link={`/projects/${project.id}`} className="mb-4 text-lg" />}
+                <ChipGroup list={project.skills} />
             </div>
-        </motion.div>
+        </div>
     );
 
     const mobileLayout = (
-        <motion.div
-            className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl'
-            initial={initial}
-            whileInView={whileInView}
-            viewport={viewport}
-        >
-            <div className={'title text-2xl'}>{props.project.title}</div>
-            <ChipGroup list={props.project.skills} />
-            <div className='text-lg'>{props.project.description}</div>
+        <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl relative'>
+            {project.spotlight && (
+                <div className='absolute top-4 right-4 !text-(--txt-highlight-color)'>
+                    <Asterisk size={16} />
+                </div>
+            )}
+            <div>
+                <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
+                <div className={'text-lg italic text-(--txt-subtitle-color)'}>{project.subtitle}</div>
+            </div>
+
+            <ChipGroup list={project.skills} />
+            <div className='text-lg'>{project.description}</div>
 
 
             {hasLinks &&
                 <div className='flex gap-3 justify-center'>
-                    {props.project.code && <ProjectLink value='Code' url={props.project.code} showText={true} />}
-                    {props.project.video && <ProjectLink value='Video' url={props.project.video} showText={true} />}
-                    {props.project.article && <ProjectLink value='Article' url={`/projects/${props.project.id}`} showText={true} />}
+                    {project.code && <ProjectLink value='Code' url={project.code} showText={true} />}
+                    {project.video && <ProjectLink value='Video' url={project.video} showText={true} />}
+                    {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} showText={true} />}
                 </div>
             }
-        </motion.div>
+        </div>
     );
 
     return (

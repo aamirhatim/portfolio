@@ -8,9 +8,9 @@ export type ProjectType = {
     description: string,
     skills: string[],
     img: string,
-    article?: boolean,
     code?: string,
     video?: string,
+    spotlight?: boolean,
 }
 
 export type BaseArticleBlock = {
@@ -89,7 +89,7 @@ export type JobType = {
     start: string,
     end?: string,
     skills?: Array<string>,
-    summary?: string,
+    detail?: string,
 }
 
 export type EducationType = {
@@ -122,5 +122,12 @@ export type FirestoreDocType = {
 export type FirestoreQueryProps = {
     fieldName: string,
     comparison: WhereFilterOp,
-    value: any,
+    value: unknown,
 }
+
+export type GitHubContributionDay = {
+    color: string;
+    contributionCount: number;
+    contributionLevel: "NONE" | "FIRST_QUARTILE" | "SECOND_QUARTILE" | "THIRD_QUARTILE" | "FOURTH_QUARTILE";
+    date: string;
+};

@@ -1,173 +1,180 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAppContext } from "../../context/appContext";
+
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getStorageFolderReferences, loadImgIntoCache } from "../../lib/firestoreLib";
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import useMountTransition from "../../lib/hooks/useMountTransition";
 import ReactDOM from "react-dom";
 
 interface ProjectPopupProps {
-    refDiv: React.RefObject<HTMLDivElement|null>,
-    projectId:string,
+    refDiv: React.RefObject<HTMLDivElement | null>,
+    projectId: string,
 }
 
-export default function ProjectPopup(props:ProjectPopupProps) {
+export default function ProjectPopup(props: ProjectPopupProps) {
     const { refDiv, projectId } = props;
 
     // Get context
     const firebaseAppContext = useFirebaseAppContext();
-    const { imgUrlCache, setImgUrlCache } = useAppContext();
 
     // Init state
-    const [vis, setVis] = useState<boolean>(false);
-    const [previewsLoaded, setPreviewsLoaded] = useState<boolean>(false);
+    const [isHovered, setIsHovered] = useState<boolean>(false);
     const [fileUrls, setFileUrls] = useState<string[]>([]);
-    const [bgImgUrl, setBgImgUrl] = useState<string>("");
+    const [bgImgIndex, setBgImgIndex] = useState<number>(0);
+    const [hasCoords, setHasCoords] = useState<boolean>(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    const vis = isHovered && fileUrls.length > 0;
+    const [prevVis, setPrevVis] = useState(vis);
+
+    if (vis !== prevVis) {
+        setPrevVis(vis);
+        setBgImgIndex(0);
+    }
 
     // Create refs
-    const intervalRef = useRef<NodeJS.Timeout|undefined>(undefined);
-    const indexRef = useRef<number>(0);
+    const popupRef = useRef<HTMLDivElement>(null);
 
-    // Animations
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const initial = {
-        opacity: 0,
-        height: 0,
-        width: 0,
-        transition: { duration: .3 }
-    };
-    const animate = {
-        opacity: 1,
-        height: '200px',
-        width: '300px',
-        transition: { duration: .1 }
-    };
-    const exit = initial;
+    // Exit animation hook
+    const hasTransitionedIn = useMountTransition(vis, 300);
 
-    // Initialize interval to update preview every second
-    const intervalHandler = useCallback(() => {
-        if (fileUrls.length === 0) return;
+    // Manage background image cycling
+    useEffect(() => {
+        if (!vis || fileUrls.length <= 1) return;
 
-        // Increment index but reset if beyond bounds of fileUrl array
-        indexRef.current = (indexRef.current + 1) % fileUrls.length;
+        const id = setInterval(() => {
+            setBgImgIndex(prev => (prev + 1) % fileUrls.length);
+        }, 1000);
 
-        // Set bg image
-        setBgImgUrl(fileUrls[indexRef.current]);
-    }, [fileUrls.length, setBgImgUrl]);
+        return () => clearInterval(id);
+    }, [vis, fileUrls]);
 
     // Handler for mouse enter event
     const handleMouseEnter = useCallback(() => {
-        setVis(true);           // Show popup
-        indexRef.current = 0;   // Reset interval index
-
-        // Uodate first image
-        if (fileUrls.length > 0) {
-            setBgImgUrl(fileUrls[0]); 
-        }
-
-        // Create interval to cycle through previews
-        intervalRef.current = setInterval(intervalHandler, 1000); 
-    }, [intervalHandler, fileUrls]);
+        setIsHovered(true);
+    }, []);
 
     // Handler for mouse leave event
     const handleMouseLeave = useCallback(() => {
-        setVis(false);  // Hide popup
-
-        // Clear interval
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-        indexRef.current = 0;
+        setIsHovered(false);
+        setHasCoords(false);
     }, []);
 
     // Handler for mouse movement
-    const handleMouseMove = useCallback((e:MouseEvent) => {
+    // Position using CSS variables set directly on the DOM in the mouse event handler to bypass React rendering loops and satisfy ref access rules
+    const handleMouseMove = useCallback((e: MouseEvent) => {
         // Define offset
         const offsetY = 20;
         const offsetX = 20;
+        const x = e.clientX + offsetX;
+        const y = e.clientY + offsetY;
 
-        // Update mouse position
-        x.set(e.clientX + offsetX);
-        y.set(e.clientY + offsetY);
-    }, []);
-
-    // Helper to get file URLs and update state
-    const getFileUrls = useCallback(async () => {
-        // Get file references
-        const folderPath = `proj_img/${projectId}/previews`;
-        const references = await getStorageFolderReferences(firebaseAppContext, folderPath);
-        if (!references) return;
-
-        // Load images into url cache
-        let urls:string[] = [];
-        const promises = references.map(async r => {
-            const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath, imgUrlCache, setImgUrlCache);
-            
-            // Add path to url array
-            if (imgUrl) {
-                urls.push(imgUrl);
+        if (popupRef.current) {
+            popupRef.current.style.setProperty('--mouse-x', `${x}px`);
+            popupRef.current.style.setProperty('--mouse-y', `${y}px`);
+        }
+        setHasCoords(prev => {
+            if (!prev) {
+                setMousePos({ x, y });
+                return true;
             }
+            return prev;
         });
-
-        // Wait for all cache loads to complete
-        await Promise.all(promises);
-        
-        // Update states
-        setFileUrls(urls);
-        setPreviewsLoaded(true);
-    }, [firebaseAppContext, imgUrlCache, setImgUrlCache, projectId]);
+    }, []);
 
     // Get all preview images for project
     useEffect(() => {
-        getFileUrls();
-    }, [getFileUrls]);
-    
-    // Create mouse event listeners once files have been loaded
-    useEffect(() => {
-        if (!refDiv.current || !previewsLoaded) return;
+        let active = true;
+        const folderPath = `proj_img/${projectId}/previews`;
 
-        // Exit if no images are in the cache for this project
-        if (fileUrls.length === 0) return;
+        getStorageFolderReferences(firebaseAppContext, folderPath).then(async (references) => {
+            if (!active || !references) return;
+
+            const promises = references.map(async r => {
+                const imgUrl = await loadImgIntoCache(firebaseAppContext, r.fullPath);
+
+                if (imgUrl && active) {
+                    // Ensure image is fully loaded by the browser
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            // Attempt to decode the image to ensure it's ready to be rendered
+                            if ('decode' in img) {
+                                img.decode().then(resolve).catch(resolve); // Proceed even if decode fails
+                            } else {
+                                resolve(true);
+                            }
+                        };
+                        img.onerror = reject;
+                        img.src = imgUrl;
+                    });
+                    return imgUrl;
+                }
+                return null;
+            });
+
+            // Wait for all cache loads and preloads to complete
+            const results = await Promise.all(promises);
+            if (active) {
+                setFileUrls(results.filter((url): url is string => url !== null));
+            }
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext, projectId]);
+
+    // Create mouse event listeners
+    useEffect(() => {
+        if (!refDiv.current) return;
 
         // Add listeners to project's root div
-        refDiv.current.addEventListener('mouseenter', handleMouseEnter);
-        refDiv.current.addEventListener('mouseleave', handleMouseLeave);
-        refDiv.current.addEventListener('mousemove', handleMouseMove);
+        const currentRef = refDiv.current;
+        currentRef.addEventListener('mouseenter', handleMouseEnter);
+        currentRef.addEventListener('mouseleave', handleMouseLeave);
+        currentRef.addEventListener('mousemove', handleMouseMove);
 
         // Cleanup on unmount
         return () => {
-            if (!refDiv.current) return;
-            refDiv.current.removeEventListener('mouseenter', handleMouseEnter);
-            refDiv.current.removeEventListener('mouseleave', handleMouseLeave);
-            refDiv.current.removeEventListener('mousemove', handleMouseMove);
-
-            // Clear interval
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
+            currentRef.removeEventListener('mouseenter', handleMouseEnter);
+            currentRef.removeEventListener('mouseleave', handleMouseLeave);
+            currentRef.removeEventListener('mousemove', handleMouseMove);
         }
-    }, [previewsLoaded, fileUrls.length, handleMouseEnter, handleMouseLeave, handleMouseMove]);
+    }, [refDiv, handleMouseEnter, handleMouseLeave, handleMouseMove]);
 
     // Find portal target
     const portalRoot = document.getElementById('portal-root') || document.body;
 
-    // Define element to render
-    const popupElement = (
-        <AnimatePresence>
-            {vis &&
-                <motion.div
-                    className={`fixed top-0 left-0 box-border border bg-center bg-cover z-[9999]`}
-                    style={{x, y, backgroundImage: `url("${bgImgUrl}")`}}
-                    initial={initial}
-                    animate={animate}
-                    exit={exit}
-                />
-            }
-        </AnimatePresence>
-    );
+    // Determine visibility class based on mount status and transition state
+    // We add the styles only when both vis && hasTransitionedIn && hasCoords are true
+    const isShowing = vis && hasTransitionedIn && hasCoords;
+    const visibilityClasses = isShowing ? 'opacity-100 h-[200px] w-[300px]' : 'opacity-0 h-0 w-0';
 
     // Render element via React portal
-    return useMemo(() => 
-        ReactDOM.createPortal(popupElement, portalRoot), 
-    [popupElement, portalRoot]);
+    return useMemo(() => {
+        const popupElement = (
+            (vis || hasTransitionedIn) && (
+                <div
+                    ref={popupRef}
+                    className={`fixed top-0 left-0 box-border rounded-xl border overflow-hidden z-[9999] transition-[opacity,height,width] duration-300 ease-out ${visibilityClasses}`}
+                    style={{
+                        transform: `translate(var(--mouse-x, ${mousePos.x}px), var(--mouse-y, ${mousePos.y}px))`,
+                    }}
+                >
+                    {fileUrls.map((url, index) => (
+                        <div
+                            key={url}
+                            className={`absolute inset-0 bg-center bg-cover transition-opacity duration-500 ${
+                                index === bgImgIndex % fileUrls.length ? 'opacity-100' : 'opacity-0'
+                            }`}
+                            style={{
+                                backgroundImage: `url("${url}")`
+                            }}
+                        />
+                    ))}
+                </div>
+            )
+        );
+        return ReactDOM.createPortal(popupElement, portalRoot);
+    }, [vis, hasTransitionedIn, fileUrls, bgImgIndex, mousePos, visibilityClasses, portalRoot]);
 }

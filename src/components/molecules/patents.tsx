@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFirebaseAppContext } from '../../context/firebaseAppContext'
 import { FirestoreDocType, PatentType } from '../../data/datatypes'
 import ExpPatentItem from '../atoms/ExpPatentItem'
 import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import { orderBy } from 'firebase/firestore'
-import { motion } from 'motion/react'
+import AnimateInView from '../atoms/AnimateInView'
 
 export default function Patents() {
     // Get context
@@ -13,51 +13,33 @@ export default function Patents() {
     // Init state
     const [patentList, setPatentList] = useState<FirestoreDocType[]>([]);
 
-    // Animation config
-    const initial = {
-        opacity: 0,
-        y: 50
-    }
-    const whileInView = {
-        opacity: 1,
-        y: 0,
-        transition: { duration: .2 }
-    }
-    const viewport = {
-        once: true,
-        amount: .1
-    }
-
-    // Fetch patents
-    const getPatents = useCallback(async () => {
-        const patents = await getDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]);
-        if (!patents) {
-            setPatentList([]);
-            return;
-        }
-        setPatentList(patents);
-    }, [firebaseAppContext, setPatentList]);
-
     // Get list of patents
-    useEffect( () => {
-        getPatents();
-    }, [getPatents]);
-    
+    useEffect(() => {
+        let active = true;
+        getDocumentsFromCollection(firebaseAppContext, "patents", [orderBy("status")]).then((patents) => {
+            if (!active) return;
+            if (!patents) {
+                setPatentList([]);
+            } else {
+                setPatentList(patents);
+            }
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
+
     return (
         <>
-        {patentList.length > 0 &&
-            <motion.section
-                className='box-border flex flex-col gap-15'
-                initial={initial}
-                whileInView={whileInView}
-                viewport={viewport}
-            >
-                <div className='title text-4xl text-(--txt-title-color)'>patents.</div>
-                <div className='flex flex-col gap-10'>
-                    {patentList.map((p, idx) => <ExpPatentItem key={idx} item={p.data as PatentType} />)}
-                </div>
-            </motion.section>
-        }
+            {patentList.length > 0 &&
+                <section className='box-border flex flex-col gap-15'>
+                    <AnimateInView><h2 className='title text-4xl text-(--txt-title-color)'>patents.</h2></AnimateInView>
+                    <div className='flex flex-col gap-10'>
+                        {patentList.map((p, idx) => <AnimateInView key={idx}><ExpPatentItem item={p.data as PatentType} /></AnimateInView>)}
+                    </div>
+                </section>
+            }
         </>
     )
 }

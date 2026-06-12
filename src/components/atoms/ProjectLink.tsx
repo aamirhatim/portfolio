@@ -1,5 +1,4 @@
-import { faVideo, faNewspaper, faLink, faCodeBranch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Video, Newspaper, Link as LinkIcon, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppContext } from '../../context/appContext';
 
@@ -17,29 +16,28 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
         }
     };
 
-    const getIcon = () => {
+    /**
+     * Maps the project link type to the corresponding Lucide icon component.
+     */
+    const renderIcon = () => {
+        const className = "text-(--txt-subtitle-color) w-4 h-4";
         switch (props.value.toLowerCase()) {
             case "code":
-                return faCodeBranch;
-
+                return <GitBranch className={className} />;
             case "video":
-                return faVideo;
-
+                return <Video className={className} />;
             case "blog":
-                return faNewspaper;
-
             case "article":
-                return faNewspaper;
-        
+                return <Newspaper className={className} />;
             default:
-                return faLink;
+                return <LinkIcon className={className} />;
         }
     };
 
     return (
         <div onClick={handleClick} className={`p-1 cursor-pointer ${props.showText && 'px-4 py-2 border border-(--border-color) rounded-lg'}`}>
             <a className='!no-underline flex gap-4 items-center'>
-                <FontAwesomeIcon icon={getIcon()} size='sm' className='text-(--txt-subtitle-color)' />
+                {renderIcon()}
                 {props.showText && <div className='text-md text-(--txt-subtitle-color)'>{props.value}</div>}
             </a>
         </div>

@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false; // Only manageable from Firebase Console/Admin SDK
+    }
+
+    match /intro/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /projects/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /jobs/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /patents/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /education/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /aboutme/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /skills/{document=**} { allow read: if true; allow write: if isAdmin(); }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

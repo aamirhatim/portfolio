@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router"
 import ProjectArticle from "../organisms/ProjectArticle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
@@ -31,17 +30,19 @@ export default function ProjectViewer() {
     const isFirstProject = currentIndex === 0;
     const isLastProject = currentIndex === projectList.length - 1;
 
-    // Helper to fetch project list
-    const getProjectList = useCallback(async () => {
-        const projectDocs = await getDocumentsFromCollection(firebaseAppContext, "projects");
-        const newList = projectDocs?.map(p => p.id) || [];
-        setProjectList(newList);
-    }, [firebaseAppContext, setProjectList]);
-
     // Get list of all projects
     useEffect(() => {
-        getProjectList();
-    }, [getProjectList]);
+        let active = true;
+        getDocumentsFromCollection(firebaseAppContext, "projects").then((projectDocs) => {
+            if (!active) return;
+            const newList = projectDocs?.map(p => p.id) || [];
+            setProjectList(newList);
+        });
+
+        return () => {
+            active = false;
+        };
+    }, [firebaseAppContext]);
 
     // Define nav buttons
     const navProject = useCallback((direction: "next"|"prev") => {
@@ -67,7 +68,7 @@ export default function ProjectViewer() {
         const nextProjectId = projectList[newIndex];
         navigate(`/projects/${nextProjectId}`);
         setNavSelect(`projects/${nextProjectId}`);
-    }, [currentIndex, projectList, navigate, isFirstProject, isLastProject]);
+    }, [currentIndex, projectList, navigate, isFirstProject, isLastProject, setNavSelect]);
 
     return (
         <div className="h-full w-full flex flex-col justify-between z-90 mx-auto">
@@ -75,11 +76,11 @@ export default function ProjectViewer() {
 
             <div className="flex w-full px-[15%] py-20 justify-between">
                 <div className={`${arrowClasses} left-0 justify-end ${isFirstProject && 'opacity-30'}`} onClick={() => navProject("prev")}>
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} size="2xl" />
+                    <CircleArrowLeft size={32} />
                 </div>
 
                 <div className={`${arrowClasses} right-0 justify-start ${isLastProject && 'opacity-30'}`} onClick={() => navProject("next")}>
-                    <FontAwesomeIcon icon={faArrowAltCircleRight} size="2xl" />
+                    <CircleArrowRight size={32} />
                 </div>
             </div>
         </div>

@@ -35,10 +35,6 @@
     }
 }
 
-* {
-    border-color: var(--border-color);
-}
-
 body {
     box-sizing: border-box;
     background-color: var(--bg-color);
@@ -90,22 +86,15 @@ p {
 }
 
 h2 {
-    color: var(--txt-title-color);
     font-size: var(--text-3xl);
-    margin-top: 3rem;
-    margin-bottom: 0.75rem;
 }
 
 h3 {
-    color: var(--txt-subtitle-color);
     font-size: var(--text-2xl);
-    margin-top: 2rem;
-    margin-bottom: 0.25rem;
 }
 
 h4 {
     font-size: var(--text-xl);
-    margin-top: 1rem;
 }
 
 a {
@@ -122,5 +111,29 @@ table {
 
     td {
         @apply px-3 py-1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        top: -50px;
+        opacity: 0;
+    }
+
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

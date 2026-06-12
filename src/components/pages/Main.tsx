@@ -4,6 +4,7 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
+import { connectAuthEmulator, getAuth } from "firebase/auth"
 import { Outlet, useLocation } from "react-router";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import Navbar from "../molecules/Navbar";
@@ -15,15 +16,21 @@ export default function Main() {
     // Init state
     const isMobile = useIsMobile();
     const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
-    const [imgUrls, setImgUrls] = useState<Map<string, string>>(new Map());
+
+    const [prevPathname, setPrevPathname] = useState(location.pathname);
+
+    // Sync navigation state during render on pathname changes to prevent post-mount cascading renders
+    if (location.pathname !== prevPathname) {
+        setPrevPathname(location.pathname);
+        const nextNav = location.pathname === "/" ? "home" : location.pathname.substring(1);
+        setNav(nextNav);
+    }
 
     // Init context
     const initContext = useMemo((): AppContextInterface => ({
         navSelect: nav,
         setNavSelect: setNav,
-        imgUrlCache: imgUrls,
-        setImgUrlCache: setImgUrls,
-    }), [nav, imgUrls]);
+    }), [nav]);
 
     // Init Firebase app
     const firebaseApp: FirebaseApp = useMemo(() => {
@@ -34,6 +41,7 @@ export default function Main() {
             console.warn("Running locally. Connecting to emulators");
             connectFirestoreEmulator(getFirestore(app), "127.0.0.1", 5001);
             connectStorageEmulator(getStorage(app), "127.0.0.1", 5002);
+            connectAuthEmulator(getAuth(app), "http://127.0.0.1:5004", { disableWarnings: true });
         };
 
         return app;
@@ -41,13 +49,6 @@ export default function Main() {
 
     // Handle broswer navigation (back/forward)
     useEffect(() => {
-        if (location.pathname === "/") {
-            setNav("home");
-        } else {
-            const newNav = location.pathname.substring(1);
-            setNav(newNav);
-        }
-
         // Update document title
         let pageTitle = "Aamir Husain";
         if (location.pathname !== "/" && !location.pathname.startsWith("/projects/")) {
