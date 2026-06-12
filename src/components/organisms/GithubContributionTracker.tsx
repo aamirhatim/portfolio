@@ -202,7 +202,7 @@ export default function GithubContributionTracker() {
 
     return (
         <div className="w-full mb-8 select-none">
-            <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-300 dark:scrollbar-thumb-stone-700">
+            <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-(--border-color)">
                 <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
                     {/* Month labels grid */}
                     <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1 h-4 relative" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>

@@ -182,8 +182,8 @@ export default function FeaturedWorkCarousel() {
                             )}
 
                             {/* Overlay Gradient to ensure text readability */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-950/85 to-stone-950/30 z-10 md:block hidden pointer-events-none" />
-                            <div className="absolute inset-0 bg-stone-950/90 z-10 md:hidden block pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-(--static-dark-bg) via-(--static-dark-bg)/85 to-(--static-dark-bg)/30 z-10 md:block hidden pointer-events-none" />
+                            <div className="absolute inset-0 bg-(--static-dark-bg)/90 z-10 md:hidden block pointer-events-none" />
 
                             {/* Left Text Column */}
                             <div className="w-full md:w-[60%] flex flex-col justify-between p-6 md:p-8 h-full relative z-20">
@@ -191,13 +191,13 @@ export default function FeaturedWorkCarousel() {
                                     <h3 className="title font-bold mb-1 text-white">
                                         {project.title}
                                     </h3>
-                                    <div className="text-sm text-stone-300 leading-relaxed line-clamp-3 md:line-clamp-4">
+                                    <div className="text-sm text-(--static-dark-text) leading-relaxed line-clamp-3 md:line-clamp-4">
                                         {project.description}
                                     </div>
                                 </div>
                                 <div className="flex gap-1.5 flex-wrap">
                                     {project.skills.slice(0, 4).map((skill) => (
-                                        <Chip key={skill} text={skill} classes="border border-white text-white" />
+                                        <Chip key={skill} text={skill} classes="border border-(--static-dark-border) text-(--static-dark-text)" />
                                     ))}
                                 </div>
                             </div>

@@ -1,29 +1,35 @@
 @import "tailwindcss";
 
 :root {
-    --bg-color: var(--color-stone-50);
-    --bg-secondary-color: var(--color-stone-200);
-    --bg-card: var(--color-white);
-    --bg-interactive-hover: var(--color-stone-100);
-    --txt-body-color: var(--color-stone-900);
-    --txt-feature-color: var(--color-stone-900);
-    --txt-title-color: var(--color-indigo-900);
-    --txt-subtitle-color: var(--color-stone-500);
-    --txt-highlight-color: var(--color-indigo-700);
-    --txt-link-color: var(--color-indigo-800);
-    --txt-link-hover: var(--color-indigo-950);
-    --border-color: var(--color-stone-300);
-    --border-focus: var(--color-indigo-500);
-    --feedback-error: var(--color-red-600);
-    --feedback-warning: var(--color-amber-600);
+    color-scheme: light dark;
+    --bg-color: #f3f6f5;
+    --bg-secondary-color: #e3eae6;
+    --bg-card: #ffffff;
+    --bg-interactive-hover: #dae3df;
+    --txt-body-color: #2b3832;
+    --txt-feature-color: #1a2420;
+    --txt-title-color: #111a16;
+    --txt-subtitle-color: #4b5d55;
+    --txt-highlight-color: #1b533c;
+    --txt-link-color: #1d5f44;
+    --txt-link-hover: #0a3524;
+    --border-color: #cbd5d0;
+    --border-focus: #318260;
+    --feedback-error: #a63a3a;
+    --feedback-warning: #bd7320;
 
     /* Brand accent scale */
-    --color-accent-solid: var(--color-indigo-700);
-    --color-accent-subtle: var(--color-indigo-500);
-    --color-accent-bg-subtle: var(--color-indigo-100);
-    --color-accent-bg-muted: var(--color-indigo-300);
-    --color-accent-bg-strong: var(--color-indigo-500);
-    --color-accent-bg-max: var(--color-indigo-700);
+    --color-accent-solid: #226449;
+    --color-accent-subtle: #318260;
+    --color-accent-bg-subtle: #cbe7db;
+    --color-accent-bg-muted: #9ed4be;
+    --color-accent-bg-strong: #56af88;
+    --color-accent-bg-max: #2e7a5c;
+
+    /* Static Dark Overlays (For fixed dark elements like overlays on image backgrounds) */
+    --static-dark-bg: #090e0c;
+    --static-dark-text: #afc4ba;
+    --static-dark-border: #1a2722;
 
     --max-width: 1440px;
     --outlet-height: calc(100vh - var(--spacing) * 40);
@@ -31,29 +37,29 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg-color: var(--color-stone-950);
-        --bg-secondary-color: var(--color-stone-900);
-        --bg-card: var(--color-stone-900);
-        --bg-interactive-hover: var(--color-stone-800);
-        --txt-body-color: var(--color-stone-200);
-        --txt-feature-color: var(--color-stone-200);
-        --txt-title-color: var(--color-emerald-600);
-        --txt-subtitle-color: var(--color-stone-300);
-        --txt-highlight-color: var(--color-emerald-500);
-        --txt-link-color: var(--color-emerald-500);
-        --txt-link-hover: var(--color-emerald-400);
-        --border-color: var(--color-stone-800);
-        --border-focus: var(--color-emerald-500);
-        --feedback-error: var(--color-red-500);
-        --feedback-warning: var(--color-amber-500);
+        --bg-color: #090e0c;
+        --bg-secondary-color: #101815;
+        --bg-card: #101815;
+        --bg-interactive-hover: #18231e;
+        --txt-body-color: #afc4ba;
+        --txt-feature-color: #dbe7e1;
+        --txt-title-color: #edf5f1;
+        --txt-subtitle-color: #728b7e;
+        --txt-highlight-color: #77c5a0;
+        --txt-link-color: #56af88;
+        --txt-link-hover: #9adbc0;
+        --border-color: #1a2722;
+        --border-focus: #56af88;
+        --feedback-error: #d9534f;
+        --feedback-warning: #f0ad4e;
 
         /* Brand accent scale */
-        --color-accent-solid: var(--color-emerald-500);
-        --color-accent-subtle: var(--color-emerald-600);
-        --color-accent-bg-subtle: rgba(4, 120, 87, 0.2);
-        --color-accent-bg-muted: rgba(4, 120, 87, 0.5);
-        --color-accent-bg-strong: var(--color-emerald-600);
-        --color-accent-bg-max: var(--color-emerald-400);
+        --color-accent-solid: #56af88;
+        --color-accent-subtle: #3d8f6b;
+        --color-accent-bg-subtle: rgba(86, 175, 136, 0.12);
+        --color-accent-bg-muted: rgba(86, 175, 136, 0.28);
+        --color-accent-bg-strong: #3d8f6b;
+        --color-accent-bg-max: #77c5a0;
     }
 }
 
