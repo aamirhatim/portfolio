@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.7.0] - 2026-06-12 15:24:00
+
+### Added
+- Integrated a responsive, level-colored skills directory on the About page, displaying skills with level 3 and above, grouped by categories (code, tools, and concepts).
+- Added `sm`, `md`, and `lg` sizing support in the `Chip` component, mapping sizes to exact classes (`px-2 text-xs`, `px-3 py-1 text-md`, and `px-4 py-2 text-lg`).
+- Enforced strict TypeScript typing (`'sm' | 'md' | 'lg'`) on the `size` prop of `Chip` and `ChipGroup` components.
+
+### Changed
+- Configured About page skill sections to render chips with the medium (`md`) size.
+- Refactored biography `useEffect` data loading to check if the component is active, preventing memory leaks on unmount.
+- Memoized filtered and sorted skill lists using `useMemo` to optimize rendering.
+- Simplified rendering structure on the About page, utilizing loop configs to map over columns dynamically (DRY cleanup).
+- Removed the redundant "skills." heading title on the About page.
+
 ## [9.6.0] - 2026-06-12 13:40:00
 
 ### Added
