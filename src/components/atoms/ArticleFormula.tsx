@@ -9,7 +9,7 @@ export default function ArticleFormula({ block }: { block: FormulaBlockType }) {
             <div className="w-full text-lg text-center">
                 <BlockMath
                     math={block.content}
-                    errorColor={"#cc0000"}
+                    errorColor={"var(--feedback-error)"}
                 />
             </div>
         </BlockWrapper>

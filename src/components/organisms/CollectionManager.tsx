@@ -257,7 +257,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                                     </button>
                                     <button
                                         onClick={() => handleDelete(doc.id)}
-                                        className="p-2 text-[var(--txt-subtitle-color)] hover:bg-red-500 hover:text-white rounded transition-colors"
+                                        className="p-2 text-[var(--txt-subtitle-color)] hover:bg-(--feedback-error) hover:text-(--bg-color) rounded transition-colors"
                                         title="Delete"
                                     >
                                         <Trash2 size={16} />

@@ -1,13 +1,12 @@
 import { SkillType } from "../../data/datatypes"
 import { useFirebaseAppContext } from '../../context/firebaseAppContext'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { getDocumentsFromCollection } from '../../lib/firestoreLib'
-// import ChipGroup from "../molecules/ChipGroup"
+import Chip from "../atoms/Chip"
 import LazyImg from "../atoms/LazyImg"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 import SocialsBar from "../molecules/socialsBar"
-
 
 export default function AboutPage() {
     // Get context
@@ -16,58 +15,85 @@ export default function AboutPage() {
     // Init state
     const isMobile = useIsMobile();
     const [aboutTxt, setAboutTxt] = useState<string[]>([]);
-    // const [topSkills, setTopSkills] = useState<SkillType[]>([]);
-    // const [midSkills, setMidSkills] = useState<SkillType[]>([]);
-    // const [lowSkills, setLowSkills] = useState<SkillType[]>([]);
-
-
+    const [skills, setSkills] = useState<SkillType[]>([]);
 
     // Get about me text
     useEffect(() => {
+        let active = true;
         const getAboutTxt = async () => {
             const aboutTxtRaw: string[] = [];
             const aboutDocs = await getDocumentsFromCollection(firebaseAppContext, "aboutme", [orderBy("order")]);
+            if (!active) return;
             aboutDocs?.forEach(doc => {
                 aboutTxtRaw.push(doc.data.text);
             });
             setAboutTxt(aboutTxtRaw);
         };
         getAboutTxt();
+        return () => {
+            active = false;
+        };
     }, [firebaseAppContext]);
 
     // Get skills
     useEffect(() => {
+        let active = true;
         const getSkills = async () => {
-            const skills = await getDocumentsFromCollection(firebaseAppContext, "skills");
-
-            // Categorize skills
-            const tops: SkillType[] = [];
-            const mids: SkillType[] = [];
-            const lows: SkillType[] = [];
-            skills?.map((skill) => {
-                const data = skill.data as SkillType;
-                if (data.level >= 4) {
-                    tops.push(data);
-                } else if (data.level >= 2) {
-                    mids.push(data);
-                } else {
-                    lows.push(data);
-                }
+            const skillsDocs = await getDocumentsFromCollection(firebaseAppContext, "skills");
+            if (!active) return;
+            const skillsList: SkillType[] = [];
+            skillsDocs?.forEach((doc) => {
+                skillsList.push(doc.data as SkillType);
             });
-
-            // Update lists
-            // setTopSkills(tops);
-            // setMidSkills(mids);
-            // setLowSkills(lows);
+            setSkills(skillsList);
         };
         getSkills();
+        return () => {
+            active = false;
+        };
     }, [firebaseAppContext]);
+
+    const getSkillChipClasses = (level: number) => {
+        if (level === 3) {
+            return "bg-(--color-accent-bg-subtle) text-(--txt-body-color)";
+        }
+        if (level === 4) {
+            return "bg-(--color-accent-bg-muted) text-(--txt-title-color) font-medium";
+        }
+        // Level 5 and above
+        return "bg-(--color-accent-solid) text-(--bg-color) font-semibold";
+    };
+
+    const sortSkills = (list: SkillType[]) => {
+        return [...list].sort((a, b) => {
+            if (b.level !== a.level) {
+                return b.level - a.level;
+            }
+            return a.name.localeCompare(b.name);
+        });
+    };
+
+    const sortedCategorizedSkills = useMemo(() => {
+        const filtered = skills.filter((skill) => skill.level >= 3);
+        const code = filtered.filter((skill) => skill.type.toLowerCase() === "code");
+        const tools = filtered.filter((skill) => skill.type.toLowerCase() === "tools");
+        const concepts = filtered.filter((skill) => skill.type.toLowerCase() === "concepts");
+
+        return {
+            hasSkills: filtered.length > 0,
+            columns: [
+                { title: "code.", list: sortSkills(code) },
+                { title: "tools.", list: sortSkills(tools) },
+                { title: "concepts.", list: sortSkills(concepts) }
+            ]
+        };
+    }, [skills]);
 
     return (
         <div className="px-4 flex flex-col gap-30">
             <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-15 gap-10'}`}>
                 <div
-                    className={`border rounded-md overflow-clip ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
+                    className={`rounded-md overflow-clip ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
                 >
                     <LazyImg
                         imgPath="/aboutme.jpg"
@@ -84,24 +110,29 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* <section
-                className={`flex flex-col ${isMobile ? '' : 'max-w-[1000px] mx-auto'}`}
-            >
-                <div className="mb-10">
-                    <div className='text-3xl font-bold mb-5'>I'm pretty good at</div>
-                    <ChipGroup list={topSkills.map(i => i.name)} size="lg" />
-                </div>
-
-                <div className="mb-10">
-                    <div className='text-3xl font-bold mb-5'>I'm familiar with</div>
-                    <ChipGroup list={midSkills.map(i => i.name)} size="lg" />
-                </div>
-
-                <div className="mb-10">
-                    <div className='text-3xl font-bold mb-5'>I've dabbled in</div>
-                    <ChipGroup list={lowSkills.map(i => i.name)} size="lg" />
-                </div>
-            </section> */}
+            {sortedCategorizedSkills.hasSkills && (
+                <section className={`px-4 ${isMobile ? '' : 'px-15'}`}>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {sortedCategorizedSkills.columns.map(({ title, list }) => (
+                            <div key={title} className="flex flex-col gap-4">
+                                <h3 className="title text-2xl text-(--txt-title-color) border-b border-(--border-color) pb-2 mb-2">
+                                    {title}
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {list.map((skill) => (
+                                        <Chip
+                                            key={skill.name}
+                                            text={skill.name}
+                                            size="md"
+                                            classes={getSkillChipClasses(skill.level)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             <div className="flex justify-center w-full pb-10">
                 <SocialsBar />

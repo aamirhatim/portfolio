@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.7.0] - 2026-06-12 15:24:00
+
+### Added
+- Integrated a responsive, level-colored skills directory on the About page, displaying skills with level 3 and above, grouped by categories (code, tools, and concepts).
+- Added `sm`, `md`, and `lg` sizing support in the `Chip` component, mapping sizes to exact classes (`px-2 text-xs`, `px-3 py-1 text-md`, and `px-4 py-2 text-lg`).
+- Enforced strict TypeScript typing (`'sm' | 'md' | 'lg'`) on the `size` prop of `Chip` and `ChipGroup` components.
+
+### Changed
+- Configured About page skill sections to render chips with the medium (`md`) size.
+- Refactored biography `useEffect` data loading to check if the component is active, preventing memory leaks on unmount.
+- Memoized filtered and sorted skill lists using `useMemo` to optimize rendering.
+- Simplified rendering structure on the About page, utilizing loop configs to map over columns dynamically (DRY cleanup).
+- Removed the redundant "skills." heading title on the About page.
+
+## [9.6.0] - 2026-06-12 13:40:00
+
+### Added
+- Declared global and viewport-wide `color-scheme: light dark` support in `index.html` and `src/root.css` to allow proper native styling and media query evaluation of dark mode.
+- Introduced a custom static dark token set (`--static-dark-bg`, `--static-dark-text`, and `--static-dark-border`) to encapsulate color values for components with fixed dark overlays.
+
+### Changed
+- Shifted light and dark mode variables to a cohesive, sophisticated custom **Forest Sage & Midnight Pine** theme, replacing previous cyan/teal accents.
+- Improved light-mode contrast and readability by darkening body text (`#2b3832`), subtitles (`#4b5d55`), solid accents (`#226449`), and link text (`#1d5f44`) to meet WCAG AA standards.
+- Refactored `FeaturedWorkCarousel` overlay styles and tag chips to use new `--static-dark-*` tokens instead of hardcoded stone colors.
+- Refactored `GithubContributionTracker` scrollbars to utilize the semantic `--border-color` variable and restructured contribution levels for natural light-to-dark progression.
+
+## [9.5.1] - 2026-06-12 12:43:00
+
+### Fixed
+- Resolved a bug where refreshing or reloading the page caused the active navigation state indicator to reset to "home" instead of preserving the active route.
+- Aligned all uncolored borders to explicitly use the semantic `--border-color` token across `ExpPatentItem` status tags, `currentWork` section dividers, and `ProjectPopup` containers.
+
+### Changed
+- Configured the navigation context state setter (`handleSetNav`) in `Main.tsx` to persist active route targets to `sessionStorage` and fallback-synchronize them on mount.
+
+## [9.5.0] - 2026-06-12 11:54:00
+
+### Added
+- Declared comprehensive Tier 2 semantic variables (e.g. `--bg-card`, `--bg-interactive-hover`, `--txt-link-hover`, `--border-focus`, `--feedback-error`, `--feedback-warning`, and a brand `--color-accent-*` scale) in `src/root.css` to enable unified styling for light and dark modes.
+
+### Changed
+- Refactored `Chip` component to set default adaptive border, background, and text styling tokens when custom classes are not provided.
+- Refactored Logout buttons in `Navbar` and `NavMenu` to use the `--feedback-error` status token.
+- Updated delete button in `CollectionManager` to use `--feedback-error` for hover background.
+- Updated `FeaturedWorkCarousel` component to utilize theme-adaptive skeleton loaders, container backdrops, focus outline rings (`focus-visible:ring-(--border-focus)`), and navigation controls.
+- Updated `GithubContributionTracker` to bind contribution cell levels to the `--color-accent-bg-*` brand scale, skeleton trackers to secondary backgrounds, and offline tags to warning tokens.
+- Replaced the non-existent `--bg-layer-color` variable on tables in `ArticleTable` with the correct `--bg-secondary-color` semantic property.
+
 ## [9.4.1] - 2026-06-11 21:38:00
 
 ### Changed

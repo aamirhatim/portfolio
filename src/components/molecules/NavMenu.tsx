@@ -86,7 +86,7 @@ export default function NavMenu() {
                     <div className="w-full flex flex-col gap-2 items-center">
                         {isAdminRoute ? (
                             user && (
-                                <div className="cursor-pointer title text-lg text-red-500 p-2" onClick={async () => {
+                                <div className="cursor-pointer title text-lg text-(--feedback-error) p-2" onClick={async () => {
                                     await logoutAdmin(firebaseApp);
                                     navigate("/");
                                     setNavMenuVis(false);
