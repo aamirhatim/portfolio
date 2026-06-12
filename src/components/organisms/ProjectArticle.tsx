@@ -80,29 +80,51 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
     // Get project article
     useEffect(() => {
+        let active = true;
         const getArticleData = async () => {
-            // 1. Create file path for article
+            try {
+                const firestoreDoc = await getDocumentFromId(firebaseAppContext, "articles", props.projectId);
+                if (firestoreDoc && active) {
+                    const articleData = firestoreDoc.data as ArticleType;
+                    if (articleData.public) {
+                        setArticle(articleData);
+                        return;
+                    } else {
+                        setArticle(undefined);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error(`Failed to fetch article from Firestore for ${props.projectId}:`, error);
+            }
+
+            if (!active) return;
+
+            // Create file path for fallback article
             const articlePath = `/src/data/articles/${props.projectId}.json`;
 
-            // 2. Look up dynamic import function in articleModule map
+            // Look up dynamic import function in articleModule map
             const importFunction = articleModules[articlePath];
             if (!importFunction) {
-                console.warn(`No article found for ${props.projectId}`);
-                setArticle(undefined);
+                if (active) setArticle(undefined);
                 return;
             }
 
-            // 3. Import the article
+            // Import the fallback article
             try {
                 const module = await importFunction();
-                setArticle(module);
+                if (active) {
+                    setArticle(module);
+                }
             } catch (error) {
-                console.error(`Failed to load article for ${props.projectId}: ${error}`);
-                setArticle(undefined);
-                return;
+                console.error(`Failed to load article fallback for ${props.projectId}: ${error}`);
+                if (active) setArticle(undefined);
             }
         };
         getArticleData();
+        return () => {
+            active = false;
+        };
     }, [props.projectId, firebaseAppContext]);
 
     return (
