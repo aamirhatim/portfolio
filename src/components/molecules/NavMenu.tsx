@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, MouseEvent as ReactMouseEvent } from "react";
 import { useAppContext } from "../../context/appContext";
 import SocialsBar from "./socialsBar";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { logoutAdmin } from "../../lib/adminLib";
 
 const navItems:string[] = [
     "home",
@@ -14,6 +17,19 @@ export default function NavMenu() {
     // Get context
     const appContext = useAppContext();
     const navigate = useNavigate();
+    const location = useLocation();
+    const firebaseApp = useFirebaseAppContext();
+    const [user, setUser] = useState<User | null>(null);
+
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
+    useEffect(() => {
+        const auth = getAuth(firebaseApp);
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
+    }, [firebaseApp]);
 
     // Init state
     const [navMenuVis, setNavMenuVis] = useState<boolean>(false);
@@ -68,11 +84,21 @@ export default function NavMenu() {
             {navMenuVis &&
                 <div className="absolute top-1 right-0 w-max px-6 pt-2 pb-4 flex flex-col items-center gap-6 rounded-lg bg-(--bg-secondary-color) shadow-xl">
                     <div className="w-full flex flex-col gap-2 items-center">
-                        {navItems.map((nav, idx) => {
-                            return (
-                                <div key={idx} className="cursor-pointer title text-lg text-(--txt-subtitle-color) p-2" onClick={handleClick}>{nav}</div>
+                        {isAdminRoute ? (
+                            user && (
+                                <div className="cursor-pointer title text-lg text-red-500 p-2" onClick={async () => {
+                                    await logoutAdmin(firebaseApp);
+                                    navigate("/");
+                                    setNavMenuVis(false);
+                                }}>Logout</div>
                             )
-                        })}
+                        ) : (
+                            navItems.map((nav, idx) => {
+                                return (
+                                    <div key={idx} className="cursor-pointer title text-lg text-(--txt-subtitle-color) p-2" onClick={handleClick}>{nav}</div>
+                                )
+                            })
+                        )}
                     </div>
 
                     <SocialsBar />

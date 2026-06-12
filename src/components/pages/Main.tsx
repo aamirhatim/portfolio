@@ -4,6 +4,7 @@ import { FirebaseApp, initializeApp } from "firebase/app";
 import { firebaseConfig, FirebaseAppContext } from "../../context/firebaseAppContext"
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore"
 import { connectStorageEmulator, getStorage } from "firebase/storage"
+import { connectAuthEmulator, getAuth } from "firebase/auth"
 import { Outlet, useLocation } from "react-router";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import Navbar from "../molecules/Navbar";
@@ -40,6 +41,7 @@ export default function Main() {
             console.warn("Running locally. Connecting to emulators");
             connectFirestoreEmulator(getFirestore(app), "127.0.0.1", 5001);
             connectStorageEmulator(getStorage(app), "127.0.0.1", 5002);
+            connectAuthEmulator(getAuth(app), "http://127.0.0.1:5004", { disableWarnings: true });
         };
 
         return app;

@@ -8,6 +8,7 @@ import ResumePage from './components/pages/ResumePage'
 import ProjectsPage from './components/pages/ProjectsPage'
 import Main from "./components/pages/Main"
 import ProjectViewer from "./components/pages/ProjectViewer"
+import AdminPage from "./components/pages/AdminPage"
 
 // Render the app
 const rootElement = document.getElementById('root')!
@@ -25,6 +26,7 @@ if (!rootElement.innerHTML) {
                             <Route index element={<ProjectsPage />} />
                             <Route path=":projectId" element={<ProjectViewer />} />
                         </Route>
+                        <Route path="admin" element={<AdminPage />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

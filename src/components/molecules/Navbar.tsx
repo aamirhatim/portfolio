@@ -1,8 +1,12 @@
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import Logo from '../../assets/logo.svg?react'
 import { useAppContext } from '../../context/appContext'
 import useIsMobile from '../../lib/hooks/useIsMobile'
 import NavMenu from './NavMenu'
+import { useFirebaseAppContext } from '../../context/firebaseAppContext'
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import { logoutAdmin } from '../../lib/adminLib'
 
 const navItems: string[] = [
     "about",
@@ -11,10 +15,22 @@ const navItems: string[] = [
 ]
 
 export default function Navbar() {
-    // Get context
     const appContext = useAppContext()
     const isMobile = useIsMobile();
     const navigate = useNavigate();
+    const location = useLocation();
+    const firebaseApp = useFirebaseAppContext();
+    const [user, setUser] = useState<User | null>(null);
+
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
+    useEffect(() => {
+        const auth = getAuth(firebaseApp);
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
+    }, [firebaseApp]);
 
     // Nav handler
     const handleNavClick = (title: string) => {
@@ -43,7 +59,20 @@ export default function Navbar() {
                 </button>
 
                 <div className='flex grow justify-start gap-8 h-full'>
-                    {
+                    {isAdminRoute ? (
+                        user && (
+                            <button
+                                aria-label="Logout"
+                                className="cursor-pointer appearance-none bg-transparent px-1 py-1 content-center title text-md hover:text-red-500 text-red-500 border-t-1 border-transparent transition-colors ml-auto"
+                                onClick={async () => {
+                                    await logoutAdmin(firebaseApp);
+                                    navigate("/");
+                                }}
+                            >
+                                Logout
+                            </button>
+                        )
+                    ) : (
                         navItems.map((n, idx) => (
                             <button
                                 key={idx}
@@ -54,7 +83,7 @@ export default function Navbar() {
                                 {n}
                             </button>
                         ))
-                    }
+                    )}
                 </div>
             </nav>
         </div>
