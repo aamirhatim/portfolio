@@ -1,16 +1,26 @@
-import Chip from "../atoms/Chip"
+import Chip from "../atoms/Chip";
 
+/**
+ * Props for the ChipGroup component.
+ */
 export interface ChipGroupProps {
-    list: string[],
-    size?: string,
+    /** List of string tags/keywords to render as Chips. */
+    list: string[];
+    /** Sizing configuration passed down to each Chip. */
+    size?: 'sm' | 'md' | 'lg';
 }
 
-export default function ChipGroup(props:ChipGroupProps) {
-    const gapSize = props.size === "lg" ? "gap-3" : "gap-2";
+/**
+ * Renders a wrapped grid layout containing a group of Chips.
+ */
+export default function ChipGroup({ list, size = "sm" }: ChipGroupProps) {
+    const gapSize = size === "lg" ? "gap-3" : "gap-2";
 
     return (
         <div className={`flex flex-wrap ${gapSize}`}>
-            {props.list.map( (s, idx) => <Chip key={idx} text={s} size={props.size} /> )}
+            {list.map((s, idx) => (
+                <Chip key={idx} text={s} size={size} />
+            ))}
         </div>
-    )
+    );
 }
