@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.4.0] - 2026-06-11 20:40:00
+
+### Added
+- Implemented a secure `AdminDashboard` and `CollectionManager` allowing dynamic CRUD operations for Firestore collections with a styled table view for expanded document data.
+- Integrated Google Sign-in to the `AdminPage` alongside existing Email/Password authentication.
+- Added strict frontend route guarding to the `AdminPage` using `checkIsAdmin()`, logging out unauthorized users attempting to access the portal.
+
+### Changed
+- Refactored `firestore.rules` to apply strict write restrictions, ensuring only users with an ID registered in the `admins` collection can modify database content.
+- Updated `NavMenu` and `Navbar` to conditionally render a right-aligned Logout button specifically on the `/admin` route.
+- Applied JSDoc annotations to `adminLib` functions and `CollectionManager` component props for improved maintainability.
+
 ## [9.3.0] - 2026-06-11 14:39:00
 
 ### Added
