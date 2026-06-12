@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.5.0] - 2026-06-12 11:54:00
+
+### Added
+- Declared comprehensive Tier 2 semantic variables (e.g. `--bg-card`, `--bg-interactive-hover`, `--txt-link-hover`, `--border-focus`, `--feedback-error`, `--feedback-warning`, and a brand `--color-accent-*` scale) in `src/root.css` to enable unified styling for light and dark modes.
+
+### Changed
+- Refactored `Chip` component to set default adaptive border, background, and text styling tokens when custom classes are not provided.
+- Refactored Logout buttons in `Navbar` and `NavMenu` to use the `--feedback-error` status token.
+- Updated delete button in `CollectionManager` to use `--feedback-error` for hover background.
+- Updated `FeaturedWorkCarousel` component to utilize theme-adaptive skeleton loaders, container backdrops, focus outline rings (`focus-visible:ring-(--border-focus)`), and navigation controls.
+- Updated `GithubContributionTracker` to bind contribution cell levels to the `--color-accent-bg-*` brand scale, skeleton trackers to secondary backgrounds, and offline tags to warning tokens.
+- Replaced the non-existent `--bg-layer-color` variable on tables in `ArticleTable` with the correct `--bg-secondary-color` semantic property.
+
 ## [9.4.1] - 2026-06-11 21:38:00
 
 ### Changed
