@@ -1,6 +1,7 @@
 // restoreStorage.js
 
-const admin = require('firebase-admin');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getStorage } = require('firebase-admin/storage');
 const fs = require('fs');
 const path = require('path');
 
@@ -14,8 +15,8 @@ const EXPORT_ROOT = './emulators_data/storage_export';
 // Initialize Firebase Admin SDK
 try {
     const serviceAccount = require(SERVICE_ACCOUNT_PATH);
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+    initializeApp({
+        credential: cert(serviceAccount),
         // This is your bucket name, found in your buckets.json or Firebase Console
         storageBucket: serviceAccount.project_id + '.firebasestorage.app'
     });
@@ -25,7 +26,7 @@ try {
     process.exit(1);
 }
 
-const bucket = admin.storage().bucket();
+const bucket = getStorage().bucket();
 const METADATA_DIR = path.join(EXPORT_ROOT, 'metadata');
 const BLOBS_DIR = path.join(EXPORT_ROOT, 'blobs');
 
