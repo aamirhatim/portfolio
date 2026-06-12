@@ -14,82 +14,94 @@ const TAB_CONFIGS: Record<string, { title: string, icon: React.ReactNode, collec
         title: "About Me",
         icon: <CircleUserRound size={18} />,
         collections: [
-            { name: "aboutme", fields: [
-                { name: "text", label: "Paragraph", type: "textarea" },
-                { name: "order", label: "Order", type: "number" }
-            ]}
+            {
+                name: "aboutme", fields: [
+                    { name: "text", label: "Paragraph", type: "textarea" },
+                    { name: "order", label: "Order", type: "number" }
+                ]
+            }
         ]
     },
     skills: {
         title: "Skills",
         icon: <PocketKnife size={18} />,
         collections: [
-            { name: "skills", fields: [
-                { name: "name", label: "Skill Name", type: "string" },
-                { name: "type", label: "Type", type: "string" },
-                { name: "level", label: "Level (1-5)", type: "number" }
-            ]}
+            {
+                name: "skills", fields: [
+                    { name: "name", label: "Skill Name", type: "string" },
+                    { name: "type", label: "Type", type: "string" },
+                    { name: "level", label: "Level (1-5)", type: "number" }
+                ]
+            }
         ]
     },
     jobs: {
         title: "Jobs",
         icon: <BriefcaseBusiness size={18} />,
         collections: [
-            { name: "jobs", fields: [
-                { name: "title", label: "Job Title", type: "string" },
-                { name: "company", label: "Company", type: "string" },
-                { name: "isCurrent", label: "Is Current?", type: "boolean" },
-                { name: "start", label: "Start Date", type: "string" },
-                { name: "end", label: "End Date", type: "string" },
-                { name: "description", label: "Description", type: "textarea" },
-                { name: "detail", label: "Detail", type: "textarea" },
-                { name: "skills", label: "Skills", type: "array" }
-            ]}
+            {
+                name: "jobs", fields: [
+                    { name: "title", label: "Job Title", type: "string" },
+                    { name: "company", label: "Company", type: "string" },
+                    { name: "isCurrent", label: "Is Current?", type: "boolean", required: false },
+                    { name: "start", label: "Start Date", type: "string" },
+                    { name: "end", label: "End Date", type: "string", required: false },
+                    { name: "description", label: "Description", type: "textarea" },
+                    { name: "detail", label: "Detail", type: "textarea" },
+                    { name: "skills", label: "Skills", type: "array", required: false }
+                ]
+            }
         ]
     },
     patents: {
         title: "Patents",
         icon: <Award size={18} />,
         collections: [
-            { name: "patents", fields: [
-                { name: "title", label: "Title", type: "string" },
-                { name: "status", label: "Status", type: "string" },
-                { name: "year", label: "Year", type: "number" },
-                { name: "number", label: "Patent Number", type: "string" },
-                { name: "url", label: "URL", type: "string" },
-                { name: "description", label: "Description", type: "textarea" }
-            ]}
+            {
+                name: "patents", fields: [
+                    { name: "title", label: "Title", type: "string" },
+                    { name: "status", label: "Status", type: "string" },
+                    { name: "year", label: "Year", type: "number" },
+                    { name: "number", label: "Patent Number", type: "string", required: false },
+                    { name: "url", label: "URL", type: "string", required: false },
+                    { name: "description", label: "Description", type: "textarea", required: false }
+                ]
+            }
         ]
     },
     education: {
         title: "Education",
         icon: <GraduationCap size={18} />,
         collections: [
-            { name: "education", fields: [
-                { name: "school", label: "School", type: "string" },
-                { name: "degree.short", label: "Degree (Short)", type: "string" },
-                { name: "degree.long", label: "Degree (Long)", type: "string" },
-                { name: "field", label: "Field of Study", type: "string" },
-                { name: "start", label: "Start Year", type: "number" },
-                { name: "end", label: "End Year", type: "number" }
-            ]}
+            {
+                name: "education", fields: [
+                    { name: "school", label: "School", type: "string" },
+                    { name: "degree.short", label: "Degree (Short)", type: "string" },
+                    { name: "degree.long", label: "Degree (Long)", type: "string" },
+                    { name: "field", label: "Field of Study", type: "string" },
+                    { name: "start", label: "Start Year", type: "number" },
+                    { name: "end", label: "End Year", type: "number" }
+                ]
+            }
         ]
     },
     projects: {
         title: "Projects",
         icon: <FolderOpenDot size={18} />,
         collections: [
-            { name: "projects", fields: [
-                { name: "title", label: "Title", type: "string" },
-                { name: "subtitle", label: "Subtitle", type: "string" },
-                { name: "publishDate", label: "Publish Date (YYYY-MM-DD)", type: "string" },
-                { name: "img", label: "Image Path", type: "string" },
-                { name: "code", label: "Code URL", type: "string" },
-                { name: "video", label: "Video URL", type: "string" },
-                { name: "spotlight", label: "Spotlight?", type: "boolean" },
-                { name: "description", label: "Description", type: "textarea" },
-                { name: "skills", label: "Skills", type: "array" }
-            ]}
+            {
+                name: "projects", fields: [
+                    { name: "title", label: "Title", type: "string" },
+                    { name: "subtitle", label: "Subtitle", type: "string" },
+                    { name: "publishDate", label: "Publish Date (YYYY-MM-DD)", type: "string" },
+                    { name: "img", label: "Image Path", type: "string", required: false },
+                    { name: "code", label: "Code URL", type: "string", required: false },
+                    { name: "video", label: "Video URL", type: "string", required: false },
+                    { name: "spotlight", label: "Spotlight", type: "boolean", required: false },
+                    { name: "description", label: "Description", type: "textarea" },
+                    { name: "skills", label: "Skills", type: "array", required: false }
+                ]
+            }
         ]
     }
 };
@@ -111,11 +123,10 @@ export default function AdminDashboard() {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-3 text-left px-4 py-2 rounded transition-colors duration-200 ${
-                                activeTab === tab.id
-                                    ? "bg-[var(--txt-highlight-color)] text-[var(--bg-color)]"
-                                    : "text-[var(--txt-body-color)] hover:bg-[var(--bg-secondary-color)]"
-                            }`}
+                            className={`flex items-center gap-3 text-left px-4 py-2 rounded transition-colors duration-200 ${activeTab === tab.id
+                                ? "bg-[var(--txt-highlight-color)] text-[var(--bg-color)]"
+                                : "text-[var(--txt-body-color)] hover:bg-[var(--bg-secondary-color)]"
+                                }`}
                         >
                             {tab.icon}
                             {tab.label}

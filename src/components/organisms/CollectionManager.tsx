@@ -15,6 +15,8 @@ export type FieldConfig = {
     label: string;
     /** The data type / input type for the field */
     type: 'string' | 'number' | 'boolean' | 'array' | 'textarea';
+    /** Whether the field is required to submit the form */
+    required?: boolean;
 };
 
 /**
@@ -146,7 +148,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                                     value={field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as string || "") : (formData[field.name] as string || "")}
                                     onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
                                     className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)] min-h-[100px]"
-                                    required
+                                    required={field.required ?? true}
                                 />
                             ) : field.type === 'boolean' ? (
                                 <input
@@ -162,6 +164,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                                     onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
                                     placeholder="Comma separated values"
                                     className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
+                                    required={field.required ?? false}
                                 />
                             ) : (
                                 <input
@@ -169,7 +172,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                                     value={field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as string | number || (field.type === 'number' ? 0 : "")) : (formData[field.name] as string | number || (field.type === 'number' ? 0 : ""))}
                                     onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
                                     className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
-                                    required={field.type !== 'number'}
+                                    required={field.required ?? (field.type !== 'number')}
                                 />
                             )}
                         </div>
