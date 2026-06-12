@@ -15,7 +15,17 @@ export default function Main() {
     
     // Init state
     const isMobile = useIsMobile();
-    const [nav, setNav] = useState<string>(sessionStorage.getItem("navSelect") || "home");
+    // Initialize nav state from sessionStorage or location pathname
+    const getInitialNav = () => {
+        const pathNav = location.pathname === "/" ? "home" : location.pathname.substring(1);
+        const savedNav = sessionStorage.getItem("navSelect");
+        if (savedNav && (savedNav === pathNav || savedNav.startsWith(pathNav + "/"))) {
+            return savedNav;
+        }
+        return pathNav;
+    };
+
+    const [nav, setNav] = useState<string>(getInitialNav);
 
     const [prevPathname, setPrevPathname] = useState(location.pathname);
 
@@ -24,12 +34,26 @@ export default function Main() {
         setPrevPathname(location.pathname);
         const nextNav = location.pathname === "/" ? "home" : location.pathname.substring(1);
         setNav(nextNav);
+        sessionStorage.setItem("navSelect", nextNav);
     }
+
+    const handleSetNav: React.Dispatch<React.SetStateAction<string>> = (nextNav) => {
+        if (typeof nextNav === "function") {
+            setNav((prev) => {
+                const resolved = nextNav(prev);
+                sessionStorage.setItem("navSelect", resolved);
+                return resolved;
+            });
+        } else {
+            setNav(nextNav);
+            sessionStorage.setItem("navSelect", nextNav);
+        }
+    };
 
     // Init context
     const initContext = useMemo(():AppContextInterface =>({
         navSelect: nav,
-        setNavSelect: setNav,
+        setNavSelect: handleSetNav,
     }), [nav]);
 
     // Init Firebase app
