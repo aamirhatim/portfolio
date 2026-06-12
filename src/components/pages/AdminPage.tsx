@@ -76,7 +76,7 @@ export default function AdminPage() {
                     <label className="text-sm font-semibold text-[var(--txt-subtitle-color)]">Email</label>
                     <input
                         type="email"
-                        placeholder="agent@gmail.com"
+                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="p-3 border border-[var(--border-color)] rounded bg-transparent text-[var(--txt-body-color)] focus:outline-none focus:border-[var(--txt-highlight-color)] transition-colors"

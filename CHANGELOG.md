@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.4.1] - 2026-06-11 21:38:00
+
+### Changed
+- Configured specific Admin Portal form fields (e.g. `detail`, `end`, `subtitle`, `url`, `video`) to no longer be required, permitting more flexible document creation and updates.
+- Refactored `firebase-admin` dependency out of the root project scope by isolating it to a dedicated `package.json` inside the `scripts/` directory.
+- Updated the `uploadFilesToStorage.cjs` script to use modern Firebase Admin SDK v12+ modular imports.
+- Updated the email placeholder text on the `AdminPage` login form.
+
+
 ## [9.4.0] - 2026-06-11 20:40:00
 
 ### Added
