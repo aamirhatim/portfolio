@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.5.1] - 2026-06-12 12:43:00
+
+### Fixed
+- Resolved a bug where refreshing or reloading the page caused the active navigation state indicator to reset to "home" instead of preserving the active route.
+- Aligned all uncolored borders to explicitly use the semantic `--border-color` token across `ExpPatentItem` status tags, `currentWork` section dividers, and `ProjectPopup` containers.
+
+### Changed
+- Configured the navigation context state setter (`handleSetNav`) in `Main.tsx` to persist active route targets to `sessionStorage` and fallback-synchronize them on mount.
+
 ## [9.5.0] - 2026-06-12 11:54:00
 
 ### Added
