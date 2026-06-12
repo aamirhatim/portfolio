@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.6.0] - 2026-06-12 13:40:00
+
+### Added
+- Declared global and viewport-wide `color-scheme: light dark` support in `index.html` and `src/root.css` to allow proper native styling and media query evaluation of dark mode.
+- Introduced a custom static dark token set (`--static-dark-bg`, `--static-dark-text`, and `--static-dark-border`) to encapsulate color values for components with fixed dark overlays.
+
+### Changed
+- Shifted light and dark mode variables to a cohesive, sophisticated custom **Forest Sage & Midnight Pine** theme, replacing previous cyan/teal accents.
+- Improved light-mode contrast and readability by darkening body text (`#2b3832`), subtitles (`#4b5d55`), solid accents (`#226449`), and link text (`#1d5f44`) to meet WCAG AA standards.
+- Refactored `FeaturedWorkCarousel` overlay styles and tag chips to use new `--static-dark-*` tokens instead of hardcoded stone colors.
+- Refactored `GithubContributionTracker` scrollbars to utilize the semantic `--border-color` variable and restructured contribution levels for natural light-to-dark progression.
+
 ## [9.5.1] - 2026-06-12 12:43:00
 
 ### Fixed
