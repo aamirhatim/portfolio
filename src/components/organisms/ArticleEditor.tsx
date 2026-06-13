@@ -266,29 +266,28 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
                     <button
                         onClick={handleSaveDoc}
                         disabled={saving}
-                        className="px-4 py-2 bg-[var(--color-accent-solid)] hover:bg-[var(--color-accent-subtle)] text-[var(--bg-color)] rounded font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                        className="p-2.5 bg-[var(--color-accent-solid)] hover:bg-[var(--color-accent-subtle)] text-[var(--bg-color)] rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                        title={saving ? "Saving..." : "Save Draft"}
                     >
                         <Save size={16} />
-                        <span>{saving ? "Saving..." : "Save Draft"}</span>
                     </button>
                     {action === "edit" && (
                         <button
                             onClick={handleDeleteDoc}
                             disabled={saving}
-                            className="px-4 py-2 border border-[var(--feedback-error)] text-[var(--feedback-error)] hover:bg-[var(--feedback-error)]/10 rounded font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                            className="p-2.5 border border-[var(--feedback-error)] text-[var(--feedback-error)] hover:bg-[var(--feedback-error)]/10 rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
                             title="Delete Article"
                         >
                             <Trash2 size={16} />
-                            <span>Delete</span>
                         </button>
                     )}
                     <button
                         onClick={onCancel}
                         disabled={saving}
-                        className="px-4 py-2 border border-[var(--border-color)] text-[var(--txt-body-color)] hover:bg-[var(--bg-secondary-color)] rounded font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                        className="p-2.5 border border-[var(--border-color)] text-[var(--txt-body-color)] hover:bg-[var(--bg-secondary-color)] rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                        title="Cancel"
                     >
                         <X size={16} />
-                        <span>Cancel</span>
                     </button>
                 </div>
             </div>
