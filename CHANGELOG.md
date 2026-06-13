@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.8.0] - 2026-06-13 15:09:49
+
+### Changed
+- Refactored `ArticleEditor` by decomposing the monolithic editor into highly modular sub-components (`ParagraphEditor`, `TitleEditor`, `ImageEditor`, `CodeEditor`, `ListEditor`, `FormulaEditor`, and `TableEditor`).
+- Simplified the nested field state logic in `CollectionManager` by introducing pure helper functions (`getFieldValue` and `setFieldValue`) in a new `fieldUtils.ts` utility.
+- Streamlined `CollectionManager` and `ArticleEditor` by extracting form logic, list item rendering, and live preview rendering into separate atomic components (`CollectionForm`, `CollectionListItem`, `ArticleBlocksBuilder`, `ArticlePreview`).
+- Enhanced Admin Portal UX by minimizing the `BlockToolbar` to an icon-only row with hover tooltips and centering it within the editor.
+- Refined global action buttons (Save, Delete, Cancel) in the article editor to icon-only controls.
+- Unified the first-column width (`w-36 min-w-[9rem]`) across all document viewers in the collection tabs to ensure consistent layouts.
+- Re-architected `ArticleManager` table status badges into an isolated `ArticleStatusBadge` component.
 ## [9.7.0] - 2026-06-12 15:24:00
 
 ### Added
