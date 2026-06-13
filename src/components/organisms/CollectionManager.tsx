@@ -270,7 +270,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                                         <tbody>
                                             {Object.entries(doc.data).map(([key, val]) => (
                                                 <tr key={key} className="border-b border-[var(--border-color)] last:border-0">
-                                                    <td className="py-2 pr-4 font-semibold align-top">{key}</td>
+                                                    <td className="py-2 pr-4 font-semibold align-top w-36 min-w-[9rem]">{key}</td>
                                                     <td className="py-2 break-all">{typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val)}</td>
                                                 </tr>
                                             ))}
