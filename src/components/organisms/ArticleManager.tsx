@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { ProjectType, ArticleType } from "../../data/datatypes";
-import { Pencil, Plus, Trash2, BookOpen, AlertCircle, RefreshCw } from "lucide-react";
+import { Pencil, Plus, Trash2, AlertCircle, RefreshCw, BookCheck, BookDashed } from "lucide-react";
+import ArticleEditor from "./ArticleEditor";
+import { doc, getFirestore, setDoc, deleteDoc } from "firebase/firestore";
 
 // Get map of local articles to check for fallback availability
 const articleModules = import.meta.glob("/src/data/articles/*.json");
@@ -93,7 +95,7 @@ export default function ArticleManager() {
     const getArticleStatus = (projectId: string) => {
         const firestoreArticle = articlesMap[projectId];
         if (firestoreArticle) {
-            return firestoreArticle.public ? "published-public" : "published-private";
+            return firestoreArticle.public ? "published" : "unpublished";
         }
 
         const localPath = `/src/data/articles/${projectId}.json`;
@@ -109,9 +111,44 @@ export default function ArticleManager() {
         setEditorPlaceholderAction(action);
     };
 
-    const handleDeleteClick = (projectId: string) => {
-        if (window.confirm(`Are you sure you want to delete the article for "${projectId}" from Firestore?`)) {
-            alert(`Placeholder: Deleting Firestore article for project: ${projectId}. (This will be fully implemented in Phase 2)`);
+    const handlePublishToggle = async (projectId: string, currentPublic: boolean) => {
+        const art = articlesMap[projectId];
+        if (!art) return;
+
+        setLoading(true);
+        setError(null);
+        try {
+            const db = getFirestore(firebaseApp);
+            const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
+            const updatedArticle: ArticleType = {
+                ...art,
+                public: !currentPublic,
+                publishDate: !currentPublic ? today : art.publishDate,
+                lastUpdated: today
+            };
+
+            await setDoc(doc(db, "articles", projectId), updatedArticle);
+            await fetchData();
+        } catch (err) {
+            console.error("Error toggling publish status:", err);
+            setError("Failed to update publish status. Check network or rules.");
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteClick = async (projectId: string) => {
+        if (!window.confirm(`Are you sure you want to delete the article for "${projectId}" from Firestore?`)) return;
+        setLoading(true);
+        setError(null);
+        try {
+            const db = getFirestore(firebaseApp);
+            await deleteDoc(doc(db, "articles", projectId));
+            await fetchData();
+        } catch (err) {
+            console.error("Error deleting article:", err);
+            setError("Failed to delete article. Check database security rules.");
+            setLoading(false);
         }
     };
 
@@ -135,34 +172,20 @@ export default function ArticleManager() {
     }
 
     if (editorPlaceholderAction && activeEditId) {
-        const project = projects.find(p => p.id === activeEditId);
         return (
-            <div className="bg-[var(--bg-secondary-color)] p-6 rounded-lg border border-[var(--border-color)]">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-[var(--txt-title-color)] capitalize">
-                        {editorPlaceholderAction.replace("-", " ")} Article
-                    </h3>
-                    <button 
-                        onClick={() => {
-                            setActiveEditId(null);
-                            setEditorPlaceholderAction(null);
-                        }} 
-                        className="px-4 py-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-color)] text-[var(--txt-body-color)] transition-colors cursor-pointer"
-                    >
-                        Back to List
-                    </button>
-                </div>
-                <div className="border border-dashed border-[var(--border-color)] p-12 text-center rounded bg-[var(--bg-color)]">
-                    <BookOpen size={48} className="mx-auto mb-4 text-[var(--txt-subtitle-color)] opacity-60" />
-                    <h4 className="text-lg font-bold mb-2 text-[var(--txt-feature-color)]">
-                        Editor UI Placeholder (Phase 2)
-                    </h4>
-                    <p className="text-sm text-[var(--txt-subtitle-color)] max-w-md mx-auto">
-                        This view will house the block-based editor UI for project **"{project?.title || activeEditId}"**.
-                        You will be able to customize blocks, set dates, toggle the public access flag, and save the content directly to Firestore.
-                    </p>
-                </div>
-            </div>
+            <ArticleEditor
+                projectId={activeEditId}
+                action={editorPlaceholderAction as "create-new" | "import-local" | "edit"}
+                onCancel={() => {
+                    setActiveEditId(null);
+                    setEditorPlaceholderAction(null);
+                }}
+                onSave={() => {
+                    setActiveEditId(null);
+                    setEditorPlaceholderAction(null);
+                    fetchData();
+                }}
+            />
         );
     }
 
@@ -186,7 +209,6 @@ export default function ArticleManager() {
                             <th className="py-3 px-4 font-bold text-[var(--txt-feature-color)]">Status</th>
                             <th className="py-3 px-4 font-bold text-[var(--txt-feature-color)]">Publish Date</th>
                             <th className="py-3 px-4 font-bold text-[var(--txt-feature-color)]">Last Updated</th>
-                            <th className="py-3 px-4 font-bold text-[var(--txt-feature-color)] text-center">Blocks</th>
                             <th className="py-3 px-4 font-bold text-[var(--txt-feature-color)] text-right">Actions</th>
                         </tr>
                     </thead>
@@ -202,16 +224,16 @@ export default function ArticleManager() {
                                 </span>
                             );
 
-                            if (status === "published-public") {
+                            if (status === "published") {
                                 statusBadge = (
                                     <span className="bg-[var(--color-accent-bg-subtle)] text-[var(--color-accent-solid)] border border-[var(--color-accent-bg-strong)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Published (Public)
+                                        Published
                                     </span>
                                 );
-                            } else if (status === "published-private") {
+                            } else if (status === "unpublished") {
                                 statusBadge = (
                                     <span className="bg-[var(--bg-color)] text-[var(--feedback-warning)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Published (Private)
+                                        Unpublished
                                     </span>
                                 );
                             } else if (status === "local-fallback") {
@@ -235,13 +257,21 @@ export default function ArticleManager() {
                                     <td className="py-3.5 px-4 text-[var(--txt-subtitle-color)] whitespace-nowrap">
                                         {art?.lastUpdated || "—"}
                                     </td>
-                                    <td className="py-3.5 px-4 text-center text-[var(--txt-feature-color)] font-medium">
-                                        {art?.blocks ? art.blocks.length : (status === "local-fallback" ? "Local static" : "—")}
-                                    </td>
                                     <td className="py-3.5 px-4 text-right">
                                         <div className="flex justify-end gap-2">
-                                            {status.startsWith("published") ? (
+                                            {status === "published" || status === "unpublished" ? (
                                                 <>
+                                                    {/* Publish / Unpublish Toggle */}
+                                                    <button
+                                                        onClick={() => handlePublishToggle(proj.id, art?.public)}
+                                                        className={`p-1.5 rounded transition-colors cursor-pointer ${art?.public
+                                                                ? "text-[var(--color-accent-solid)] hover:bg-[var(--color-accent-bg-subtle)]"
+                                                                : "text-[var(--feedback-warning)] hover:bg-[var(--bg-secondary-color)]"
+                                                            }`}
+                                                        title={art?.public ? "Unpublish Article" : "Publish Article"}
+                                                    >
+                                                        {art?.public ? <BookDashed size={15} /> : <BookCheck size={15} />}
+                                                    </button>
                                                     <button
                                                         onClick={() => handleActionClick(proj.id, "edit")}
                                                         className="p-1.5 text-[var(--txt-subtitle-color)] hover:bg-[var(--txt-highlight-color)] hover:text-[var(--bg-color)] rounded transition-colors cursor-pointer"
@@ -260,11 +290,10 @@ export default function ArticleManager() {
                                             ) : (
                                                 <button
                                                     onClick={() => handleActionClick(proj.id, status === "local-fallback" ? "import-local" : "create-new")}
-                                                    className="p-1.5 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded hover:opacity-90 transition-opacity flex items-center gap-1 text-xs font-semibold px-2 cursor-pointer"
-                                                    title="Create Article"
+                                                    className="p-1.5 text-[var(--txt-subtitle-color)] hover:bg-[var(--txt-highlight-color)] hover:text-[var(--bg-color)] rounded transition-colors cursor-pointer"
+                                                    title={status === "local-fallback" ? "Import Local Article" : "Create Article"}
                                                 >
-                                                    <Plus size={13} />
-                                                    <span>Create</span>
+                                                    <Plus size={15} />
                                                 </button>
                                             )}
                                         </div>
@@ -274,7 +303,7 @@ export default function ArticleManager() {
                         })}
                         {projects.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="text-center p-8 text-[var(--txt-subtitle-color)]">
+                                <td colSpan={5} className="text-center p-8 text-[var(--txt-subtitle-color)]">
                                     No projects found in Firestore. Add some under the "Projects" tab first.
                                 </td>
                             </tr>

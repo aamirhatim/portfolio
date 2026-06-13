@@ -18,6 +18,7 @@ export default function FeaturedWorkCarousel() {
     const { setNavSelect } = useAppContext();
 
     const [spotlights, setSpotlights] = useState<ProjectType[]>([]);
+    const [publishedArticles, setPublishedArticles] = useState<Record<string, boolean>>({});
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
 
@@ -73,6 +74,19 @@ export default function FeaturedWorkCarousel() {
             }
             if (active) {
                 setLoading(false);
+            }
+        });
+
+        getDocumentsFromCollection(firebaseAppContext, "articles").then((articleDocs) => {
+            if (!active) return;
+            if (articleDocs) {
+                const map: Record<string, boolean> = {};
+                articleDocs.forEach(doc => {
+                    if (doc.data && doc.data.public === true) {
+                        map[doc.id] = true;
+                    }
+                });
+                setPublishedArticles(map);
             }
         });
 
@@ -146,7 +160,7 @@ export default function FeaturedWorkCarousel() {
                 {spotlights.map((project, idx) => {
                     const isActive = idx === currentIndex;
                     const articlePath = `/src/data/articles/${project.id}.json`;
-                    const hasArticle = !!articleModules[articlePath];
+                    const hasArticle = publishedArticles[project.id] || !!articleModules[articlePath];
 
                     const handleTileClick = () => {
                         const url = `/projects/${project.id}`;

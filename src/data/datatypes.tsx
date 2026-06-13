@@ -72,8 +72,9 @@ export type ArticleBlockType =
 
 export type ArticleType = {
     blocks: ArticleBlockType[],
-    publishDate: string,
+    publishDate?: string,
     lastUpdated?: string,
+    createdAt: string,
     public: boolean,
 }
 

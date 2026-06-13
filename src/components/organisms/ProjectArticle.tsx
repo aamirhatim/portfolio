@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react"
-import { ArticleBlockType, ArticleType, ProjectType } from "../../data/datatypes";
+import { ArticleType, ProjectType } from "../../data/datatypes";
 import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
 import useIsMobile from "../../lib/hooks/useIsMobile";
 import LazyImg from "../atoms/LazyImg";
 import ProjectLink from "../atoms/ProjectLink";
-import ArticleParagraph from "../atoms/ArticleParagraph";
-import ArticleImage from "../atoms/ArticleImage";
-import ArticleCode from "../atoms/ArticleCode";
-import ArticleTitle from "../atoms/ArticleTitle";
-import ArticleList from "../atoms/ArticleList";
-import ArticleFormula from "../atoms/ArticleFormula";
-import ArticleTable from "../atoms/ArticleTable";
+import ArticleBlockRenderer from "../atoms/ArticleBlockRenderer";
 
 type ProjectArticleProps = {
     projectId: string,
@@ -33,27 +27,6 @@ export default function ProjectArticle(props: ProjectArticleProps) {
     const [project, setProject] = useState<ProjectType>();
     const [article, setArticle] = useState<ArticleType | undefined>(undefined);
 
-    // Create section for article block
-    const createSection = (block: ArticleBlockType, key: number) => {
-        switch (block.type) {
-            case "paragraph":
-                return <ArticleParagraph key={key} block={block} />;
-            case "image":
-                return <ArticleImage key={key} block={block} />;
-            case "code":
-                return <ArticleCode key={key} block={block} />;
-            case "title":
-                return <ArticleTitle key={key} block={block} />;
-            case "list":
-                return <ArticleList key={key} block={block} />;
-            case "formula":
-                return <ArticleFormula key={key} block={block} />;
-            case "table":
-                return <ArticleTable key={key} block={block} />;
-            default:
-                return <div key={key}>Unsupported block type</div>;
-        }
-    };
 
     // Get project info
     useEffect(() => {
@@ -151,7 +124,9 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 {article !== undefined
                     ? <>
                         <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
-                        {article.blocks.map((b, key) => createSection(b, key))}
+                        {article.blocks.map((b, key) => (
+                            <ArticleBlockRenderer key={key} block={b} />
+                        ))}
 
                         <div>
                             <div className="mt-20 title text-lg text-(--txt-title-color) mb-3">Keywords</div>

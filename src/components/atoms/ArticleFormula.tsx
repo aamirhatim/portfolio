@@ -4,7 +4,6 @@ import { BlockWrapper } from "../../lib/articleUtils";
 import { useEffect, useRef } from "react";
 
 export default function ArticleFormula({ block }: { block: FormulaBlockType }) {
-    console.log(block.content)
     const mathRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -15,7 +14,7 @@ export default function ArticleFormula({ block }: { block: FormulaBlockType }) {
                 throwOnError: false
             });
         }
-    }, []);
+    }, [block.content]);
 
     return (
         <BlockWrapper border={block.border}>

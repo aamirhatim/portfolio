@@ -10,14 +10,14 @@ import { Asterisk } from 'lucide-react';
 // Create a map of all articles so we can check if one exists for the project
 const articleModules = import.meta.glob("/src/data/articles/*.json");
 
-export default function ProjectItem(props: { project: ProjectType }) {
+export default function ProjectItem(props: { project: ProjectType; hasFirestoreArticle?: boolean }) {
     // Get context
     const isMobile = useIsMobile();
     const project = props.project;
 
     // Check if an article exists for the project
     const articlePath = `/src/data/articles/${props.project.id}.json`;
-    const hasArticle = !!articleModules[articlePath];
+    const hasArticle = props.hasFirestoreArticle || !!articleModules[articlePath];
 
     const hasLinks = project.code || project.video || hasArticle;
 
