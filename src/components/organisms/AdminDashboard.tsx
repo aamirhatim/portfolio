@@ -3,7 +3,19 @@ import CollectionManager, { FieldConfig } from "./CollectionManager";
 import { CircleUserRound, PocketKnife, BriefcaseBusiness, Award, GraduationCap, FolderOpenDot, BadgeInfo, FileText } from "lucide-react";
 import ArticleManager from "./ArticleManager";
 
-const TAB_CONFIGS: Record<string, { title: string, icon: React.ReactNode, collections: { name: string, fields: FieldConfig[], disableAdd?: boolean }[] }> = {
+export interface CollectionConfig {
+    name: string;
+    fields: FieldConfig[];
+    disableAdd?: boolean;
+}
+
+export interface TabConfig {
+    title: string;
+    icon: React.ReactNode;
+    collections: CollectionConfig[];
+}
+
+const TAB_CONFIGS: Record<string, TabConfig> = {
     intro: {
         title: "Intro",
         icon: <BadgeInfo size={18} />,

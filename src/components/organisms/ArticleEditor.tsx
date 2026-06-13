@@ -5,16 +5,8 @@ import { getDocumentFromId } from "../../lib/firestoreLib";
 import { ProjectType, ArticleType, ArticleBlockType } from "../../data/datatypes";
 import { Save, X, RefreshCw, AlertCircle, Trash2 } from "lucide-react";
 
-import ArticleBlockRenderer from "../atoms/ArticleBlockRenderer";
-import BlockHeaderControls from "../molecules/editor-fields/BlockHeaderControls";
-import BlockToolbar from "../molecules/editor-fields/BlockToolbar";
-import ParagraphEditor from "../molecules/editor-fields/ParagraphEditor";
-import TitleEditor from "../molecules/editor-fields/TitleEditor";
-import ImageEditor from "../molecules/editor-fields/ImageEditor";
-import CodeEditor from "../molecules/editor-fields/CodeEditor";
-import ListEditor from "../molecules/editor-fields/ListEditor";
-import FormulaEditor from "../molecules/editor-fields/FormulaEditor";
-import TableEditor from "../molecules/editor-fields/TableEditor";
+import ArticlePreview from "../molecules/editor-fields/ArticlePreview";
+import ArticleBlocksBuilder from "../molecules/editor-fields/ArticleBlocksBuilder";
 
 // Map of local articles for local import fallback
 const articleModules = import.meta.glob("/src/data/articles/*.json") as Record<string, () => Promise<ArticleType>>;
@@ -332,117 +324,26 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
 
             {/* Editor Workspace Panels */}
             <div className={`grid w-full gap-8 ${previewTab === "split" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}>
-
+                
                 {/* Left panel: Form Blocks Builder */}
                 {(previewTab === "edit" || previewTab === "split") && (
-                    <div className="flex flex-col gap-5">
-                        <div className="flex flex-col gap-4 pr-2">
-                            {blocks.map((block, idx) => (
-                                <div
-                                    key={idx}
-                                    className="p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex flex-col gap-4 shadow-sm"
-                                >
-                                    <BlockHeaderControls
-                                        idx={idx}
-                                        type={block.type}
-                                        border={block.border}
-                                        isFirst={idx === 0}
-                                        isLast={idx === blocks.length - 1}
-                                        onBorderChange={(checked) => updateBlockBorder(idx, checked)}
-                                        onMoveUp={() => moveBlock(idx, "up")}
-                                        onMoveDown={() => moveBlock(idx, "down")}
-                                        onDelete={() => deleteBlock(idx)}
-                                    />
-
-                                    <div className="text-sm">
-                                        {block.type === "paragraph" && (
-                                            <ParagraphEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "title" && (
-                                            <TitleEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "image" && (
-                                            <ImageEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "code" && (
-                                            <CodeEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "list" && (
-                                            <ListEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "formula" && (
-                                            <FormulaEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-
-                                        {block.type === "table" && (
-                                            <TableEditor
-                                                block={block}
-                                                onChange={(updated) => updateBlock(idx, updated)}
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-
-                            {blocks.length === 0 && (
-                                <div className="border border-dashed border-[var(--border-color)] p-8 text-center rounded text-[var(--txt-subtitle-color)] bg-[var(--bg-card)]">
-                                    This article has no content blocks yet. Use the buttons below to add paragraphs, titles, images, tables, etc.
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Add Block Options Toolbar */}
-                        <div className="flex justify-center w-full">
-                            <BlockToolbar onAddBlock={addBlock} />
-                        </div>
-                    </div>
+                    <ArticleBlocksBuilder
+                        blocks={blocks}
+                        onAddBlock={addBlock}
+                        onUpdateBlock={updateBlock}
+                        onDeleteBlock={deleteBlock}
+                        onMoveBlock={moveBlock}
+                        onUpdateBlockBorder={updateBlockBorder}
+                    />
                 )}
 
                 {/* Right panel: Website Live Preview Rendering */}
                 {(previewTab === "preview" || previewTab === "split") && (
-                    <div className="flex flex-col gap-4">
-                        <div className="border border-[var(--border-color)] rounded-lg p-6 bg-[var(--bg-card)] shadow-inner min-h-[300px]">
-                            <div className="flex flex-col gap-3 w-full max-w-[800px] mx-auto text-left">
-                                <div className="mb-4 title text-4xl text-[var(--txt-body-color)] font-medium">
-                                    {project?.title || "Project Title"}
-                                </div>
-                                <div className="text-sm text-[var(--txt-subtitle-color)] mb-8">
-                                    {publishDate ? `Published: ${publishDate}` : "Draft Status"}
-                                </div>
-                                {blocks.map((block, idx) => (
-                                    <ArticleBlockRenderer key={idx} block={block} />
-                                ))}
-                                {blocks.length === 0 && (
-                                    <p className="text-center italic text-[var(--txt-subtitle-color)] py-12">
-                                        Rendered preview will appear here in real-time...
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <ArticlePreview
+                        project={project}
+                        blocks={blocks}
+                        publishDate={publishDate}
+                    />
                 )}
 
             </div>

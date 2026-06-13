@@ -5,8 +5,13 @@ import { ProjectType, ArticleType } from "../../data/datatypes";
 import { Pencil, Plus, Trash2, AlertCircle, RefreshCw, BookCheck, BookDashed } from "lucide-react";
 import ArticleEditor from "./ArticleEditor";
 import { doc, getFirestore, setDoc, deleteDoc } from "firebase/firestore";
+import ArticleStatusBadge, { ArticleStatus } from "../molecules/article-manager/ArticleStatusBadge";
 
-// Get map of local articles to check for fallback availability
+/**
+ * Get map of local articles to check for fallback availability.
+ * import.meta.glob is a Vite feature that statically imports all files matching the glob.
+ * We use this to see if a static JSON version of an article exists, allowing for a "local-fallback" status.
+ */
 const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function ArticleManager() {
@@ -29,7 +34,7 @@ export default function ArticleManager() {
                     id: doc.id,
                     ...doc.data
                 })) as ProjectType[];
-                // Sort by publishDate descending or title
+                // Sort by publishDate descending
                 parsedProjects.sort((a, b) => b.publishDate.localeCompare(a.publishDate));
                 setProjects(parsedProjects);
             }
@@ -92,7 +97,7 @@ export default function ArticleManager() {
         };
     }, [firebaseApp]);
 
-    const getArticleStatus = (projectId: string) => {
+    const getArticleStatus = (projectId: string): ArticleStatus => {
         const firestoreArticle = articlesMap[projectId];
         if (firestoreArticle) {
             return firestoreArticle.public ? "published" : "unpublished";
@@ -217,40 +222,15 @@ export default function ArticleManager() {
                             const status = getArticleStatus(proj.id);
                             const art = articlesMap[proj.id];
 
-                            // Determine status badge layout
-                            let statusBadge = (
-                                <span className="bg-[var(--bg-color)] text-[var(--txt-subtitle-color)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                    No Article
-                                </span>
-                            );
-
-                            if (status === "published") {
-                                statusBadge = (
-                                    <span className="bg-[var(--color-accent-bg-subtle)] text-[var(--color-accent-solid)] border border-[var(--color-accent-bg-strong)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Published
-                                    </span>
-                                );
-                            } else if (status === "unpublished") {
-                                statusBadge = (
-                                    <span className="bg-[var(--bg-color)] text-[var(--feedback-warning)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Unpublished
-                                    </span>
-                                );
-                            } else if (status === "local-fallback") {
-                                statusBadge = (
-                                    <span className="bg-[var(--bg-color)] text-[var(--txt-subtitle-color)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                                        Local Fallback
-                                    </span>
-                                );
-                            }
-
                             return (
                                 <tr key={proj.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-interactive-hover)]/40 transition-colors">
                                     <td className="py-3.5 px-4 font-medium text-[var(--txt-feature-color)]">
                                         <div className="font-semibold">{proj.title}</div>
                                         <div className="text-xs text-[var(--txt-subtitle-color)] mt-0.5">{proj.id}</div>
                                     </td>
-                                    <td className="py-3.5 px-4">{statusBadge}</td>
+                                    <td className="py-3.5 px-4">
+                                        <ArticleStatusBadge status={status} />
+                                    </td>
                                     <td className="py-3.5 px-4 text-[var(--txt-subtitle-color)] whitespace-nowrap">
                                         {art?.publishDate || (status === "local-fallback" ? "Codebase static" : "—")}
                                     </td>
@@ -261,7 +241,6 @@ export default function ArticleManager() {
                                         <div className="flex justify-end gap-2">
                                             {status === "published" || status === "unpublished" ? (
                                                 <>
-                                                    {/* Publish / Unpublish Toggle */}
                                                     <button
                                                         onClick={() => handlePublishToggle(proj.id, art?.public)}
                                                         className={`p-1.5 rounded transition-colors cursor-pointer ${art?.public
