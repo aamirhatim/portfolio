@@ -416,7 +416,9 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
                         </div>
 
                         {/* Add Block Options Toolbar */}
-                        <BlockToolbar onAddBlock={addBlock} />
+                        <div className="flex justify-center w-full">
+                            <BlockToolbar onAddBlock={addBlock} />
+                        </div>
                     </div>
                 )}
 
