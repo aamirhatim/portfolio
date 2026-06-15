@@ -10,12 +10,12 @@ export default function ImageEditor({ block, onChange }: ImageEditorProps) {
         <div className="flex flex-col gap-3">
             <div className="grid grid-cols-4 gap-3">
                 <div className="col-span-3 flex flex-col gap-1">
-                    <label className="text-xs font-semibold text-[var(--txt-subtitle-color)]">Image Path or URL</label>
+                    <label className="text-xs font-semibold text-[var(--txt-subtitle-color)]">Image Filename</label>
                     <input
                         type="text"
                         value={block.url}
                         onChange={(e) => onChange({ ...block, url: e.target.value })}
-                        placeholder="e.g. /article_img/my-photo.jpg"
+                        placeholder="e.g. my-photo.jpg"
                         className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)] text-[var(--txt-body-color)] focus:outline-none focus:border-[var(--border-focus)]"
                     />
                 </div>
