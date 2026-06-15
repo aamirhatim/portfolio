@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.8.1] - 2026-06-15 19:23:00
+
+### Changed
+- Updated `ArticleImage` to resolve image paths dynamically from the project-specific storage location (`/proj_img/[projectId]/article/`).
+- Updated `ImageEditor` component to clarify that users should input the image filename instead of a full path.
+
 ## [9.8.0] - 2026-06-13 15:09:49
 
 ### Changed
