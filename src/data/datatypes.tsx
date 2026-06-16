@@ -55,6 +55,13 @@ export type FormulaBlockType = BaseArticleBlock & {
     content: string,
 }
 
+/**
+ * TableBlockType format for article tables.
+ * IMPORTANT: Firestore does not natively support nested arrays. 
+ * Therefore, `content` MUST be an array of objects ({ cells: string[] }[]) 
+ * and NOT a raw 2D array (string[][]). Do not flatten this structure or
+ * Firebase setDoc calls will fail.
+ */
 export type TableBlockType = BaseArticleBlock & {
     type: "table",
     headers: string[],

@@ -8,6 +8,7 @@ type TableEditorProps = {
 export default function TableEditor({ block, onChange }: TableEditorProps) {
     const addTableCol = () => {
         const headers = [...block.headers, `Header ${block.headers.length + 1}`];
+        // Preserve object wrapper to satisfy Firestore nested array constraint
         const content = block.content.map(row => ({ ...row, cells: [...row.cells, ""] }));
         onChange({ ...block, headers, content });
     };
@@ -20,6 +21,7 @@ export default function TableEditor({ block, onChange }: TableEditorProps) {
     };
 
     const addTableRow = () => {
+        // Add new row wrapped in object
         const content = [...block.content, { cells: Array(block.headers.length).fill("") }];
         onChange({ ...block, content });
     };
@@ -31,6 +33,7 @@ export default function TableEditor({ block, onChange }: TableEditorProps) {
     };
 
     const updateTableCell = (rowIdx: number, colIdx: number, value: string) => {
+        // Map over {cells: []} wrappers carefully to maintain structure
         const content = block.content.map((row, r) => ({
             ...row,
             cells: row.cells.map((cell, c) => (r === rowIdx && c === colIdx ? value : cell))
