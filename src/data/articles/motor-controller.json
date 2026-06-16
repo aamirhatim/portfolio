@@ -58,7 +58,8 @@
             "projectId": "motor-controller"
         },
         {
-            "type": "An optical encoder is used to determine the position of the motor. This type of encoder is made up of a transparent disk with several thin opaque lines around its circumference and a light source/photo-detector pair. Light from the light source passes through the transparent parts of the disk but does not pass through the opaque lines. As the motor spins, the light that passes through comes in small bursts and is picked up by the photo-detector, which can be used as a counter. Knowing the number of lines on the disk, we can then calculate the position of the motor using the number of counts picked up by the photo-detector. In this project, a quadrature decoder is used to count the start and end of a line. This allows us to keep track of which direction the motor is spinning in as well.",
+            "type": "paragraph",
+            "content": "An optical encoder is used to determine the position of the motor. This type of encoder is made up of a transparent disk with several thin opaque lines around its circumference and a light source/photo-detector pair. Light from the light source passes through the transparent parts of the disk but does not pass through the opaque lines. As the motor spins, the light that passes through comes in small bursts and is picked up by the photo-detector, which can be used as a counter. Knowing the number of lines on the disk, we can then calculate the position of the motor using the number of counts picked up by the photo-detector. In this project, a quadrature decoder is used to count the start and end of a line. This allows us to keep track of which direction the motor is spinning in as well.",
             "projectId": "motor-controller"
         },
         {
