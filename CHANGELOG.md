@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.9.0] - 2026-06-15 20:41:00
+
+### Added
+- Added architectural documentation to `TableBlockType` and `TableEditor` state mappings to explicitly document Firestore schema constraints regarding nested arrays and prevent accidental regressions.
+
+### Fixed
+- Injected `projectId` into all local JSON article blocks to prevent `undefined` image storage path errors when rendering imported fallback articles.
+- Refactored `TableBlockType.content` schema from nested arrays (`string[][]`) to an array of objects (`{ cells: string[] }[]`) to comply with Firestore restrictions.
+- Migrated legacy `day-zero.json` table data to match the newly enforced schema format.
+
 ## [9.8.1] - 2026-06-15 19:23:00
 
 ### Changed
