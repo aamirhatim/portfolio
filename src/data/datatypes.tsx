@@ -58,7 +58,7 @@ export type FormulaBlockType = BaseArticleBlock & {
 export type TableBlockType = BaseArticleBlock & {
     type: "table",
     headers: string[],
-    content: string[][],
+    content: { cells: string[] }[],
 }
 
 export type ArticleBlockType =

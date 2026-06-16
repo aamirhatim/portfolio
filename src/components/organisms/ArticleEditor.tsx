@@ -186,7 +186,7 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
                 newBlock = { ...base, type: "formula", content: "" };
                 break;
             case "table":
-                newBlock = { ...base, type: "table", headers: ["Header 1", "Header 2"], content: [["", ""]] };
+                newBlock = { ...base, type: "table", headers: ["Header 1", "Header 2"], content: [{ cells: ["", ""] }] };
                 break;
             default:
                 return;

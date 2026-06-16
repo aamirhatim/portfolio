@@ -8,19 +8,19 @@ type TableEditorProps = {
 export default function TableEditor({ block, onChange }: TableEditorProps) {
     const addTableCol = () => {
         const headers = [...block.headers, `Header ${block.headers.length + 1}`];
-        const content = block.content.map(row => [...row, ""]);
+        const content = block.content.map(row => ({ ...row, cells: [...row.cells, ""] }));
         onChange({ ...block, headers, content });
     };
 
     const removeTableCol = () => {
         if (block.headers.length <= 1) return;
         const headers = block.headers.slice(0, -1);
-        const content = block.content.map(row => row.slice(0, -1));
+        const content = block.content.map(row => ({ ...row, cells: row.cells.slice(0, -1) }));
         onChange({ ...block, headers, content });
     };
 
     const addTableRow = () => {
-        const content = [...block.content, Array(block.headers.length).fill("")];
+        const content = [...block.content, { cells: Array(block.headers.length).fill("") }];
         onChange({ ...block, content });
     };
 
@@ -31,9 +31,10 @@ export default function TableEditor({ block, onChange }: TableEditorProps) {
     };
 
     const updateTableCell = (rowIdx: number, colIdx: number, value: string) => {
-        const content = block.content.map((row, r) =>
-            row.map((cell, c) => (r === rowIdx && c === colIdx ? value : cell))
-        );
+        const content = block.content.map((row, r) => ({
+            ...row,
+            cells: row.cells.map((cell, c) => (r === rowIdx && c === colIdx ? value : cell))
+        }));
         onChange({ ...block, content });
     };
 
@@ -84,7 +85,7 @@ export default function TableEditor({ block, onChange }: TableEditorProps) {
                     <tbody>
                         {block.content.map((row, rowIdx) => (
                             <tr key={rowIdx}>
-                                {row.map((cell, colIdx) => (
+                                {row.cells.map((cell, colIdx) => (
                                     <td key={colIdx} className="p-1">
                                         <input
                                             type="text"
