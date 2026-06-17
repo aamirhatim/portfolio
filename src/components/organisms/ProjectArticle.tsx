@@ -4,7 +4,7 @@ import { getDocumentFromId } from "../../lib/firestoreLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import ChipGroup from "../molecules/ChipGroup";
 import useIsMobile from "../../lib/hooks/useIsMobile";
-import LazyImg from "../atoms/LazyImg";
+
 import ProjectLink from "../atoms/ProjectLink";
 import ArticleBlockRenderer from "../atoms/ArticleBlockRenderer";
 
@@ -76,42 +76,28 @@ export default function ProjectArticle(props: ProjectArticleProps) {
     }, [props.projectId, firebaseAppContext]);
 
     return (
-        <div className="relative w-full">
-            <div className={`absolute h-120 w-full -z-10 ${isMobile ? '-top-40' : '-top-10 px-[10%]'}`}>
-                {project &&
-                    <LazyImg
-                        imgPath={`/proj_img/${project?.img}`}
-                        alt={'Project image'}
-                        placeholderPath={`/thumbs/${project?.img}`}
-                        className='h-full w-full grayscale-75 opacity-20 rounded-t-xl'
-                    />
-                }
-                <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-t from-(--bg-color) to-transparent"></div>
+        <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-4' : 'max-w-[800px] mx-auto'}`}>
+            <div className={`mb-5 title text-6xl text-(--txt-body-color) w-[70%] mt-10 break-words`}>{project?.title}</div>
+            <div className="flex gap-3">
+                {project?.code && <ProjectLink value="Code" url={project.code} newTab={true} showText={true} />}
+                {project?.video && <ProjectLink value="Video" url={project.video} newTab={true} showText={true} />}
             </div>
 
-            <div className={`flex flex-col gap-3 w-full ${isMobile ? 'px-4' : 'max-w-[800px] mx-auto'}`}>
-                <div className={`mb-5 title text-6xl text-(--txt-body-color) w-[70%] ${isMobile ? 'mt-40' : 'mt-70 break-words'}`}>{project?.title}</div>
-                <div className="flex gap-3">
-                    {project?.code && <ProjectLink value="Code" url={project.code} newTab={true} showText={true} />}
-                    {project?.video && <ProjectLink value="Video" url={project.video} newTab={true} showText={true} />}
-                </div>
+            {article !== undefined
+                ? <>
+                    {article.blocks.map((b, key) => (
+                        <ArticleBlockRenderer key={key} block={b} />
+                    ))}
 
-                {article !== undefined
-                    ? <>
-                        {article.blocks.map((b, key) => (
-                            <ArticleBlockRenderer key={key} block={b} />
-                        ))}
-
-                        <div>
-                            <div className="mt-20 title text-lg text-(--txt-title-color) mb-3">Keywords</div>
-                            <ChipGroup list={project?.skills || []} />
-                        </div>
-                    </>
-                    : <div className="border border-(--border-color) p-6 rounded-xl">
-                        <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                    <div>
+                        <div className="mt-20 title text-lg text-(--txt-title-color) mb-3">Keywords</div>
+                        <ChipGroup list={project?.skills || []} />
                     </div>
-                }
-            </div>
+                </>
+                : <div className="border border-(--border-color) p-6 rounded-xl">
+                    <p>Oh no! Looks like there's nothing here yet. If you want to know more about this project, please reach out!</p>
+                </div>
+            }
         </div>
     )
 }
