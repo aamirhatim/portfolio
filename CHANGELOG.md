@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.10.0] - 2026-06-16 21:46:00
+
+### Changed
+- Removed legacy local `src/data/articles` JSON and markdown fallback files, standardizing article resolution entirely on the production Firestore `articles` collection to reduce Javascript bundle size and enforce single-source-of-truth reliability.
+- Cleaned up `import.meta.glob` dynamic imports and fallback states from `ProjectArticle`, `FeaturedWorkCarousel`, `ProjectItem`, `ArticleManager`, and `ArticleEditor`.
+- Removed legacy "local-fallback" badge UI logic from the Articles admin dashboard table.
+
 ## [9.9.0] - 2026-06-15 20:41:00
 
 ### Added
