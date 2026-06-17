@@ -98,7 +98,6 @@ export default function ProjectArticle(props: ProjectArticleProps) {
 
                 {article !== undefined
                     ? <>
-                        <div className="mb-15 text-(--txt-feature-color)">{article.publishDate}</div>
                         {article.blocks.map((b, key) => (
                             <ArticleBlockRenderer key={key} block={b} />
                         ))}
