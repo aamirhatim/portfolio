@@ -8,12 +8,11 @@ import { Save, X, RefreshCw, AlertCircle, Trash2 } from "lucide-react";
 import ArticlePreview from "../molecules/editor-fields/ArticlePreview";
 import ArticleBlocksBuilder from "../molecules/editor-fields/ArticleBlocksBuilder";
 
-// Map of local articles for local import fallback
-const articleModules = import.meta.glob("/src/data/articles/*.json") as Record<string, () => Promise<ArticleType>>;
+
 
 type ArticleEditorProps = {
     projectId: string;
-    action: "create-new" | "import-local" | "edit";
+    action: "create-new" | "edit";
     onCancel: () => void;
     onSave: () => void;
 };
@@ -62,22 +61,6 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
                     } else if (active) {
                         setError("Could not find the Firestore article to edit.");
                     }
-                } else if (action === "import-local") {
-                    const localPath = `/src/data/articles/${projectId}.json`;
-                    const importFn = articleModules[localPath];
-                    if (importFn) {
-                        const module = await importFn();
-                        if (active) {
-                            setBlocks(module.blocks || []);
-                            setCreatedAt(new Date().toISOString().split("T")[0]);
-                            setIsPublic(false);
-                        }
-                    } else if (active) {
-                        // Fallback to blank if local static import not found
-                        setBlocks([]);
-                        setCreatedAt(new Date().toISOString().split("T")[0]);
-                        setIsPublic(false);
-                    }
                 } else {
                     // new-create
                     if (active) {
@@ -107,7 +90,7 @@ export default function ArticleEditor({ projectId, action, onCancel, onSave }: A
             let finalCreatedAt = createdAt;
             let finalLastUpdated = lastUpdated;
 
-            if (action === "create-new" || action === "import-local") {
+            if (action === "create-new") {
                 finalCreatedAt = today;
             } else {
                 finalCreatedAt = createdAt || today;

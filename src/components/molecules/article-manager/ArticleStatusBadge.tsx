@@ -1,6 +1,6 @@
 
 
-export type ArticleStatus = "published" | "unpublished" | "local-fallback" | "none";
+export type ArticleStatus = "published" | "unpublished" | "none";
 
 interface ArticleStatusBadgeProps {
     status: ArticleStatus;
@@ -23,13 +23,7 @@ export default function ArticleStatusBadge({ status }: ArticleStatusBadgeProps) 
         );
     }
     
-    if (status === "local-fallback") {
-        return (
-            <span className="bg-[var(--bg-color)] text-[var(--txt-subtitle-color)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">
-                Local Fallback
-            </span>
-        );
-    }
+
 
     return (
         <span className="bg-[var(--bg-color)] text-[var(--txt-subtitle-color)] border border-[var(--border-color)] px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">

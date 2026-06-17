@@ -9,7 +9,6 @@ import Chip from "../atoms/Chip";
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
 
-const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function FeaturedWorkCarousel() {
     const firebaseAppContext = useFirebaseAppContext();
@@ -159,8 +158,7 @@ export default function FeaturedWorkCarousel() {
             >
                 {spotlights.map((project, idx) => {
                     const isActive = idx === currentIndex;
-                    const articlePath = `/src/data/articles/${project.id}.json`;
-                    const hasArticle = publishedArticles[project.id] || !!articleModules[articlePath];
+                    const hasArticle = publishedArticles[project.id];
 
                     const handleTileClick = () => {
                         const url = `/projects/${project.id}`;

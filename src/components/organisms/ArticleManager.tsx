@@ -7,12 +7,7 @@ import ArticleEditor from "./ArticleEditor";
 import { doc, getFirestore, setDoc, deleteDoc } from "firebase/firestore";
 import ArticleStatusBadge, { ArticleStatus } from "../molecules/article-manager/ArticleStatusBadge";
 
-/**
- * Get map of local articles to check for fallback availability.
- * import.meta.glob is a Vite feature that statically imports all files matching the glob.
- * We use this to see if a static JSON version of an article exists, allowing for a "local-fallback" status.
- */
-const articleModules = import.meta.glob("/src/data/articles/*.json");
+
 
 export default function ArticleManager() {
     const firebaseApp = useFirebaseAppContext();
@@ -103,11 +98,6 @@ export default function ArticleManager() {
             return firestoreArticle.public ? "published" : "unpublished";
         }
 
-        const localPath = `/src/data/articles/${projectId}.json`;
-        if (localPath in articleModules) {
-            return "local-fallback";
-        }
-
         return "none";
     };
 
@@ -180,7 +170,7 @@ export default function ArticleManager() {
         return (
             <ArticleEditor
                 projectId={activeEditId}
-                action={editorPlaceholderAction as "create-new" | "import-local" | "edit"}
+                action={editorPlaceholderAction as "create-new" | "edit"}
                 onCancel={() => {
                     setActiveEditId(null);
                     setEditorPlaceholderAction(null);
@@ -232,7 +222,7 @@ export default function ArticleManager() {
                                         <ArticleStatusBadge status={status} />
                                     </td>
                                     <td className="py-3.5 px-4 text-[var(--txt-subtitle-color)] whitespace-nowrap">
-                                        {art?.publishDate || (status === "local-fallback" ? "Codebase static" : "—")}
+                                        {art?.publishDate || "—"}
                                     </td>
                                     <td className="py-3.5 px-4 text-[var(--txt-subtitle-color)] whitespace-nowrap">
                                         {art?.lastUpdated || "—"}
@@ -268,9 +258,9 @@ export default function ArticleManager() {
                                                 </>
                                             ) : (
                                                 <button
-                                                    onClick={() => handleActionClick(proj.id, status === "local-fallback" ? "import-local" : "create-new")}
+                                                    onClick={() => handleActionClick(proj.id, "create-new")}
                                                     className="p-1.5 text-[var(--txt-subtitle-color)] hover:bg-[var(--txt-highlight-color)] hover:text-[var(--bg-color)] rounded transition-colors cursor-pointer"
-                                                    title={status === "local-fallback" ? "Import Local Article" : "Create Article"}
+                                                    title="Create Article"
                                                 >
                                                     <Plus size={15} />
                                                 </button>

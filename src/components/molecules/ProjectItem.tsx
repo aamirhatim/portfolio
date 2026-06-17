@@ -7,8 +7,6 @@ import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
 import { Asterisk } from 'lucide-react';
 
-// Create a map of all articles so we can check if one exists for the project
-const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function ProjectItem(props: { project: ProjectType; hasFirestoreArticle?: boolean }) {
     // Get context
@@ -16,8 +14,7 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
     const project = props.project;
 
     // Check if an article exists for the project
-    const articlePath = `/src/data/articles/${props.project.id}.json`;
-    const hasArticle = props.hasFirestoreArticle || !!articleModules[articlePath];
+    const hasArticle = props.hasFirestoreArticle;
 
     const hasLinks = project.code || project.video || hasArticle;
 

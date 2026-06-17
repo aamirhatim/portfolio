@@ -13,10 +13,6 @@ type ProjectArticleProps = {
     transitionDir: "next" | "prev",
 }
 
-type ArticleImportFn = () => Promise<ArticleType | undefined>;
-
-// Create a map of all articles so the right one can be imported when queried
-const articleModules: Record<string, ArticleImportFn> = import.meta.glob("/src/data/articles/*.json") as Record<string, ArticleImportFn>;
 
 export default function ProjectArticle(props: ProjectArticleProps) {
     // Get context
@@ -71,28 +67,7 @@ export default function ProjectArticle(props: ProjectArticleProps) {
                 console.error(`Failed to fetch article from Firestore for ${props.projectId}:`, error);
             }
 
-            if (!active) return;
-
-            // Create file path for fallback article
-            const articlePath = `/src/data/articles/${props.projectId}.json`;
-
-            // Look up dynamic import function in articleModule map
-            const importFunction = articleModules[articlePath];
-            if (!importFunction) {
-                if (active) setArticle(undefined);
-                return;
-            }
-
-            // Import the fallback article
-            try {
-                const module = await importFunction();
-                if (active) {
-                    setArticle(module);
-                }
-            } catch (error) {
-                console.error(`Failed to load article fallback for ${props.projectId}: ${error}`);
-                if (active) setArticle(undefined);
-            }
+            if (active) setArticle(undefined);
         };
         getArticleData();
         return () => {
