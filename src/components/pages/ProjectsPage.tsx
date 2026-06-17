@@ -60,10 +60,10 @@ export default function ProjectsPage() {
 
     const createProjectSection = useCallback((projects: ProjectType[], year: string) => {
         return (
-            <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-18'}`}>
+            <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-10'}`}>
                 <AnimateInView><h2>{year}</h2></AnimateInView>
                 {projects.map((p, idx) => (
-                    <AnimateInView key={idx}>
+                    <AnimateInView key={idx} className="relative hover:z-50">
                         <ProjectItem project={p} hasFirestoreArticle={!!publishedArticles[p.id]} />
                     </AnimateInView>
                 ))}

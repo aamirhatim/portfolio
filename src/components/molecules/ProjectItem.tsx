@@ -4,7 +4,7 @@ import ProjectLink from '../atoms/ProjectLink'
 import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
-import { useRef } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { Asterisk } from 'lucide-react';
 
 
@@ -20,16 +20,78 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
 
     // Create refs
     const projectItemRef = useRef<HTMLDivElement>(null);
+    const rectRef = useRef<DOMRect | null>(null);
+    const frameIdRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (frameIdRef.current) {
+                cancelAnimationFrame(frameIdRef.current);
+            }
+        };
+    }, []);
+
+    const handleMouseEnter = useCallback(() => {
+        if (projectItemRef.current) {
+            rectRef.current = projectItemRef.current.getBoundingClientRect();
+        }
+    }, []);
+
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        if (!projectItemRef.current) return;
+
+        if (!rectRef.current) {
+            rectRef.current = projectItemRef.current.getBoundingClientRect();
+        }
+
+        const rect = rectRef.current;
+        if (rect.width === 0 || rect.height === 0) return;
+
+        // Calculate X and Y coordinates relative to the center of the card
+        // Normalize between -1 and 1
+        const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+
+        if (frameIdRef.current) {
+            cancelAnimationFrame(frameIdRef.current);
+        }
+
+        frameIdRef.current = requestAnimationFrame(() => {
+            if (projectItemRef.current) {
+                projectItemRef.current.style.setProperty('--parallax-x', `${-x}`);
+                projectItemRef.current.style.setProperty('--parallax-y', `${-y}`);
+            }
+        });
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+        rectRef.current = null;
+        if (frameIdRef.current) {
+            cancelAnimationFrame(frameIdRef.current);
+        }
+        if (!projectItemRef.current) return;
+        projectItemRef.current.style.setProperty('--parallax-x', `0`);
+        projectItemRef.current.style.setProperty('--parallax-y', `0`);
+    }, []);
 
     const desktopLayout = (
         <div
             id={project.id}
             ref={projectItemRef}
-            className={`box-border w-full flex transition-all duration-150 ease-out hover:scale-[1.02]`}
+            className={`group relative box-border w-full flex hover:z-50`}
+            onMouseEnter={handleMouseEnter}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ '--parallax-x': 0, '--parallax-y': 0 } as React.CSSProperties}
         >
+            <div className="absolute inset-0 bg-(--color-accent-bg-subtle) rounded-xl"></div>
+
             <ProjectPopup refDiv={projectItemRef} projectId={project.id} />
 
-            <div className='flex flex-col w-full gap-1'>
+            <div
+                className='relative z-10 flex flex-col w-full gap-1 p-6 border border-transparent group-hover:border-(--border-color) bg-(--bg-color) rounded-xl transition-all duration-200 ease-out'
+                style={{ transform: 'translate(calc(var(--parallax-x) * 40px), calc(var(--parallax-y) * 40px))' }}
+            >
                 <div className='flex flex-wrap items-center gap-6'>
                     <div className='relative'>
                         <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
