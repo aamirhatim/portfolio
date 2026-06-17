@@ -120,7 +120,12 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
 
     const mobileLayout = (
         <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl relative'>
-            <div>
+            {project.spotlight && (
+                <div className="absolute top-4 right-4 p-1 flex items-center justify-center" title="Featured Project">
+                    <Star size={20} className='text-(--txt-highlight-color)' />
+                </div>
+            )}
+            <div className={project.spotlight ? 'pr-8' : ''}>
                 <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
                 <div className={'text-lg italic text-(--txt-subtitle-color)'}>{project.subtitle}</div>
             </div>
@@ -129,13 +134,8 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
             <div className='text-lg'>{project.description}</div>
 
 
-            {(hasLinks || project.spotlight) &&
+            {hasLinks &&
                 <div className='flex gap-3 justify-center items-center'>
-                    {project.spotlight && (
-                        <div className="p-1 flex items-center justify-center" title="Featured Project">
-                            <Star size={16} className='text-(--txt-highlight-color)' />
-                        </div>
-                    )}
                     {project.code && <ProjectLink value='Code' url={project.code} showText={true} />}
                     {project.video && <ProjectLink value='Video' url={project.video} showText={true} />}
                     {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} showText={true} />}
