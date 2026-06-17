@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.11.0] - 2026-06-16 23:41:00
+
+### Changed
+- Refactored `ProjectItem` mouse-tracking parallax to use cached bounding rects and `requestAnimationFrame`, eliminating layout thrashing and improving scroll smoothness.
+- Adjusted parallax coordinates to invert the translation direction.
+- Updated `ProjectItem` layout to use transparent borders by default, fading in on hover, and aligned the tile background color with the main canvas.
+- Updated `AnimateInView` to accept custom CSS class props, allowing `ProjectsPage` to dynamically elevate the stacking context (`hover:z-50`) of active tiles to prevent clipping beneath adjacent siblings.
+- Replaced the `Asterisk` spotlight icon with the `Star` icon from `lucide-react` across both desktop and mobile views.
+- Repositioned the spotlight indicator from floating relative to the title to being inline as the left-most item within the article link flex row.
+- Consolidated mobile links row rendering logic to ensure visibility if a project is spotlighted, even if it lacks external links.
+
+### Removed
+- Removed the publication date and hero image from the client article layout (`ArticleHeader.tsx`).
+
 ## [9.10.0] - 2026-06-16 21:46:00
 
 ### Changed
