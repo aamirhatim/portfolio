@@ -103,9 +103,9 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
                                 <Star size={16} className='text-(--txt-highlight-color)' />
                             </div>
                         )}
-                        {project.code && <ProjectLink value='code' url={project.code} newTab={true} />}
-                        {project.video && <ProjectLink value='video' url={project.video} newTab={true} />}
-                        {hasArticle && <ProjectLink value='blog' url={`/projects/${project.id}`} />}
+                        {project.code && <ProjectLink value='Code' url={project.code} newTab={true} expandOnHover={true} />}
+                        {project.video && <ProjectLink value='Video' url={project.video} newTab={true} expandOnHover={true} />}
+                        {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} expandOnHover={true} />}
                     </div>
                 </div>
 
@@ -136,8 +136,8 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
 
             {hasLinks &&
                 <div className='flex gap-3 justify-center items-center'>
-                    {project.code && <ProjectLink value='Code' url={project.code} showText={true} />}
-                    {project.video && <ProjectLink value='Video' url={project.video} showText={true} />}
+                    {project.code && <ProjectLink value='Code' url={project.code} newTab={true} showText={true} />}
+                    {project.video && <ProjectLink value='Video' url={project.video} newTab={true} showText={true} />}
                     {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} showText={true} />}
                 </div>
             }

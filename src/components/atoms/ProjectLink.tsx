@@ -2,7 +2,7 @@ import { Video, Newspaper, Link as LinkIcon, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppContext } from '../../context/appContext';
 
-export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean}) {
+export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean, expandOnHover?:boolean}) {
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
 
@@ -34,11 +34,20 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
         }
     };
 
+    const isBoxed = props.showText || props.expandOnHover;
+    const containerClasses = isBoxed 
+        ? `group/link flex items-center justify-center h-10 border border-(--border-color) rounded-lg transition-all duration-300 ${props.expandOnHover ? 'px-2 hover:px-4' : 'px-4'}`
+        : 'p-1';
+
     return (
-        <div onClick={handleClick} className={`p-1 cursor-pointer ${props.showText && 'px-4 py-2 border border-(--border-color) rounded-lg'}`}>
-            <a className='!no-underline flex gap-4 items-center'>
+        <div onClick={handleClick} className={`cursor-pointer ${containerClasses}`}>
+            <a className='!no-underline flex items-center justify-center'>
                 {renderIcon()}
-                {props.showText && <div className='text-md text-(--txt-subtitle-color)'>{props.value}</div>}
+                {isBoxed && (
+                    <div className={`overflow-hidden whitespace-nowrap transition-all duration-300 ${props.expandOnHover ? 'max-w-0 opacity-0 group-hover/link:max-w-[100px] group-hover/link:opacity-100 group-hover/link:pl-2' : 'max-w-[100px] opacity-100 pl-2'}`}>
+                        <div className='text-md text-(--txt-subtitle-color)'>{props.value}</div>
+                    </div>
+                )}
             </a>
         </div>
     )
