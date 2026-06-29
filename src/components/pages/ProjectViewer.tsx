@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router"
 import ProjectArticle from "../organisms/ProjectArticle";
-import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { useAppContext } from "../../context/appContext";
-import { ANIMATION_DURATION_MS } from "../../data/constants";
+import ParallaxWrapper from "../atoms/ParallaxWrapper";
 
 export default function ProjectViewer() {
     // Get params
@@ -19,8 +19,6 @@ export default function ProjectViewer() {
 
     // Init state
     const [projectList, setProjectList] = useState<string[]>([]);
-
-    const arrowClasses = `cursor-pointer hover:scale-130 hover:text-(--txt-title-color) transition-all duration-[${ANIMATION_DURATION_MS}ms]`;
 
     // Get current index of project
     const currentIndex = projectList.indexOf(projectId);
@@ -75,13 +73,25 @@ export default function ProjectViewer() {
             <ProjectArticle projectId={projectId} transitionDir={transitionDir} />
 
             <div className="flex w-full px-[15%] py-20 justify-between">
-                <div className={`${arrowClasses} left-0 justify-end ${isFirstProject && 'opacity-30'}`} onClick={() => navProject("prev")}>
-                    <CircleArrowLeft size={32} />
-                </div>
+                <ParallaxWrapper multiplier={4}>
+                    <button 
+                        className={`p-2 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer ${isFirstProject ? 'opacity-30 pointer-events-none' : ''}`} 
+                        onClick={() => navProject("prev")}
+                        aria-label="Previous article"
+                    >
+                        <ChevronLeft size={24} />
+                    </button>
+                </ParallaxWrapper>
 
-                <div className={`${arrowClasses} right-0 justify-start ${isLastProject && 'opacity-30'}`} onClick={() => navProject("next")}>
-                    <CircleArrowRight size={32} />
-                </div>
+                <ParallaxWrapper multiplier={4}>
+                    <button 
+                        className={`p-2 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer ${isLastProject ? 'opacity-30 pointer-events-none' : ''}`} 
+                        onClick={() => navProject("next")}
+                        aria-label="Next article"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
+                </ParallaxWrapper>
             </div>
         </div>
     )

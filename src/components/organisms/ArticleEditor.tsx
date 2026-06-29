@@ -1,0 +1,335 @@
+import { useEffect, useState } from "react";
+import { doc, getDoc, getFirestore, setDoc, deleteDoc } from "firebase/firestore";
+import { useFirebaseAppContext } from "../../context/firebaseAppContext";
+import { getDocumentFromId } from "../../lib/firestoreLib";
+import { ProjectType, ArticleType, ArticleBlockType } from "../../data/datatypes";
+import { Save, X, RefreshCw, AlertCircle, Trash2 } from "lucide-react";
+
+import ArticlePreview from "../molecules/editor-fields/ArticlePreview";
+import ArticleBlocksBuilder from "../molecules/editor-fields/ArticleBlocksBuilder";
+
+
+
+type ArticleEditorProps = {
+    projectId: string;
+    action: "create-new" | "edit";
+    onCancel: () => void;
+    onSave: () => void;
+};
+
+export default function ArticleEditor({ projectId, action, onCancel, onSave }: ArticleEditorProps) {
+    const firebaseApp = useFirebaseAppContext();
+    const db = getFirestore(firebaseApp);
+
+    // Document States
+    const [project, setProject] = useState<ProjectType | null>(null);
+    const [blocks, setBlocks] = useState<ArticleBlockType[]>([]);
+    const [createdAt, setCreatedAt] = useState("");
+    const [lastUpdated, setLastUpdated] = useState("");
+    const [isPublic, setIsPublic] = useState(false);
+    const [publishDate, setPublishDate] = useState<string | undefined>(undefined);
+
+    // UI States
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [saving, setSaving] = useState(false);
+    const [previewTab, setPreviewTab] = useState<"edit" | "preview" | "split">("split");
+
+    // Load initial data
+    useEffect(() => {
+        let active = true;
+        const loadInitialData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                // Fetch project metadata
+                const projDoc = await getDocumentFromId(firebaseApp, "projects", projectId);
+                if (projDoc && active) {
+                    setProject({ id: projDoc.id, ...projDoc.data } as ProjectType);
+                }
+
+                // Retrieve article content
+                if (action === "edit") {
+                    const artDoc = await getDoc(doc(db, "articles", projectId));
+                    if (artDoc.exists() && active) {
+                        const data = artDoc.data() as ArticleType;
+                        setBlocks(data.blocks || []);
+                        setCreatedAt(data.createdAt || "");
+                        setLastUpdated(data.lastUpdated || "");
+                        setIsPublic(data.public || false);
+                        setPublishDate(data.publishDate);
+                    } else if (active) {
+                        setError("Could not find the Firestore article to edit.");
+                    }
+                } else {
+                    // new-create
+                    if (active) {
+                        setBlocks([]);
+                        setCreatedAt(new Date().toISOString().split("T")[0]);
+                        setIsPublic(false);
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading editor data:", err);
+                if (active) setError("An error occurred while setting up the editor workspace.");
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+
+        loadInitialData();
+        return () => { active = false; };
+    }, [firebaseApp, projectId, action, db]);
+
+    // Save article document
+    const handleSaveDoc = async () => {
+        setSaving(true);
+        setError(null);
+        try {
+            const today = new Date().toISOString().split("T")[0];
+            let finalCreatedAt = createdAt;
+            let finalLastUpdated = lastUpdated;
+
+            if (action === "create-new") {
+                finalCreatedAt = today;
+            } else {
+                finalCreatedAt = createdAt || today;
+                finalLastUpdated = today;
+            }
+
+            // Sync blocks orders
+            const orderedBlocks = blocks.map((b, idx) => ({
+                ...b,
+                order: idx,
+                projectId: projectId
+            })) as ArticleBlockType[];
+
+            const payload: ArticleType = {
+                blocks: orderedBlocks,
+                public: isPublic,
+                createdAt: finalCreatedAt
+            };
+
+            if (publishDate) payload.publishDate = publishDate;
+            if (finalLastUpdated) payload.lastUpdated = finalLastUpdated;
+
+            await setDoc(doc(db, "articles", projectId), payload);
+            onSave();
+        } catch (err) {
+            console.error("Error saving article:", err);
+            setError("Failed to save article to Firestore. Please check database permissions.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // Delete article document
+    const handleDeleteDoc = async () => {
+        if (!window.confirm("Are you sure you want to delete this article? This will permanently remove it from Firestore.")) return;
+        setSaving(true);
+        setError(null);
+        try {
+            await deleteDoc(doc(db, "articles", projectId));
+            onSave();
+        } catch (err) {
+            console.error("Error deleting article:", err);
+            setError("Failed to delete article from Firestore.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // Block Utilities
+    const addBlock = (type: ArticleBlockType["type"]) => {
+        let newBlock: ArticleBlockType;
+
+        const base = {
+            order: blocks.length,
+            projectId: projectId,
+            border: false
+        };
+
+        switch (type) {
+            case "paragraph":
+                newBlock = { ...base, type: "paragraph", content: "" };
+                break;
+            case "title":
+                newBlock = { ...base, type: "title", content: "", level: 0 };
+                break;
+            case "image":
+                newBlock = { ...base, type: "image", url: "", caption: "", size: "lg" };
+                break;
+            case "code":
+                newBlock = { ...base, type: "code", language: "javascript", content: "" };
+                break;
+            case "list":
+                newBlock = { ...base, type: "list", ordered: false, title: "", items: [""] };
+                break;
+            case "formula":
+                newBlock = { ...base, type: "formula", content: "" };
+                break;
+            case "table":
+                newBlock = { ...base, type: "table", headers: ["Header 1", "Header 2"], content: [{ cells: ["", ""] }] };
+                break;
+            default:
+                return;
+        }
+
+        setBlocks([...blocks, newBlock]);
+    };
+
+    const deleteBlock = (index: number) => {
+        const updated = blocks.filter((_, idx) => idx !== index);
+        setBlocks(updated);
+    };
+
+    const moveBlock = (index: number, direction: "up" | "down") => {
+        if (direction === "up" && index === 0) return;
+        if (direction === "down" && index === blocks.length - 1) return;
+
+        const updated = [...blocks];
+        const swapIdx = direction === "up" ? index - 1 : index + 1;
+        const temp = updated[index];
+        updated[index] = updated[swapIdx];
+        updated[swapIdx] = temp;
+
+        setBlocks(updated);
+    };
+
+    const updateBlock = (index: number, updatedBlock: ArticleBlockType) => {
+        setBlocks(prev => {
+            const updated = [...prev];
+            updated[index] = updatedBlock;
+            return updated;
+        });
+    };
+
+    const updateBlockBorder = (index: number, border: boolean) => {
+        setBlocks(prev => {
+            const updated = [...prev];
+            updated[index] = { ...updated[index], border };
+            return updated;
+        });
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center gap-2 p-6 animate-pulse text-[var(--txt-subtitle-color)]">
+                <RefreshCw size={18} className="animate-spin" />
+                <span>Loading article editor workspace...</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col gap-6 w-full">
+            {/* Header / Meta controls */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border-color)] pb-4">
+                <div>
+                    <h3 className="text-xl font-bold text-[var(--txt-title-color)]">
+                        {action === "edit" ? "Edit" : "Create"} Article for <span className="text-[var(--txt-highlight-color)]">{project?.title || projectId}</span>
+                    </h3>
+                    <div className="flex gap-4 text-xs text-[var(--txt-subtitle-color)] mt-1">
+                        <span>Created: {createdAt || "—"}</span>
+                        {lastUpdated && <span>Last Updated: {lastUpdated}</span>}
+                        <span>Status: <strong className={isPublic ? "text-[var(--color-accent-solid)]" : "text-[var(--feedback-warning)]"}>{isPublic ? "Public" : "Draft"}</strong></span>
+                        {publishDate && <span>Published: {publishDate}</span>}
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={handleSaveDoc}
+                        disabled={saving}
+                        className="p-2.5 bg-[var(--color-accent-solid)] hover:bg-[var(--color-accent-subtle)] text-[var(--bg-color)] rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                        title={saving ? "Saving..." : "Save Draft"}
+                    >
+                        <Save size={16} />
+                    </button>
+                    {action === "edit" && (
+                        <button
+                            onClick={handleDeleteDoc}
+                            disabled={saving}
+                            className="p-2.5 border border-[var(--feedback-error)] text-[var(--feedback-error)] hover:bg-[var(--feedback-error)]/10 rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                            title="Delete Article"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                    <button
+                        onClick={onCancel}
+                        disabled={saving}
+                        className="p-2.5 border border-[var(--border-color)] text-[var(--txt-body-color)] hover:bg-[var(--bg-secondary-color)] rounded transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                        title="Cancel"
+                    >
+                        <X size={16} />
+                    </button>
+                </div>
+            </div>
+
+            {error && (
+                <div className="flex items-center gap-3 p-4 border border-[var(--feedback-error)] bg-[var(--bg-secondary-color)] rounded text-[var(--feedback-error)]">
+                    <AlertCircle size={18} />
+                    <span>{error}</span>
+                </div>
+            )}
+
+            {/* Split Screen Control Tab */}
+            <div className="flex border-b border-[var(--border-color)] gap-2">
+                <button
+                    onClick={() => setPreviewTab("edit")}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors cursor-pointer ${previewTab === "edit"
+                        ? "border-[var(--txt-highlight-color)] text-[var(--txt-highlight-color)]"
+                        : "border-transparent text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)]"
+                        }`}
+                >
+                    Editor
+                </button>
+                <button
+                    onClick={() => setPreviewTab("preview")}
+                    className={`px-4 py-2 font-semibold text-sm border-b-2 transition-colors cursor-pointer ${previewTab === "preview"
+                        ? "border-[var(--txt-highlight-color)] text-[var(--txt-highlight-color)]"
+                        : "border-transparent text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)]"
+                        }`}
+                >
+                    Live Preview
+                </button>
+                <button
+                    onClick={() => setPreviewTab("split")}
+                    className={`hidden lg:block px-4 py-2 font-semibold text-sm border-b-2 transition-colors cursor-pointer ${previewTab === "split"
+                        ? "border-[var(--txt-highlight-color)] text-[var(--txt-highlight-color)]"
+                        : "border-transparent text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)]"
+                        }`}
+                >
+                    Split View
+                </button>
+            </div>
+
+            {/* Editor Workspace Panels */}
+            <div className={`grid w-full gap-8 ${previewTab === "split" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}>
+                
+                {/* Left panel: Form Blocks Builder */}
+                {(previewTab === "edit" || previewTab === "split") && (
+                    <ArticleBlocksBuilder
+                        blocks={blocks}
+                        onAddBlock={addBlock}
+                        onUpdateBlock={updateBlock}
+                        onDeleteBlock={deleteBlock}
+                        onMoveBlock={moveBlock}
+                        onUpdateBlockBorder={updateBlockBorder}
+                    />
+                )}
+
+                {/* Right panel: Website Live Preview Rendering */}
+                {(previewTab === "preview" || previewTab === "split") && (
+                    <ArticlePreview
+                        project={project}
+                        blocks={blocks}
+                        publishDate={publishDate}
+                    />
+                )}
+
+            </div>
+        </div>
+    );
+}

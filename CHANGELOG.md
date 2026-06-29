@@ -2,6 +2,80 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [9.11.2] - 2026-06-28 21:01:00
+
+### Changed
+- Refactored `useIsMobile` to use `useSyncExternalStore` for a singleton resize listener, eliminating redundant event listeners.
+- Deduplicated identical Firestore fetch logic in `ArticleManager` into a single `useCallback` hook.
+- Optimized autoplay interval creation in `FeaturedWorkCarousel` by removing `currentIndex` from `useEffect` dependencies.
+- Removed expensive mock data generation on error in `GithubContributionTracker`; now gracefully renders a simple fallback message.
+
+## [9.11.1] - 2026-06-28 20:38:00
+
+### Added
+- Extracted a reusable `ParallaxWrapper` component to encapsulate requestAnimationFrame-based mouse tracking and coordinate translations.
+- Applied universal parallax mouse-tracking to interactive elements across the application, including project link buttons, socials bar icons, carousel navigation arrows, and About page skill chips.
+- Added smooth scale-on-hover effects to project link buttons.
+
+### Changed
+- Refactored `ProjectItem` tile by removing internal tracking refs, stripping inner padding, and removing redundant background/border classes for a clean, minimal layout.
+- Styled article viewer navigation arrows to match the carousel design and wrapped them in `ParallaxWrapper`.
+- Simplified the month label rendering logic in `GithubContributionTracker` by replacing complex colSpan math with a straightforward 1:1 week mapping to ensure labels strictly align with column transitions.
+- Increased spacing gap for desktop project list in `ProjectsPage`.
+
+### Fixed
+- Fixed overlapping month label fragments in `GithubContributionTracker` by explicitly omitting labels for the first week to prevent layout clipping.
+- Fixed a bug on the mobile `ProjectItem` where Code and Video links lacked the `newTab` prop, causing internal router conflicts.
+- Cleaned up unused `ANIMATION_DURATION_MS` import from `ProjectViewer.tsx`.
+
+## [9.11.0] - 2026-06-16 23:41:00
+
+### Changed
+- Refactored `ProjectItem` mouse-tracking parallax to use cached bounding rects and `requestAnimationFrame`, eliminating layout thrashing and improving scroll smoothness.
+- Adjusted parallax coordinates to invert the translation direction.
+- Updated `ProjectItem` layout to use transparent borders by default, fading in on hover, and aligned the tile background color with the main canvas.
+- Updated `AnimateInView` to accept custom CSS class props, allowing `ProjectsPage` to dynamically elevate the stacking context (`hover:z-50`) of active tiles to prevent clipping beneath adjacent siblings.
+- Replaced the `Asterisk` spotlight icon with the `Star` icon from `lucide-react` across both desktop and mobile views.
+- Repositioned the spotlight indicator from floating relative to the title to being inline as the left-most item within the article link flex row.
+- Consolidated mobile links row rendering logic to ensure visibility if a project is spotlighted, even if it lacks external links.
+
+### Removed
+- Removed the publication date and hero image from the client article layout (`ArticleHeader.tsx`).
+
+## [9.10.0] - 2026-06-16 21:46:00
+
+### Changed
+- Removed legacy local `src/data/articles` JSON and markdown fallback files, standardizing article resolution entirely on the production Firestore `articles` collection to reduce Javascript bundle size and enforce single-source-of-truth reliability.
+- Cleaned up `import.meta.glob` dynamic imports and fallback states from `ProjectArticle`, `FeaturedWorkCarousel`, `ProjectItem`, `ArticleManager`, and `ArticleEditor`.
+- Removed legacy "local-fallback" badge UI logic from the Articles admin dashboard table.
+
+## [9.9.0] - 2026-06-15 20:41:00
+
+### Added
+- Added architectural documentation to `TableBlockType` and `TableEditor` state mappings to explicitly document Firestore schema constraints regarding nested arrays and prevent accidental regressions.
+
+### Fixed
+- Injected `projectId` into all local JSON article blocks to prevent `undefined` image storage path errors when rendering imported fallback articles.
+- Refactored `TableBlockType.content` schema from nested arrays (`string[][]`) to an array of objects (`{ cells: string[] }[]`) to comply with Firestore restrictions.
+- Migrated legacy `day-zero.json` table data to match the newly enforced schema format.
+
+## [9.8.1] - 2026-06-15 19:23:00
+
+### Changed
+- Updated `ArticleImage` to resolve image paths dynamically from the project-specific storage location (`/proj_img/[projectId]/article/`).
+- Updated `ImageEditor` component to clarify that users should input the image filename instead of a full path.
+
+## [9.8.0] - 2026-06-13 15:09:49
+
+### Changed
+- Refactored `ArticleEditor` by decomposing the monolithic editor into highly modular sub-components (`ParagraphEditor`, `TitleEditor`, `ImageEditor`, `CodeEditor`, `ListEditor`, `FormulaEditor`, and `TableEditor`).
+- Simplified the nested field state logic in `CollectionManager` by introducing pure helper functions (`getFieldValue` and `setFieldValue`) in a new `fieldUtils.ts` utility.
+- Streamlined `CollectionManager` and `ArticleEditor` by extracting form logic, list item rendering, and live preview rendering into separate atomic components (`CollectionForm`, `CollectionListItem`, `ArticleBlocksBuilder`, `ArticlePreview`).
+- Enhanced Admin Portal UX by minimizing the `BlockToolbar` to an icon-only row with hover tooltips and centering it within the editor.
+- Refined global action buttons (Save, Delete, Cancel) in the article editor to icon-only controls.
+- Unified the first-column width (`w-36 min-w-[9rem]`) across all document viewers in the collection tabs to ensure consistent layouts.
+- Re-architected `ArticleManager` table status badges into an isolated `ArticleStatusBadge` component.
 ## [9.7.0] - 2026-06-12 15:24:00
 
 ### Added

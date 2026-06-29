@@ -8,8 +8,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Chip from "../atoms/Chip";
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
+import ParallaxWrapper from "../atoms/ParallaxWrapper";
 
-const articleModules = import.meta.glob("/src/data/articles/*.json");
 
 export default function FeaturedWorkCarousel() {
     const firebaseAppContext = useFirebaseAppContext();
@@ -18,6 +18,7 @@ export default function FeaturedWorkCarousel() {
     const { setNavSelect } = useAppContext();
 
     const [spotlights, setSpotlights] = useState<ProjectType[]>([]);
+    const [publishedArticles, setPublishedArticles] = useState<Record<string, boolean>>({});
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
 
@@ -76,6 +77,19 @@ export default function FeaturedWorkCarousel() {
             }
         });
 
+        getDocumentsFromCollection(firebaseAppContext, "articles").then((articleDocs) => {
+            if (!active) return;
+            if (articleDocs) {
+                const map: Record<string, boolean> = {};
+                articleDocs.forEach(doc => {
+                    if (doc.data && doc.data.public === true) {
+                        map[doc.id] = true;
+                    }
+                });
+                setPublishedArticles(map);
+            }
+        });
+
         return () => {
             active = false;
         };
@@ -90,7 +104,7 @@ export default function FeaturedWorkCarousel() {
         }, 5000);
 
         return () => clearInterval(timer);
-    }, [spotlights.length, currentIndex]);
+    }, [spotlights.length]);
 
     // Manual navigation controls
     const nextSlide = () => {
@@ -145,8 +159,7 @@ export default function FeaturedWorkCarousel() {
             >
                 {spotlights.map((project, idx) => {
                     const isActive = idx === currentIndex;
-                    const articlePath = `/src/data/articles/${project.id}.json`;
-                    const hasArticle = !!articleModules[articlePath];
+                    const hasArticle = publishedArticles[project.id];
 
                     const handleTileClick = () => {
                         const url = `/projects/${project.id}`;
@@ -209,20 +222,24 @@ export default function FeaturedWorkCarousel() {
             {/* Desktop Center Navigation Buttons */}
             {spotlights.length > 1 && (
                 <div className="hidden md:flex justify-center items-center gap-3 mt-4 select-none">
-                    <button
-                        onClick={prevSlide}
-                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
-                        aria-label="Previous spotlight slide"
-                    >
-                        <ChevronLeft size={16} />
-                    </button>
-                    <button
-                        onClick={nextSlide}
-                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
-                        aria-label="Next spotlight slide"
-                    >
-                        <ChevronRight size={16} />
-                    </button>
+                    <ParallaxWrapper multiplier={4}>
+                        <button
+                            onClick={prevSlide}
+                            className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                            aria-label="Previous spotlight slide"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                    </ParallaxWrapper>
+                    <ParallaxWrapper multiplier={4}>
+                        <button
+                            onClick={nextSlide}
+                            className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                            aria-label="Next spotlight slide"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    </ParallaxWrapper>
                 </div>
             )}
         </div>

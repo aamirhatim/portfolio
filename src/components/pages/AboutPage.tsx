@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { getDocumentsFromCollection } from '../../lib/firestoreLib'
 import Chip from "../atoms/Chip"
 import LazyImg from "../atoms/LazyImg"
+import ParallaxWrapper from "../atoms/ParallaxWrapper"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 import SocialsBar from "../molecules/socialsBar"
@@ -120,12 +121,13 @@ export default function AboutPage() {
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
                                     {list.map((skill) => (
-                                        <Chip
-                                            key={skill.name}
-                                            text={skill.name}
-                                            size="md"
-                                            classes={getSkillChipClasses(skill.level)}
-                                        />
+                                        <ParallaxWrapper key={skill.name} multiplier={4}>
+                                            <Chip
+                                                text={skill.name}
+                                                size="md"
+                                                classes={getSkillChipClasses(skill.level)}
+                                            />
+                                        </ParallaxWrapper>
                                     ))}
                                 </div>
                             </div>

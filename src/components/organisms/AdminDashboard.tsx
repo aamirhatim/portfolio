@@ -1,8 +1,21 @@
 import { useState } from "react";
 import CollectionManager, { FieldConfig } from "./CollectionManager";
-import { CircleUserRound, PocketKnife, BriefcaseBusiness, Award, GraduationCap, FolderOpenDot, BadgeInfo } from "lucide-react";
+import { CircleUserRound, PocketKnife, BriefcaseBusiness, Award, GraduationCap, FolderOpenDot, BadgeInfo, FileText } from "lucide-react";
+import ArticleManager from "./ArticleManager";
 
-const TAB_CONFIGS: Record<string, { title: string, icon: React.ReactNode, collections: { name: string, fields: FieldConfig[], disableAdd?: boolean }[] }> = {
+export interface CollectionConfig {
+    name: string;
+    fields: FieldConfig[];
+    disableAdd?: boolean;
+}
+
+export interface TabConfig {
+    title: string;
+    icon: React.ReactNode;
+    collections: CollectionConfig[];
+}
+
+const TAB_CONFIGS: Record<string, TabConfig> = {
     intro: {
         title: "Intro",
         icon: <BadgeInfo size={18} />,
@@ -103,6 +116,11 @@ const TAB_CONFIGS: Record<string, { title: string, icon: React.ReactNode, collec
                 ]
             }
         ]
+    },
+    articles: {
+        title: "Articles",
+        icon: <FileText size={18} />,
+        collections: []
     }
 };
 
@@ -140,9 +158,13 @@ export default function AdminDashboard() {
 
                 {/* Tab Content */}
                 <div className="flex-1 flex flex-col gap-8">
-                    {currentConfig.collections.map(c => (
-                        <CollectionManager key={c.name} collectionName={c.name} fields={c.fields} disableAdd={c.disableAdd} />
-                    ))}
+                    {activeTab === "articles" ? (
+                        <ArticleManager />
+                    ) : (
+                        currentConfig.collections.map(c => (
+                            <CollectionManager key={c.name} collectionName={c.name} fields={c.fields} disableAdd={c.disableAdd} />
+                        ))
+                    )}
                 </div>
             </div>
         </div>

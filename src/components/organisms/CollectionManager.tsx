@@ -3,13 +3,17 @@ import { createDocument, deleteDocument, updateDocument } from "../../lib/adminL
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { FirestoreDocType } from "../../data/datatypes";
-import { ChevronDown, ChevronRight, Pencil, Trash2, Plus, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react";
+import { Plus, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react";
+import { setFieldValue } from "../../lib/fieldUtils";
+
+import CollectionForm from "../molecules/collection-manager/CollectionForm";
+import CollectionListItem from "../molecules/collection-manager/CollectionListItem";
 
 /**
  * Configuration for a dynamic field within a Firestore collection document.
  */
 export type FieldConfig = {
-    /** The key name of the field in the Firestore document */
+    /** The key name of the field in the Firestore document (supports dot notation) */
     name: string;
     /** The display label for the field in the UI form */
     label: string;
@@ -29,6 +33,10 @@ interface CollectionManagerProps {
     showDetails?: boolean;
 }
 
+/**
+ * CollectionManager manages the fetching, display, and editing of Firestore documents for a given collection.
+ * It uses dynamic `FieldConfig` arrays to generate forms and tables for document properties.
+ */
 export default function CollectionManager({ collectionName, fields, disableAdd = false, showDetails = true }: CollectionManagerProps) {
     const firebaseApp = useFirebaseAppContext();
     const [documents, setDocuments] = useState<FirestoreDocType[]>([]);
@@ -114,21 +122,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
         if (type === 'number') parsedValue = Number(value);
         if (type === 'array') parsedValue = (value as string).split(',').map((s: string) => s.trim()).filter((s: string) => s !== "");
 
-        setFormData(prev => {
-            if (fieldName.includes('.')) {
-                const parts = fieldName.split('.');
-                const root = parts[0];
-                const child = parts[1];
-                return {
-                    ...prev,
-                    [root]: {
-                        ...(prev[root] || {}),
-                        [child]: parsedValue
-                    }
-                };
-            }
-            return { ...prev, [fieldName]: parsedValue };
-        });
+        setFormData(prev => setFieldValue(prev, fieldName, parsedValue));
     };
 
     if (loading && !isEditing) {
@@ -137,56 +131,14 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
 
     if (isEditing) {
         return (
-            <div className="bg-[var(--bg-secondary-color)] p-6 rounded-lg shadow-sm border border-[var(--border-color)]">
-                <h3 className="text-xl font-bold mb-4 capitalize">{currentDocId ? 'Edit' : 'New'} Document</h3>
-                <form onSubmit={handleSave} className="flex flex-col gap-4">
-                    {fields.map(field => (
-                        <div key={field.name} className="flex flex-col gap-1">
-                            <label className="text-sm font-semibold text-[var(--txt-subtitle-color)]">{field.label}</label>
-                            {field.type === 'textarea' ? (
-                                <textarea
-                                    value={field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as string || "") : (formData[field.name] as string || "")}
-                                    onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
-                                    className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)] min-h-[100px]"
-                                    required={field.required ?? true}
-                                />
-                            ) : field.type === 'boolean' ? (
-                                <input
-                                    type="checkbox"
-                                    checked={field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as boolean || false) : (formData[field.name] as boolean || false)}
-                                    onChange={(e) => handleFieldChange(field.name, e.target.checked, field.type)}
-                                    className="w-5 h-5 accent-[var(--txt-title-color)]"
-                                />
-                            ) : field.type === 'array' ? (
-                                <input
-                                    type="text"
-                                    value={(field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as string[] || []) : (formData[field.name] as string[] || [])).join(', ')}
-                                    onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
-                                    placeholder="Comma separated values"
-                                    className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
-                                    required={field.required ?? false}
-                                />
-                            ) : (
-                                <input
-                                    type={field.type === 'number' ? 'number' : 'text'}
-                                    value={field.name.includes('.') ? ((formData[field.name.split('.')[0]] as Record<string, unknown>)?.[field.name.split('.')[1]] as string | number || (field.type === 'number' ? 0 : "")) : (formData[field.name] as string | number || (field.type === 'number' ? 0 : ""))}
-                                    onChange={(e) => handleFieldChange(field.name, e.target.value, field.type)}
-                                    className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
-                                    required={field.required ?? (field.type !== 'number')}
-                                />
-                            )}
-                        </div>
-                    ))}
-                    <div className="flex gap-4 mt-4">
-                        <button type="submit" className="px-4 py-2 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded font-semibold transition-colors hover:opacity-90">
-                            Save
-                        </button>
-                        <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-color)] transition-colors">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <CollectionForm
+                currentDocId={currentDocId}
+                fields={fields}
+                formData={formData}
+                onSave={handleSave}
+                onCancel={() => setIsEditing(false)}
+                onFieldChange={handleFieldChange}
+            />
         );
     }
 
@@ -197,7 +149,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                     {!disableAdd && (
                         <button
                             onClick={handleAddNew}
-                            className="p-2 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded hover:opacity-90 transition-opacity mr-1"
+                            className="p-2 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded hover:opacity-90 transition-opacity mr-1 cursor-pointer"
                             title="Add New"
                         >
                             <Plus size={16} />
@@ -207,14 +159,14 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                         <>
                             <button
                                 onClick={handleExpandAll}
-                                className="p-2 bg-[var(--bg-secondary-color)] border border-[var(--border-color)] text-[var(--txt-subtitle-color)] rounded hover:text-[var(--txt-feature-color)] transition-colors"
+                                className="p-2 bg-[var(--bg-secondary-color)] border border-[var(--border-color)] text-[var(--txt-subtitle-color)] rounded hover:text-[var(--txt-feature-color)] transition-colors cursor-pointer"
                                 title="Expand All"
                             >
                                 <ListChevronsUpDown size={16} />
                             </button>
                             <button
                                 onClick={handleContractAll}
-                                className="p-2 bg-[var(--bg-secondary-color)] border border-[var(--border-color)] text-[var(--txt-subtitle-color)] rounded hover:text-[var(--txt-feature-color)] transition-colors"
+                                className="p-2 bg-[var(--bg-secondary-color)] border border-[var(--border-color)] text-[var(--txt-subtitle-color)] rounded hover:text-[var(--txt-feature-color)] transition-colors cursor-pointer"
                                 title="Contract All"
                             >
                                 <ListChevronsDownUp size={16} />
@@ -228,57 +180,20 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                 {documents.map(doc => {
                     // Try to find a reasonable title/summary for the list item
                     const summaryField = fields.find(f => f.name === 'title' || f.name === 'name' || f.name === 'school') || fields[0] || doc.id;
-                    const summaryText = doc.data[summaryField.name];
+                    const summaryText = doc.data[summaryField.name] as string;
+                    const isExpanded = expandedDocs[doc.id] || false;
 
-                    const isExpanded = expandedDocs[doc.id];
                     return (
-                        <div key={doc.id} className="flex flex-col p-4 rounded bg-[var(--bg-secondary-color)]">
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-3 overflow-hidden max-w-[60%]">
-                                    {showDetails && (
-                                        <button
-                                            onClick={() => setExpandedDocs(prev => ({ ...prev, [doc.id]: !prev[doc.id] }))}
-                                            className="text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)] transition-colors flex-shrink-0"
-                                        >
-                                            {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                                        </button>
-                                    )}
-                                    <div className="font-medium text-[var(--txt-feature-color)] truncate">
-                                        {summaryText}
-                                    </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleEdit(doc)}
-                                        className="p-2 text-[var(--txt-subtitle-color)] hover:bg-[var(--txt-highlight-color)] hover:text-[var(--bg-color)] rounded transition-colors"
-                                        title="Edit"
-                                    >
-                                        <Pencil size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(doc.id)}
-                                        className="p-2 text-[var(--txt-subtitle-color)] hover:bg-(--feedback-error) hover:text-(--bg-color) rounded transition-colors"
-                                        title="Delete"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                            {showDetails && isExpanded && (
-                                <div className="mt-4 pt-4 px-4 border-t border-[var(--border-color)] overflow-x-auto">
-                                    <table className="w-full text-left text-sm text-[var(--txt-body-color)]">
-                                        <tbody>
-                                            {Object.entries(doc.data).map(([key, val]) => (
-                                                <tr key={key} className="border-b border-[var(--border-color)] last:border-0">
-                                                    <td className="py-2 pr-4 font-semibold align-top">{key}</td>
-                                                    <td className="py-2 break-all">{typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
+                        <CollectionListItem
+                            key={doc.id}
+                            doc={doc}
+                            summaryText={summaryText}
+                            isExpanded={isExpanded}
+                            showDetails={showDetails}
+                            onToggleExpand={() => setExpandedDocs(prev => ({ ...prev, [doc.id]: !prev[doc.id] }))}
+                            onEdit={() => handleEdit(doc)}
+                            onDelete={() => handleDelete(doc.id)}
+                        />
                     );
                 })}
                 {documents.length === 0 && (

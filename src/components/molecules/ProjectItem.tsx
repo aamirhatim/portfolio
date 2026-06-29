@@ -5,19 +5,16 @@ import useIsMobile from '../../lib/hooks/useIsMobile';
 import ArrowBtn from '../atoms/ArrowBtn';
 import ProjectPopup from './ProjectPopup';
 import { useRef } from 'react';
-import { Asterisk } from 'lucide-react';
+import { Star } from 'lucide-react';
 
-// Create a map of all articles so we can check if one exists for the project
-const articleModules = import.meta.glob("/src/data/articles/*.json");
 
-export default function ProjectItem(props: { project: ProjectType }) {
+export default function ProjectItem(props: { project: ProjectType; hasFirestoreArticle?: boolean }) {
     // Get context
     const isMobile = useIsMobile();
     const project = props.project;
 
     // Check if an article exists for the project
-    const articlePath = `/src/data/articles/${props.project.id}.json`;
-    const hasArticle = !!articleModules[articlePath];
+    const hasArticle = props.hasFirestoreArticle;
 
     const hasLinks = project.code || project.video || hasArticle;
 
@@ -28,25 +25,25 @@ export default function ProjectItem(props: { project: ProjectType }) {
         <div
             id={project.id}
             ref={projectItemRef}
-            className={`box-border w-full flex transition-all duration-150 ease-out hover:scale-[1.02]`}
+            className={`group relative box-border w-full flex hover:z-50`}
         >
             <ProjectPopup refDiv={projectItemRef} projectId={project.id} />
 
-            <div className='flex flex-col w-full gap-1'>
+            <div className='relative z-10 flex flex-col w-full gap-1 transition-all duration-200 ease-out'>
                 <div className='flex flex-wrap items-center gap-6'>
                     <div className='relative'>
                         <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
-                        {project.spotlight && (
-                            <div className='absolute top-0 right-full pt-1 pr-4 !text-(--txt-highlight-color)'>
-                                <Asterisk size={12} />
-                            </div>
-                        )}
                     </div>
 
-                    <div className='flex gap-2 pr-10'>
-                        {project.code && <ProjectLink value='code' url={project.code} newTab={true} />}
-                        {project.video && <ProjectLink value='video' url={project.video} newTab={true} />}
-                        {hasArticle && <ProjectLink value='blog' url={`/projects/${project.id}`} />}
+                    <div className='flex gap-2 pr-10 items-center'>
+                        {project.spotlight && (
+                            <div className="p-1 flex items-center justify-center" title="Featured Project">
+                                <Star size={16} className='text-(--txt-highlight-color)' />
+                            </div>
+                        )}
+                        {project.code && <ProjectLink value='Code' url={project.code} newTab={true} showText={true} />}
+                        {project.video && <ProjectLink value='Video' url={project.video} newTab={true} showText={true} />}
+                        {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} showText={true} />}
                     </div>
                 </div>
 
@@ -62,11 +59,11 @@ export default function ProjectItem(props: { project: ProjectType }) {
     const mobileLayout = (
         <div className='p-4 flex flex-col gap-6 border border-(--border-color) rounded-xl relative'>
             {project.spotlight && (
-                <div className='absolute top-4 right-4 !text-(--txt-highlight-color)'>
-                    <Asterisk size={16} />
+                <div className="absolute top-4 right-4 p-1 flex items-center justify-center" title="Featured Project">
+                    <Star size={20} className='text-(--txt-highlight-color)' />
                 </div>
             )}
-            <div>
+            <div className={project.spotlight ? 'pr-8' : ''}>
                 <h3 className={'title text-2xl font-medium'}>{project.title}</h3>
                 <div className={'text-lg italic text-(--txt-subtitle-color)'}>{project.subtitle}</div>
             </div>
@@ -76,9 +73,9 @@ export default function ProjectItem(props: { project: ProjectType }) {
 
 
             {hasLinks &&
-                <div className='flex gap-3 justify-center'>
-                    {project.code && <ProjectLink value='Code' url={project.code} showText={true} />}
-                    {project.video && <ProjectLink value='Video' url={project.video} showText={true} />}
+                <div className='flex gap-3 justify-center items-center'>
+                    {project.code && <ProjectLink value='Code' url={project.code} newTab={true} showText={true} />}
+                    {project.video && <ProjectLink value='Video' url={project.video} newTab={true} showText={true} />}
                     {hasArticle && <ProjectLink value='Article' url={`/projects/${project.id}`} showText={true} />}
                 </div>
             }

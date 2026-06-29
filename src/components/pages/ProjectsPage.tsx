@@ -17,8 +17,9 @@ export default function ProjectsPage() {
 
     // Init state
     const [projectList, setProjectList] = useState<Record<string, ProjectType[]>>({});
+    const [publishedArticles, setPublishedArticles] = useState<Record<string, boolean>>({});
 
-    // Get list of projects
+    // Get list of projects and articles
     useEffect(() => {
         let active = true;
         const queryOptions = [
@@ -39,6 +40,19 @@ export default function ProjectsPage() {
             }
         });
 
+        getDocumentsFromCollection(firebaseAppContext, "articles").then((articleDocs) => {
+            if (!active) return;
+            if (articleDocs) {
+                const map: Record<string, boolean> = {};
+                articleDocs.forEach(doc => {
+                    if (doc.data && doc.data.public === true) {
+                        map[doc.id] = true;
+                    }
+                });
+                setPublishedArticles(map);
+            }
+        });
+
         return () => {
             active = false;
         };
@@ -46,12 +60,16 @@ export default function ProjectsPage() {
 
     const createProjectSection = useCallback((projects: ProjectType[], year: string) => {
         return (
-            <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-18'}`}>
+            <section key={year} className={`flex flex-col ${isMobile ? 'gap-6 w-full' : 'gap-20'}`}>
                 <AnimateInView><h2>{year}</h2></AnimateInView>
-                {projects.map((p, idx) => <AnimateInView key={idx}><ProjectItem project={p} /></AnimateInView>)}
+                {projects.map((p, idx) => (
+                    <AnimateInView key={idx} className="relative hover:z-50">
+                        <ProjectItem project={p} hasFirestoreArticle={!!publishedArticles[p.id]} />
+                    </AnimateInView>
+                ))}
             </section>
         )
-    }, [isMobile]);
+    }, [isMobile, publishedArticles]);
 
     return (
         <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-15 max-w-[800px] mx-auto'}`}>

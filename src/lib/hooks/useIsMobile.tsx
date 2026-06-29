@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 const MOBILE_BREAKPOINT_PX = 768;
 const DEBOUNCE_DELAY_MS = 200;
@@ -12,23 +12,42 @@ const debounce = (f: (...args: unknown[]) => unknown, delay: number) => {
     };
 };
 
+let isMobileSnapshot = typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT_PX : false;
+const listeners = new Set<() => void>();
+
+let isListening = false;
+
+const emitChange = () => {
+    const newValue = typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT_PX : false;
+    if (isMobileSnapshot !== newValue) {
+        isMobileSnapshot = newValue;
+        listeners.forEach(listener => listener());
+    }
+};
+
+const debouncedEmitChange = debounce(emitChange, DEBOUNCE_DELAY_MS);
+
+const subscribe = (listener: () => void) => {
+    listeners.add(listener);
+    if (!isListening && typeof window !== 'undefined') {
+        window.addEventListener('resize', debouncedEmitChange);
+        isListening = true;
+    }
+    return () => {
+        listeners.delete(listener);
+        if (listeners.size === 0 && isListening && typeof window !== 'undefined') {
+            window.removeEventListener('resize', debouncedEmitChange);
+            isListening = false;
+        }
+    };
+};
+
+const getSnapshot = () => isMobileSnapshot;
+
+const getServerSnapshot = () => false;
+
 const useIsMobile = () => {
-    const [isMobile, setIsMobile] = useState<boolean>(() => typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT_PX : false);
-
-    // Define helper to check screen size
-    const checkScreenSize = useCallback(() => {
-        setIsMobile(window.innerWidth < MOBILE_BREAKPOINT_PX);
-    }, []);
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;                              // Check if window exists
-        const debouncedCheck = debounce(checkScreenSize, DEBOUNCE_DELAY_MS);    // Apply debounce
-        window.addEventListener('resize', debouncedCheck);                      // Add listener
-
-        return () => window.removeEventListener('resize', debouncedCheck);      // Cleanup
-    }, [checkScreenSize]);
-
-    return isMobile;
+    return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 };
 
 export default useIsMobile;

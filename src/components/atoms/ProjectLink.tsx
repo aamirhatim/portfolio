@@ -1,6 +1,7 @@
 import { Video, Newspaper, Link as LinkIcon, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppContext } from '../../context/appContext';
+import ParallaxWrapper from './ParallaxWrapper';
 
 export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean}) {
     const { setNavSelect } = useAppContext();
@@ -34,12 +35,21 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
         }
     };
 
+    const isBoxed = props.showText;
+    const containerClasses = isBoxed 
+        ? `flex items-center justify-center h-10 border border-(--border-color) rounded-lg px-4 hover:bg-(--color-accent-bg-subtle)`
+        : 'p-1';
+
     return (
-        <div onClick={handleClick} className={`p-1 cursor-pointer ${props.showText && 'px-4 py-2 border border-(--border-color) rounded-lg'}`}>
-            <a className='!no-underline flex gap-4 items-center'>
-                {renderIcon()}
-                {props.showText && <div className='text-md text-(--txt-subtitle-color)'>{props.value}</div>}
-            </a>
-        </div>
+        <ParallaxWrapper multiplier={6}>
+            <div onClick={handleClick} className={`cursor-pointer transition-all duration-200 hover:scale-105 ${containerClasses}`}>
+                <a className='!no-underline flex items-center justify-center gap-2'>
+                    {renderIcon()}
+                    {isBoxed && (
+                        <div className='text-md text-(--txt-subtitle-color) font-medium'>{props.value}</div>
+                    )}
+                </a>
+            </div>
+        </ParallaxWrapper>
     )
 }

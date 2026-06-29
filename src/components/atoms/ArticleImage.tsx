@@ -3,7 +3,7 @@ import { ImageBlockType } from "../../data/datatypes";
 import { BlockWrapper } from "../../lib/articleUtils";
 
 export default function ArticleImage({ block }: { block: ImageBlockType }) {
-    const imgPath = `/article_img/${block.url}`;
+    const imgPath = `/proj_img/${block.projectId}/article/${block.url}`;
     let size = 'w-full';
     
     switch (block.size) {

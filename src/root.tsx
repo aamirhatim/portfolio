@@ -1,3 +1,4 @@
+import "katex/dist/katex.min.css"
 import "./root.css"
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
@@ -18,7 +19,7 @@ if (!rootElement.innerHTML) {
         <StrictMode>
             <BrowserRouter>
                 <Routes>
-                    <Route element={<Main />}> 
+                    <Route element={<Main />}>
                         <Route index element={<HomePage />} />
                         <Route path="about" element={<AboutPage />} />
                         <Route path="resume" element={<ResumePage />} />

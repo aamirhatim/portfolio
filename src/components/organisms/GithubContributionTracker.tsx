@@ -90,91 +90,7 @@ export default function GithubContributionTracker() {
 
     const startPeriodDateStr = formatDateString(startPeriodDate);
 
-    // Generate mock data if error/offline
-    const generateMockData = () => {
-        const mockList: GitHubContributionDay[] = [];
-        const iterDate = new Date(startPeriodDate);
-        const endIter = new Date(today);
-
-        while (iterDate <= endIter) {
-            const dateStr = formatDateString(iterDate);
-            // Generate stable contribution levels based on character codes
-            const charSum = dateStr.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            const levelVal = charSum % 6;
-
-            let contributionLevel: GitHubContributionDay["contributionLevel"] = "NONE";
-            let contributionCount = 0;
-
-            if (levelVal === 1) {
-                contributionLevel = "FIRST_QUARTILE";
-                contributionCount = 1 + (charSum % 3);
-            } else if (levelVal === 2) {
-                contributionLevel = "SECOND_QUARTILE";
-                contributionCount = 4 + (charSum % 4);
-            } else if (levelVal === 3) {
-                contributionLevel = "THIRD_QUARTILE";
-                contributionCount = 8 + (charSum % 5);
-            } else if (levelVal === 4) {
-                contributionLevel = "FOURTH_QUARTILE";
-                contributionCount = 15 + (charSum % 10);
-            }
-
-            mockList.push({
-                color: "var(--bg-secondary-color)",
-                contributionCount,
-                contributionLevel,
-                date: dateStr,
-            });
-
-            iterDate.setDate(iterDate.getDate() + 1);
-        }
-        return mockList;
-    };
-
-    // Use fetched data, filtered to dynamic months, or fallback to mock data
     const filtered = contributions.filter(c => c.date >= startPeriodDateStr);
-    const displayData = (error || (!loading && filtered.length === 0)) ? generateMockData() : filtered;
-
-    // Group display data into weeks
-    const weeks: GitHubContributionDay[][] = [];
-    let currentWeek: GitHubContributionDay[] = [];
-
-    displayData.forEach((day) => {
-        currentWeek.push(day);
-        if (currentWeek.length === 7) {
-            weeks.push(currentWeek);
-            currentWeek = [];
-        }
-    });
-    if (currentWeek.length > 0) {
-        weeks.push(currentWeek);
-    }
-
-    // Generate month labels corresponding to column span of each month
-    const monthLabels: { label: string; colSpan: number }[] = [];
-    let currentMonth = "";
-    let currentSpan = 0;
-
-    weeks.forEach((week) => {
-        const dateObj = new Date(week[0].date + "T00:00:00");
-        const monthName = dateObj.toLocaleString("default", { month: "short" });
-
-        if (monthName !== currentMonth) {
-            if (currentSpan > 0) {
-                monthLabels[monthLabels.length - 1].colSpan = currentSpan;
-            }
-            monthLabels.push({ label: monthName, colSpan: 1 });
-            currentMonth = monthName;
-            currentSpan = 1;
-        } else {
-            currentSpan++;
-        }
-    });
-    if (currentSpan > 0 && monthLabels.length > 0) {
-        monthLabels[monthLabels.length - 1].colSpan = currentSpan;
-    }
-
-
 
     const getLevelClass = (level: string) => {
         switch (level) {
@@ -200,17 +116,63 @@ export default function GithubContributionTracker() {
         );
     }
 
+    if (error || (!loading && filtered.length === 0)) {
+        return (
+            <div className="w-full mb-8 select-none">
+                <div className={`flex items-center justify-center h-[75px] border border-(--border-color) bg-(--bg-secondary-color)/30 rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`}>
+                    <span className="text-(--txt-subtitle-color) text-sm font-medium">Cannot fetch GitHub contributions</span>
+                </div>
+                {/* Bottom Row metadata & link */}
+                <div className="flex mt-2 w-full">
+                    <div className="w-full flex justify-between gap-2 text-(--txt-subtitle-color)">
+                        <ArrowBtn text="See my work on GitHub" link="https://github.com/aamirhatim" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Group display data into weeks
+    const weeks: GitHubContributionDay[][] = [];
+    let currentWeek: GitHubContributionDay[] = [];
+
+    filtered.forEach((day) => {
+        currentWeek.push(day);
+        if (currentWeek.length === 7) {
+            weeks.push(currentWeek);
+            currentWeek = [];
+        }
+    });
+    if (currentWeek.length > 0) {
+        weeks.push(currentWeek);
+    }
+
+    // Generate month labels: only output a label if the month changes in this column
+    const monthLabels: string[] = weeks.map((week, idx) => {
+        if (idx === 0) return ""; // Skip the very first column to avoid fragments
+        
+        const prevWeek = weeks[idx - 1];
+        const currentMonth = new Date(week[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
+        const prevMonth = new Date(prevWeek[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
+        
+        return currentMonth !== prevMonth ? currentMonth : "";
+    });
+
+
+
     return (
         <div className="w-full mb-8 select-none">
             <div className="w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-(--border-color)">
                 <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
                     {/* Month labels grid */}
                     <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1 h-4 relative" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
-                        {monthLabels.map((ml, idx) => (
-                            <div key={idx} style={{ gridColumn: `span ${ml.colSpan}` }} className="relative h-full">
-                                <span className={`absolute top-0 font-medium whitespace-nowrap ${idx === monthLabels.length - 1 ? 'right-0' : 'left-0'}`}>
-                                    {ml.label}
-                                </span>
+                        {monthLabels.map((label, idx) => (
+                            <div key={idx} className="relative h-full">
+                                {label && (
+                                    <span className="absolute top-0 left-0 font-medium whitespace-nowrap">
+                                        {label}
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -235,7 +197,6 @@ export default function GithubContributionTracker() {
             <div className="flex mt-2 w-full">
                 <div className="w-full flex justify-between gap-2 text-(--txt-subtitle-color)">
                     <ArrowBtn text="See my work on GitHub" link="https://github.com/aamirhatim" />
-                    {error && <span className="text-(--feedback-warning) font-medium">(offline)</span>}
                 </div>
             </div>
         </div>

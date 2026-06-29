@@ -15,7 +15,7 @@ export default function ArticleTable({ block }: { block: TableBlockType }) {
                         <tbody>
                             {block.content.map((row, rowKey) => (
                                 <tr key={rowKey}>
-                                    {row.map((td, tdKey) => (
+                                    {row.cells.map((td, tdKey) => (
                                         <td key={tdKey} className={`${rowKey === 0 && '!pt-4'}`}>{td}</td>
                                     ))}
                                 </tr>
