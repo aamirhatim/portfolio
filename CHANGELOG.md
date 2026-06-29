@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.12.1] - 2026-06-29 00:07:00
+
+### Changed
+- Renamed the "code" category label to "code + frameworks" on the About page.
+
 ## [9.12.0] - 2026-06-28 21:21:00
 
 ### Added
