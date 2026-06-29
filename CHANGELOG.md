@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.12.0] - 2026-06-28 21:21:00
+
+### Added
+- Implemented `select` field type support within `CollectionManager` and `CollectionForm` to render dropdown menus in the admin portal.
+- Configured the "Type" field in the Skills admin dashboard to display as a categorized dropdown menu (`tools`, `code`, `concepts`).
+
+### Changed
+- Replaced the native `<select>` dropdown arrow with a custom `ChevronDown` from `lucide-react` for improved aesthetic alignment and spacing.
+
+### Fixed
+- Corrected the logout button in both the desktop `Navbar` and mobile `NavMenu` to appropriately redirect to `/admin` instead of the home page.
+- Fixed a cascading render React Hook lint error (`react-hooks/set-state-in-effect`) in `ArticleManager` by refactoring the data-fetching architecture to use a declarative trigger state.
+
 ## [9.11.2] - 2026-06-28 21:01:00
 
 ### Changed
