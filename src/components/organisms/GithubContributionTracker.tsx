@@ -150,29 +150,16 @@ export default function GithubContributionTracker() {
         weeks.push(currentWeek);
     }
 
-    // Generate month labels corresponding to column span of each month
-    const monthLabels: { label: string; colSpan: number }[] = [];
-    let currentMonth = "";
-    let currentSpan = 0;
-
-    weeks.forEach((week) => {
-        const dateObj = new Date(week[0].date + "T00:00:00");
-        const monthName = dateObj.toLocaleString("default", { month: "short" });
-
-        if (monthName !== currentMonth) {
-            if (currentSpan > 0) {
-                monthLabels[monthLabels.length - 1].colSpan = currentSpan;
-            }
-            monthLabels.push({ label: monthName, colSpan: 1 });
-            currentMonth = monthName;
-            currentSpan = 1;
-        } else {
-            currentSpan++;
-        }
+    // Generate month labels: only output a label if the month changes in this column
+    const monthLabels: string[] = weeks.map((week, idx) => {
+        if (idx === 0) return ""; // Skip the very first column to avoid fragments
+        
+        const prevWeek = weeks[idx - 1];
+        const currentMonth = new Date(week[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
+        const prevMonth = new Date(prevWeek[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
+        
+        return currentMonth !== prevMonth ? currentMonth : "";
     });
-    if (currentSpan > 0 && monthLabels.length > 0) {
-        monthLabels[monthLabels.length - 1].colSpan = currentSpan;
-    }
 
 
 
@@ -206,11 +193,13 @@ export default function GithubContributionTracker() {
                 <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
                     {/* Month labels grid */}
                     <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1 h-4 relative" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
-                        {monthLabels.map((ml, idx) => (
-                            <div key={idx} style={{ gridColumn: `span ${ml.colSpan}` }} className="relative h-full">
-                                <span className={`absolute top-0 font-medium whitespace-nowrap ${idx === monthLabels.length - 1 ? 'right-0' : 'left-0'}`}>
-                                    {ml.label}
-                                </span>
+                        {monthLabels.map((label, idx) => (
+                            <div key={idx} className="relative h-full">
+                                {label && (
+                                    <span className="absolute top-0 left-0 font-medium whitespace-nowrap">
+                                        {label}
+                                    </span>
+                                )}
                             </div>
                         ))}
                     </div>
