@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.12.2] - 2026-06-29 00:19:00
+
+### Added
+- Added a dynamic search bar to the Collection Manager in the admin portal to filter documents in real-time.
+- Configured the Skills and Projects admin tabs to display the new search bar.
+
+### Changed
+- Improved `CollectionManager` performance by memoizing the search filtering logic.
+
+## [9.12.1] - 2026-06-29 00:07:00
+
+### Changed
+- Renamed the "code" category label to "code + frameworks" on the About page.
+
 ## [9.12.0] - 2026-06-28 21:21:00
 
 ### Added

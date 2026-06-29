@@ -83,7 +83,7 @@ export default function AboutPage() {
         return {
             hasSkills: filtered.length > 0,
             columns: [
-                { title: "code.", list: sortSkills(code) },
+                { title: "code + frameworks.", list: sortSkills(code) },
                 { title: "tools.", list: sortSkills(tools) },
                 { title: "concepts.", list: sortSkills(concepts) }
             ]
