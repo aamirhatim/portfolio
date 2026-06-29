@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createDocument, deleteDocument, updateDocument } from "../../lib/adminLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { FirestoreDocType } from "../../data/datatypes";
-import { Plus, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react";
+import { Plus, ListChevronsDownUp, ListChevronsUpDown, Search } from "lucide-react";
 import { setFieldValue } from "../../lib/fieldUtils";
 
 import CollectionForm from "../molecules/collection-manager/CollectionForm";
@@ -33,13 +33,14 @@ interface CollectionManagerProps {
     fields: FieldConfig[];
     disableAdd?: boolean;
     showDetails?: boolean;
+    enableSearch?: boolean;
 }
 
 /**
  * CollectionManager manages the fetching, display, and editing of Firestore documents for a given collection.
  * It uses dynamic `FieldConfig` arrays to generate forms and tables for document properties.
  */
-export default function CollectionManager({ collectionName, fields, disableAdd = false, showDetails = true }: CollectionManagerProps) {
+export default function CollectionManager({ collectionName, fields, disableAdd = false, showDetails = true, enableSearch = false }: CollectionManagerProps) {
     const firebaseApp = useFirebaseAppContext();
     const [documents, setDocuments] = useState<FirestoreDocType[]>([]);
     const [loading, setLoading] = useState(true);
@@ -48,6 +49,15 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
     const [currentDocId, setCurrentDocId] = useState<string | null>(null);
     const [formData, setFormData] = useState<Record<string, unknown>>({});
     const [expandedDocs, setExpandedDocs] = useState<Record<string, boolean>>({});
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredDocuments = useMemo(() => {
+        return documents.filter(doc => {
+            if (!searchQuery) return true;
+            const searchLower = searchQuery.toLowerCase();
+            return JSON.stringify(doc.data).toLowerCase().includes(searchLower);
+        });
+    }, [documents, searchQuery]);
 
     const handleExpandAll = () => {
         const newExpanded: Record<string, boolean> = {};
@@ -147,8 +157,8 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2">
+            <div className="flex justify-between items-center mb-4 gap-4">
+                <div className="flex items-center gap-2 shrink-0">
                     {!disableAdd && (
                         <button
                             onClick={handleAddNew}
@@ -177,10 +187,22 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                         </>
                     )}
                 </div>
+                {enableSearch && (
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--txt-subtitle-color)]" size={16} />
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 border border-[var(--border-color)] bg-transparent rounded-full text-[var(--txt-body-color)] placeholder:text-[var(--txt-subtitle-color)] focus:outline-none focus:border-[var(--txt-title-color)] transition-colors"
+                        />
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col gap-3">
-                {documents.map(doc => {
+                {filteredDocuments.map(doc => {
                     // Try to find a reasonable title/summary for the list item
                     const summaryField = fields.find(f => f.name === 'title' || f.name === 'name' || f.name === 'school') || fields[0] || doc.id;
                     const summaryText = doc.data[summaryField.name] as string;
@@ -199,7 +221,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                         />
                     );
                 })}
-                {documents.length === 0 && (
+                {filteredDocuments.length === 0 && (
                     <div className="text-center p-8 text-[var(--txt-subtitle-color)] border border-dashed border-[var(--border-color)] rounded">
                         No documents found in this collection.
                     </div>

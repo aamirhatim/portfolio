@@ -7,6 +7,7 @@ export interface CollectionConfig {
     name: string;
     fields: FieldConfig[];
     disableAdd?: boolean;
+    enableSearch?: boolean;
 }
 
 export interface TabConfig {
@@ -40,7 +41,9 @@ const TAB_CONFIGS: Record<string, TabConfig> = {
         icon: <PocketKnife size={18} />,
         collections: [
             {
-                name: "skills", fields: [
+                name: "skills", 
+                enableSearch: true,
+                fields: [
                     { name: "name", label: "Skill Name", type: "string" },
                     { name: "type", label: "Type", type: "select", options: ["tools", "code", "concepts"] },
                     { name: "level", label: "Level (1-5)", type: "number" }
@@ -103,7 +106,9 @@ const TAB_CONFIGS: Record<string, TabConfig> = {
         icon: <FolderOpenDot size={18} />,
         collections: [
             {
-                name: "projects", fields: [
+                name: "projects", 
+                enableSearch: true,
+                fields: [
                     { name: "title", label: "Title", type: "string" },
                     { name: "subtitle", label: "Subtitle", type: "string" },
                     { name: "publishDate", label: "Publish Date (YYYY-MM-DD)", type: "string" },
@@ -162,7 +167,7 @@ export default function AdminDashboard() {
                         <ArticleManager />
                     ) : (
                         currentConfig.collections.map(c => (
-                            <CollectionManager key={c.name} collectionName={c.name} fields={c.fields} disableAdd={c.disableAdd} />
+                            <CollectionManager key={c.name} collectionName={c.name} fields={c.fields} disableAdd={c.disableAdd} enableSearch={c.enableSearch} />
                         ))
                     )}
                 </div>
