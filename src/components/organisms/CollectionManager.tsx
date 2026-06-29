@@ -18,9 +18,11 @@ export type FieldConfig = {
     /** The display label for the field in the UI form */
     label: string;
     /** The data type / input type for the field */
-    type: 'string' | 'number' | 'boolean' | 'array' | 'textarea';
+    type: 'string' | 'number' | 'boolean' | 'array' | 'textarea' | 'select';
     /** Whether the field is required to submit the form */
     required?: boolean;
+    /** Options for 'select' type fields */
+    options?: string[];
 };
 
 /**
@@ -86,6 +88,7 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
             if (f.type === 'array') defaultData[f.name] = [];
             else if (f.type === 'boolean') defaultData[f.name] = false;
             else if (f.type === 'number') defaultData[f.name] = 0;
+            else if (f.type === 'select') defaultData[f.name] = f.options?.[0] || "";
             else defaultData[f.name] = "";
         });
         setFormData(defaultData);

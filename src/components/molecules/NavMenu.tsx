@@ -88,7 +88,7 @@ export default function NavMenu() {
                             user && (
                                 <div className="cursor-pointer title text-lg text-(--feedback-error) p-2" onClick={async () => {
                                     await logoutAdmin(firebaseApp);
-                                    navigate("/");
+                                    navigate("/admin");
                                     setNavMenuVis(false);
                                 }}>Logout</div>
                             )

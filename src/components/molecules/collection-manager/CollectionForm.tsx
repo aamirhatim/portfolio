@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { FieldConfig } from "../../organisms/CollectionManager";
 import { getFieldValue } from "../../../lib/fieldUtils";
+import { ChevronDown } from "lucide-react";
 
 interface CollectionFormProps {
     currentDocId: string | null;
@@ -52,6 +53,20 @@ export default function CollectionForm({
                                     className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
                                     required={field.required ?? false}
                                 />
+                            ) : field.type === 'select' ? (
+                                <div className="relative flex items-center">
+                                    <select
+                                        value={(rawValue as string) || (field.options?.[0] || "")}
+                                        onChange={(e) => onFieldChange(field.name, e.target.value, field.type)}
+                                        className="w-full p-2 pr-8 border border-[var(--border-color)] rounded bg-[var(--bg-color)] appearance-none cursor-pointer"
+                                        required={field.required ?? true}
+                                    >
+                                        {field.options?.map(opt => (
+                                            <option key={opt} value={opt}>{opt}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown size={16} className="absolute right-3 text-[var(--txt-subtitle-color)] pointer-events-none" />
+                                </div>
                             ) : (
                                 <input
                                     type={field.type === 'number' ? 'number' : 'text'}
