@@ -42,7 +42,7 @@ const TAB_CONFIGS: Record<string, TabConfig> = {
             {
                 name: "skills", fields: [
                     { name: "name", label: "Skill Name", type: "string" },
-                    { name: "type", label: "Type", type: "string" },
+                    { name: "type", label: "Type", type: "select", options: ["tools", "code", "concepts"] },
                     { name: "level", label: "Level (1-5)", type: "number" }
                 ]
             }

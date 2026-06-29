@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { ProjectType, ArticleType } from "../../data/datatypes";
@@ -18,50 +18,58 @@ export default function ArticleManager() {
     const [activeEditId, setActiveEditId] = useState<string | null>(null);
     const [editorPlaceholderAction, setEditorPlaceholderAction] = useState<string | null>(null);
 
-    const fetchData = useCallback(async (active: boolean = true) => {
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    const triggerRefresh = () => {
         setLoading(true);
         setError(null);
-        try {
-            // 1. Fetch all projects
-            const projectDocs = await getDocumentsFromCollection(firebaseApp, "projects");
-            if (!active) return;
-            
-            if (projectDocs) {
-                const parsedProjects = projectDocs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data
-                })) as ProjectType[];
-                // Sort by publishDate descending
-                parsedProjects.sort((a, b) => b.publishDate.localeCompare(a.publishDate));
-                setProjects(parsedProjects);
-            }
-
-            // 2. Fetch all articles
-            const articleDocs = await getDocumentsFromCollection(firebaseApp, "articles");
-            if (!active) return;
-
-            if (articleDocs) {
-                const newMap: Record<string, ArticleType> = {};
-                articleDocs.forEach(doc => {
-                    newMap[doc.id] = doc.data as ArticleType;
-                });
-                setArticlesMap(newMap);
-            }
-        } catch (err) {
-            console.error("Error fetching article management data:", err);
-            if (active) setError("Failed to load articles. Please check your network connection or permissions.");
-        } finally {
-            if (active) setLoading(false);
-        }
-    }, [firebaseApp]);
+        setRefreshTrigger(prev => prev + 1);
+    };
 
     useEffect(() => {
         let active = true;
-        fetchData(active);
+
+        const loadData = async () => {
+            try {
+                // 1. Fetch all projects
+                const projectDocs = await getDocumentsFromCollection(firebaseApp, "projects");
+                if (!active) return;
+                
+                if (projectDocs) {
+                    const parsedProjects = projectDocs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data
+                    })) as ProjectType[];
+                    // Sort by publishDate descending
+                    parsedProjects.sort((a, b) => b.publishDate.localeCompare(a.publishDate));
+                    setProjects(parsedProjects);
+                }
+
+                // 2. Fetch all articles
+                const articleDocs = await getDocumentsFromCollection(firebaseApp, "articles");
+                if (!active) return;
+
+                if (articleDocs) {
+                    const newMap: Record<string, ArticleType> = {};
+                    articleDocs.forEach(doc => {
+                        newMap[doc.id] = doc.data as ArticleType;
+                    });
+                    setArticlesMap(newMap);
+                }
+            } catch (err) {
+                console.error("Error fetching article management data:", err);
+                if (active) setError("Failed to load articles. Please check your network connection or permissions.");
+            } finally {
+                if (active) setLoading(false);
+            }
+        };
+
+        loadData();
+
         return () => {
             active = false;
         };
-    }, [fetchData]);
+    }, [firebaseApp, refreshTrigger]);
 
     const getArticleStatus = (projectId: string): ArticleStatus => {
         const firestoreArticle = articlesMap[projectId];
@@ -95,7 +103,7 @@ export default function ArticleManager() {
             };
 
             await setDoc(doc(db, "articles", projectId), updatedArticle);
-            await fetchData();
+            triggerRefresh();
         } catch (err) {
             console.error("Error toggling publish status:", err);
             setError("Failed to update publish status. Check network or rules.");
@@ -110,7 +118,7 @@ export default function ArticleManager() {
         try {
             const db = getFirestore(firebaseApp);
             await deleteDoc(doc(db, "articles", projectId));
-            await fetchData();
+            triggerRefresh();
         } catch (err) {
             console.error("Error deleting article:", err);
             setError("Failed to delete article. Check database security rules.");
@@ -132,7 +140,7 @@ export default function ArticleManager() {
             <div className="flex items-center gap-3 p-4 border border-[var(--feedback-error)] bg-[var(--bg-secondary-color)] rounded-lg text-[var(--feedback-error)]">
                 <AlertCircle size={20} />
                 <span className="font-medium">{error}</span>
-                <button onClick={() => fetchData()} className="ml-auto underline hover:text-[var(--txt-highlight-color)] cursor-pointer">Retry</button>
+                <button onClick={triggerRefresh} className="ml-auto underline hover:text-[var(--txt-highlight-color)] cursor-pointer">Retry</button>
             </div>
         );
     }
@@ -149,7 +157,7 @@ export default function ArticleManager() {
                 onSave={() => {
                     setActiveEditId(null);
                     setEditorPlaceholderAction(null);
-                    fetchData();
+                    triggerRefresh();
                 }}
             />
         );
@@ -159,7 +167,7 @@ export default function ArticleManager() {
         <div className="flex flex-col gap-6">
             <div className="flex justify-start">
                 <button
-                    onClick={() => fetchData()}
+                    onClick={triggerRefresh}
                     className="p-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-secondary-color)] text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)] transition-colors cursor-pointer"
                     title="Refresh Data"
                 >
