@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.11.1] - 2026-06-28 20:38:00
+
+### Added
+- Extracted a reusable `ParallaxWrapper` component to encapsulate requestAnimationFrame-based mouse tracking and coordinate translations.
+- Applied universal parallax mouse-tracking to interactive elements across the application, including project link buttons, socials bar icons, carousel navigation arrows, and About page skill chips.
+- Added smooth scale-on-hover effects to project link buttons.
+
+### Changed
+- Refactored `ProjectItem` tile by removing internal tracking refs, stripping inner padding, and removing redundant background/border classes for a clean, minimal layout.
+- Styled article viewer navigation arrows to match the carousel design and wrapped them in `ParallaxWrapper`.
+- Simplified the month label rendering logic in `GithubContributionTracker` by replacing complex colSpan math with a straightforward 1:1 week mapping to ensure labels strictly align with column transitions.
+- Increased spacing gap for desktop project list in `ProjectsPage`.
+
+### Fixed
+- Fixed overlapping month label fragments in `GithubContributionTracker` by explicitly omitting labels for the first week to prevent layout clipping.
+- Fixed a bug on the mobile `ProjectItem` where Code and Video links lacked the `newTab` prop, causing internal router conflicts.
+- Cleaned up unused `ANIMATION_DURATION_MS` import from `ProjectViewer.tsx`.
+
 ## [9.11.0] - 2026-06-16 23:41:00
 
 ### Changed

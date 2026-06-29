@@ -1,9 +1,11 @@
 import { useRef, useCallback, useEffect, ReactNode } from 'react';
+import useIsMobile from '../../lib/hooks/useIsMobile';
 
 export default function ParallaxWrapper(props: { children: ReactNode; multiplier?: number; className?: string }) {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const rectRef = useRef<DOMRect | null>(null);
     const frameIdRef = useRef<number | null>(null);
+    const isMobile = useIsMobile();
 
     const multiplier = props.multiplier || 10;
 
@@ -55,6 +57,10 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
         wrapperRef.current.style.setProperty('--parallax-x', `0`);
         wrapperRef.current.style.setProperty('--parallax-y', `0`);
     }, []);
+
+    if (isMobile) {
+        return <>{props.children}</>;
+    }
 
     return (
         <div
