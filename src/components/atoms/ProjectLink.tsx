@@ -1,8 +1,9 @@
 import { Video, Newspaper, Link as LinkIcon, GitBranch } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppContext } from '../../context/appContext';
+import ParallaxWrapper from './ParallaxWrapper';
 
-export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean, expandOnHover?:boolean}) {
+export default function ProjectLink(props: {value:string, url:string, newTab?:boolean, showText?:boolean}) {
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
 
@@ -34,21 +35,21 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
         }
     };
 
-    const isBoxed = props.showText || props.expandOnHover;
+    const isBoxed = props.showText;
     const containerClasses = isBoxed 
-        ? `group/link flex items-center justify-center h-10 border border-(--border-color) rounded-lg transition-all duration-300 ${props.expandOnHover ? 'px-2 hover:px-4' : 'px-4'}`
+        ? `flex items-center justify-center h-10 border border-(--border-color) rounded-lg transition-all duration-300 px-4 hover:bg-(--color-accent-bg-subtle)`
         : 'p-1';
 
     return (
-        <div onClick={handleClick} className={`cursor-pointer ${containerClasses}`}>
-            <a className='!no-underline flex items-center justify-center'>
-                {renderIcon()}
-                {isBoxed && (
-                    <div className={`overflow-hidden whitespace-nowrap transition-all duration-300 ${props.expandOnHover ? 'max-w-0 opacity-0 group-hover/link:max-w-[100px] group-hover/link:opacity-100 group-hover/link:pl-2' : 'max-w-[100px] opacity-100 pl-2'}`}>
-                        <div className='text-md text-(--txt-subtitle-color)'>{props.value}</div>
-                    </div>
-                )}
-            </a>
-        </div>
+        <ParallaxWrapper multiplier={6}>
+            <div onClick={handleClick} className={`cursor-pointer ${containerClasses}`}>
+                <a className='!no-underline flex items-center justify-center gap-2'>
+                    {renderIcon()}
+                    {isBoxed && (
+                        <div className='text-md text-(--txt-subtitle-color) font-medium'>{props.value}</div>
+                    )}
+                </a>
+            </div>
+        </ParallaxWrapper>
     )
 }
