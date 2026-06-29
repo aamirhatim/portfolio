@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
 import { ProjectType, ArticleType } from "../../data/datatypes";
@@ -18,12 +18,14 @@ export default function ArticleManager() {
     const [activeEditId, setActiveEditId] = useState<string | null>(null);
     const [editorPlaceholderAction, setEditorPlaceholderAction] = useState<string | null>(null);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async (active: boolean = true) => {
         setLoading(true);
         setError(null);
         try {
             // 1. Fetch all projects
             const projectDocs = await getDocumentsFromCollection(firebaseApp, "projects");
+            if (!active) return;
+            
             if (projectDocs) {
                 const parsedProjects = projectDocs.map(doc => ({
                     id: doc.id,
@@ -36,6 +38,8 @@ export default function ArticleManager() {
 
             // 2. Fetch all articles
             const articleDocs = await getDocumentsFromCollection(firebaseApp, "articles");
+            if (!active) return;
+
             if (articleDocs) {
                 const newMap: Record<string, ArticleType> = {};
                 articleDocs.forEach(doc => {
@@ -45,52 +49,19 @@ export default function ArticleManager() {
             }
         } catch (err) {
             console.error("Error fetching article management data:", err);
-            setError("Failed to load articles. Please check your network connection or permissions.");
+            if (active) setError("Failed to load articles. Please check your network connection or permissions.");
         } finally {
-            setLoading(false);
+            if (active) setLoading(false);
         }
-    };
+    }, [firebaseApp]);
 
     useEffect(() => {
         let active = true;
-
-        const load = async () => {
-            try {
-                const projectDocs = await getDocumentsFromCollection(firebaseApp, "projects");
-                const articleDocs = await getDocumentsFromCollection(firebaseApp, "articles");
-
-                if (!active) return;
-
-                if (projectDocs) {
-                    const parsedProjects = projectDocs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data
-                    })) as ProjectType[];
-                    parsedProjects.sort((a, b) => b.publishDate.localeCompare(a.publishDate));
-                    setProjects(parsedProjects);
-                }
-
-                if (articleDocs) {
-                    const newMap: Record<string, ArticleType> = {};
-                    articleDocs.forEach(doc => {
-                        newMap[doc.id] = doc.data as ArticleType;
-                    });
-                    setArticlesMap(newMap);
-                }
-            } catch (err) {
-                console.error("Error loading article manager:", err);
-                if (active) setError("Failed to load articles and projects.");
-            } finally {
-                if (active) setLoading(false);
-            }
-        };
-
-        load();
-
+        fetchData(active);
         return () => {
             active = false;
         };
-    }, [firebaseApp]);
+    }, [fetchData]);
 
     const getArticleStatus = (projectId: string): ArticleStatus => {
         const firestoreArticle = articlesMap[projectId];
@@ -161,7 +132,7 @@ export default function ArticleManager() {
             <div className="flex items-center gap-3 p-4 border border-[var(--feedback-error)] bg-[var(--bg-secondary-color)] rounded-lg text-[var(--feedback-error)]">
                 <AlertCircle size={20} />
                 <span className="font-medium">{error}</span>
-                <button onClick={fetchData} className="ml-auto underline hover:text-[var(--txt-highlight-color)] cursor-pointer">Retry</button>
+                <button onClick={() => fetchData()} className="ml-auto underline hover:text-[var(--txt-highlight-color)] cursor-pointer">Retry</button>
             </div>
         );
     }
@@ -188,7 +159,7 @@ export default function ArticleManager() {
         <div className="flex flex-col gap-6">
             <div className="flex justify-start">
                 <button
-                    onClick={fetchData}
+                    onClick={() => fetchData()}
                     className="p-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-secondary-color)] text-[var(--txt-subtitle-color)] hover:text-[var(--txt-feature-color)] transition-colors cursor-pointer"
                     title="Refresh Data"
                 >

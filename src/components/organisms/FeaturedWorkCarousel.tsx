@@ -104,7 +104,7 @@ export default function FeaturedWorkCarousel() {
         }, 5000);
 
         return () => clearInterval(timer);
-    }, [spotlights.length, currentIndex]);
+    }, [spotlights.length]);
 
     // Manual navigation controls
     const nextSlide = () => {
