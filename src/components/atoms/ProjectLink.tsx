@@ -37,12 +37,12 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
 
     const isBoxed = props.showText;
     const containerClasses = isBoxed 
-        ? `flex items-center justify-center h-10 border border-(--border-color) rounded-lg transition-all duration-300 px-4 hover:bg-(--color-accent-bg-subtle)`
+        ? `flex items-center justify-center h-10 border border-(--border-color) rounded-lg px-4 hover:bg-(--color-accent-bg-subtle)`
         : 'p-1';
 
     return (
         <ParallaxWrapper multiplier={6}>
-            <div onClick={handleClick} className={`cursor-pointer ${containerClasses}`}>
+            <div onClick={handleClick} className={`cursor-pointer transition-all duration-200 hover:scale-105 ${containerClasses}`}>
                 <a className='!no-underline flex items-center justify-center gap-2'>
                     {renderIcon()}
                     {isBoxed && (

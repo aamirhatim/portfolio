@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Chip from "../atoms/Chip";
 import { useNavigate } from "react-router";
 import { useAppContext } from "../../context/appContext";
+import ParallaxWrapper from "../atoms/ParallaxWrapper";
 
 
 export default function FeaturedWorkCarousel() {
@@ -221,20 +222,24 @@ export default function FeaturedWorkCarousel() {
             {/* Desktop Center Navigation Buttons */}
             {spotlights.length > 1 && (
                 <div className="hidden md:flex justify-center items-center gap-3 mt-4 select-none">
-                    <button
-                        onClick={prevSlide}
-                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
-                        aria-label="Previous spotlight slide"
-                    >
-                        <ChevronLeft size={16} />
-                    </button>
-                    <button
-                        onClick={nextSlide}
-                        className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
-                        aria-label="Next spotlight slide"
-                    >
-                        <ChevronRight size={16} />
-                    </button>
+                    <ParallaxWrapper multiplier={4}>
+                        <button
+                            onClick={prevSlide}
+                            className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                            aria-label="Previous spotlight slide"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                    </ParallaxWrapper>
+                    <ParallaxWrapper multiplier={4}>
+                        <button
+                            onClick={nextSlide}
+                            className="p-1 rounded-full border border-(--border-color) hover:bg-(--bg-interactive-hover) text-(--txt-subtitle-color) hover:text-(--txt-title-color) transition-colors cursor-pointer"
+                            aria-label="Next spotlight slide"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    </ParallaxWrapper>
                 </div>
             )}
         </div>
