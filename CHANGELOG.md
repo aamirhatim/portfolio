@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [9.11.2] - 2026-06-28 21:01:00
+
+### Changed
+- Refactored `useIsMobile` to use `useSyncExternalStore` for a singleton resize listener, eliminating redundant event listeners.
+- Deduplicated identical Firestore fetch logic in `ArticleManager` into a single `useCallback` hook.
+- Optimized autoplay interval creation in `FeaturedWorkCarousel` by removing `currentIndex` from `useEffect` dependencies.
+- Removed expensive mock data generation on error in `GithubContributionTracker`; now gracefully renders a simple fallback message.
+
 ## [9.11.1] - 2026-06-28 20:38:00
 
 ### Added
