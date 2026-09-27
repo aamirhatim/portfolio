@@ -7,7 +7,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "emulators": "firebase emulators:start --import ./emulators_data --export-on-exit",
+    "emulators": "firebase emulators:start --import ./emulators_data --export-on-exit ./emulators_data",
     "dev": "vite --host",
     "start": "concurrently \"npm run emulators\" \"npm run dev\"",
     "build": "tsc && vite build",
