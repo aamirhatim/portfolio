@@ -68,7 +68,7 @@ export default function HomePage() {
                     {projSpotlightList.length > 0 &&
                         <section
                             className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
-                            style={{ animationDelay: '1.5s' }}
+                            style={{ animationDelay: '0.5s' }}
                         >
                             <h2 className={`title text-3xl mb-4`}>Featured work</h2>
 
