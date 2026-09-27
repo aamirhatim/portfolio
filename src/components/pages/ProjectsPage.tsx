@@ -73,11 +73,11 @@ export default function ProjectsPage() {
 
     return (
         <div className={`box-border flex flex-col px-4 ${isMobile ? 'gap-10 w-full' : 'gap-15 max-w-[800px] mx-auto'}`}>
-            <AnimateInView>
+            <AnimateInView immediate={true}>
                 <FeaturedWorkCarousel />
             </AnimateInView>
 
-            <AnimateInView>
+            <AnimateInView immediate={true}>
                 <GithubContributionTracker />
             </AnimateInView>
 

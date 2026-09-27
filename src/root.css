@@ -171,3 +171,43 @@ table {
         transform: translateY(0);
     }
 }
+
+@keyframes flickerIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    15% {
+        opacity: 0.75;
+    }
+    30% {
+        opacity: 0.15;
+    }
+    45% {
+        opacity: 0.9;
+    }
+    60% {
+        opacity: 0.45;
+    }
+    75% {
+        opacity: 0.95;
+    }
+    85% {
+        opacity: 0.75;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+}

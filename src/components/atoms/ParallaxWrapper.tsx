@@ -1,10 +1,11 @@
-import { useRef, useCallback, useEffect, ReactNode } from 'react';
+import { useRef, useCallback, useEffect, useState, ReactNode } from 'react';
 import useIsMobile from '../../lib/hooks/useIsMobile';
 
 export default function ParallaxWrapper(props: { children: ReactNode; multiplier?: number; className?: string }) {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const rectRef = useRef<DOMRect | null>(null);
     const frameIdRef = useRef<number | null>(null);
+    const [isHovered, setIsHovered] = useState(false);
     const isMobile = useIsMobile();
 
     const multiplier = props.multiplier || 10;
@@ -18,6 +19,7 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
     }, []);
 
     const handleMouseEnter = useCallback(() => {
+        setIsHovered(true);
         if (wrapperRef.current) {
             rectRef.current = wrapperRef.current.getBoundingClientRect();
         }
@@ -32,9 +34,11 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
         const rect = rectRef.current;
         if (rect.width === 0 || rect.height === 0) return;
 
-        // Calculate X and Y coordinates relative to the center of the element
-        const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-        const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        // Calculate X and Y coordinates relative to the center of the element, clamped to [-1, 1]
+        const rawX = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const rawY = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        const x = Math.max(-1, Math.min(1, rawX));
+        const y = Math.max(-1, Math.min(1, rawY));
 
         if (frameIdRef.current) {
             cancelAnimationFrame(frameIdRef.current);
@@ -49,6 +53,7 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
     }, []);
 
     const handleMouseLeave = useCallback(() => {
+        setIsHovered(false);
         rectRef.current = null;
         if (frameIdRef.current) {
             cancelAnimationFrame(frameIdRef.current);
@@ -72,8 +77,8 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
             className={`w-fit h-fit ${props.className || ''}`}
         >
             <div
-                className='transition-transform duration-200 ease-out h-full w-full'
-                style={{ transform: `translate(calc(var(--parallax-x) * ${multiplier}px), calc(var(--parallax-y) * ${multiplier}px))` }}
+                className={`h-full w-full will-change-transform ${isHovered ? 'transition-transform duration-75 ease-out' : 'transition-transform duration-300 ease-out'}`}
+                style={{ transform: `translate3d(calc(var(--parallax-x) * ${multiplier}px), calc(var(--parallax-y) * ${multiplier}px), 0)` }}
             >
                 {props.children}
             </div>
