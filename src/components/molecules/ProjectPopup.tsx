@@ -80,15 +80,15 @@ export default function ProjectPopup(props: ProjectPopupProps) {
         const offset = 20;
 
         let x = e.clientX + offset;
-        let y = e.clientY - popupHeight / 2;
+        let y = e.clientY + offset;
 
         // Flip horizontally if overflowing right edge
         if (x + popupWidth > window.innerWidth - 10) {
             x = e.clientX - popupWidth - offset;
         }
-        // Constrain vertically within viewport bounds
+        // Flip vertically if overflowing bottom edge
         if (y + popupHeight > window.innerHeight - 10) {
-            y = window.innerHeight - 10 - popupHeight;
+            y = e.clientY - popupHeight - offset;
         }
 
         // Clamp to viewport bounds
