@@ -11,15 +11,16 @@ interface FirebaseAppConfig {
     measurementId: string,
 }
 
-export const firebaseConfig:FirebaseAppConfig = {
-    apiKey: "AIzaSyBa1a1s7nHc82L6yWJ1mjnH8_eam56hEQw",
-    authDomain: "aamirhatim-website.firebaseapp.com",
-    projectId: "aamirhatim-website",
-    storageBucket: "aamirhatim-website.firebasestorage.app",
-    messagingSenderId: "947839834553",
-    appId: "1:947839834553:web:eaeb66635284e03421be68",
-    measurementId: "G-FY5N0RV03J"
+export const firebaseConfig: FirebaseAppConfig = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
 
 export const FirebaseAppContext = createContext<FirebaseApp|null>(null);
 

@@ -14,6 +14,7 @@ dist-ssr/
 emulators_data/
 firebase-export-*
 serviceAccountKey.json
+.firebaserc
 
 # Agents & Backups (specified in GEMINI.md)
 .agents/
