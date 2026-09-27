@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.12.3] - 2026-09-27 15:48:30
+
+### Fixed
+- Updated the GitHub contribution tracker API endpoint to `https://github-contributions-api.kawarimidoll.deno.net` following the deprecation of Deno Deploy Classic.
+
+### Changed
+- Updated `package.json` development startup script command to `start`.
+
 ## [9.12.2] - 2026-06-29 00:19:00
 
 ### Added
