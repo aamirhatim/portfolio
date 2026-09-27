@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.13.0] - 2026-09-27 16:05:50
+
+### Upgraded
+- Upgraded `react-router` to `v8.4.0` (pure ESM baseline with React 19.3.0 and Vite 8.3.1 compatibility).
+- Upgraded `eslint` and `@eslint/js` to `v10.11.0` / `v10.0.1`, resolving deprecation notices and streamlining Flat Config linting.
+
+### Changed
+- Updated project dependencies to latest stable in-major versions (`react`/`react-dom` 19.3.0, `tailwindcss` 4.3.3, `lucide-react` 1.48.0, `firebase` 12.19.0, `concurrently` 10.0.5, `katex` 0.18.9, `typescript-eslint` 8.70.1).
+- Resolved all 10 security audit vulnerabilities.
+
 ## [9.12.3] - 2026-09-27 15:48:30
 
 ### Fixed
