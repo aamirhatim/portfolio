@@ -9,7 +9,7 @@
     "deploy": "gh-pages -d dist",
     "emulators": "firebase emulators:start --import ./emulators_data --export-on-exit",
     "dev": "vite --host",
-    "local": "concurrently \"npm run emulators\" \"npm run dev\"",
+    "start": "concurrently \"npm run emulators\" \"npm run dev\"",
     "build": "tsc && vite build",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
