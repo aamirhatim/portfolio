@@ -75,20 +75,20 @@ export default function ProjectPopup(props: ProjectPopupProps) {
 
     // Handler for mouse movement with viewport collision detection and RAF throttling
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        const popupWidth = 300;
-        const popupHeight = 200;
+        const popupWidth = 400;
+        const popupHeight = 300;
         const offset = 20;
 
         let x = e.clientX + offset;
-        let y = e.clientY + offset;
+        let y = e.clientY - popupHeight / 2;
 
         // Flip horizontally if overflowing right edge
         if (x + popupWidth > window.innerWidth - 10) {
             x = e.clientX - popupWidth - offset;
         }
-        // Flip vertically if overflowing bottom edge
+        // Constrain vertically within viewport bounds
         if (y + popupHeight > window.innerHeight - 10) {
-            y = e.clientY - popupHeight - offset;
+            y = window.innerHeight - 10 - popupHeight;
         }
 
         // Clamp to viewport bounds
@@ -192,7 +192,7 @@ export default function ProjectPopup(props: ProjectPopupProps) {
             (vis || hasTransitionedIn) && (
                 <div
                     ref={popupRef}
-                    className="fixed top-0 left-0 w-[300px] h-[200px] pointer-events-none z-[9999] will-change-transform"
+                    className="fixed top-0 left-0 w-[400px] h-[300px] pointer-events-none z-[9999] will-change-transform"
                     style={{
                         transform: `translate3d(var(--mouse-x, ${mousePos.x}px), var(--mouse-y, ${mousePos.y}px), 0)`,
                     }}
@@ -203,9 +203,8 @@ export default function ProjectPopup(props: ProjectPopupProps) {
                         {fileUrls.map((url, index) => (
                             <div
                                 key={url}
-                                className={`absolute inset-0 bg-center bg-cover transition-opacity duration-500 ${
-                                    index === bgImgIndex % fileUrls.length ? 'opacity-100' : 'opacity-0'
-                                }`}
+                                className={`absolute inset-0 bg-center bg-cover transition-opacity duration-500 ${index === bgImgIndex % fileUrls.length ? 'opacity-100' : 'opacity-0'
+                                    }`}
                                 style={{
                                     backgroundImage: `url("${url}")`
                                 }}
