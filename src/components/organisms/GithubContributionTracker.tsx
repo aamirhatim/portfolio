@@ -32,7 +32,7 @@ export default function GithubContributionTracker() {
                 }
 
                 // If no cache or cache expired, fetch from API
-                const response = await fetch("https://github-contributions-api.deno.dev/aamirhatim.json?flat=true");
+                const response = await fetch("https://github-contributions-api.kawarimidoll.deno.net/aamirhatim.json?flat=true");
                 if (!response.ok) {
                     throw new Error("Failed to fetch contributions");
                 }
