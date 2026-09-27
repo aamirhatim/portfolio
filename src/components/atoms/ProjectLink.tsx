@@ -7,13 +7,25 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
     const { setNavSelect } = useAppContext();
     const navigate = useNavigate();
 
-    const handleClick = (e:React.MouseEvent) => {
-        e.stopPropagation();
+    const navigateToLink = () => {
         if (props.newTab) {
             window.open(props.url, '_blank');
         } else {
             setNavSelect(props.url);
             navigate(props.url);
+        }
+    };
+
+    const handleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigateToLink();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            navigateToLink();
         }
     };
 
@@ -38,18 +50,24 @@ export default function ProjectLink(props: {value:string, url:string, newTab?:bo
     const isBoxed = props.showText;
     const containerClasses = isBoxed 
         ? `flex items-center justify-center h-10 border border-(--border-color) rounded-lg px-4 hover:bg-(--color-accent-bg-subtle)`
-        : 'p-1';
+        : 'p-1.5 rounded-md hover:bg-(--bg-interactive-hover)';
 
     return (
         <ParallaxWrapper multiplier={6}>
-            <div onClick={handleClick} className={`cursor-pointer transition-all duration-200 hover:scale-105 ${containerClasses}`}>
-                <a className='!no-underline flex items-center justify-center gap-2'>
+            <div
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
+                className={`cursor-pointer select-none focus:outline-none focus-visible:ring-1 focus-visible:ring-(--border-focus) ${containerClasses}`}
+            >
+                <div className='!no-underline flex items-center justify-center gap-2'>
                     {renderIcon()}
                     {isBoxed && (
                         <div className='text-md text-(--txt-subtitle-color) font-medium'>{props.value}</div>
                     )}
-                </a>
+                </div>
             </div>
         </ParallaxWrapper>
-    )
+    );
 }

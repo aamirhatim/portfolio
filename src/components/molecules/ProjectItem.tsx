@@ -25,7 +25,7 @@ export default function ProjectItem(props: { project: ProjectType; hasFirestoreA
         <div
             id={project.id}
             ref={projectItemRef}
-            className={`group relative box-border w-full flex hover:z-50`}
+            className={`relative box-border w-full flex hover:z-50`}
         >
             <ProjectPopup refDiv={projectItemRef} projectId={project.id} />
 

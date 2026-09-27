@@ -64,7 +64,11 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
     }, []);
 
     if (isMobile) {
-        return <>{props.children}</>;
+        return (
+            <div className={`w-fit h-fit transition-transform duration-150 active:scale-95 ${props.className || ''}`}>
+                {props.children}
+            </div>
+        );
     }
 
     return (
@@ -74,7 +78,7 @@ export default function ParallaxWrapper(props: { children: ReactNode; multiplier
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{ '--parallax-x': 0, '--parallax-y': 0 } as React.CSSProperties}
-            className={`w-fit h-fit ${props.className || ''}`}
+            className={`w-fit h-fit transition-transform duration-150 active:scale-95 ${props.className || ''}`}
         >
             <div
                 className={`h-full w-full will-change-transform ${isHovered ? 'transition-transform duration-75 ease-out' : 'transition-transform duration-300 ease-out'}`}
