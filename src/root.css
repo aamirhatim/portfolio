@@ -69,6 +69,20 @@
     }
 }
 
+/* Hide scrollbars globally across all browsers while maintaining scrolling functionality */
+html,
+body,
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
 body {
     box-sizing: border-box;
     background-color: var(--bg-color);
