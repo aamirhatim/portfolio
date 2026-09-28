@@ -1,5 +1,7 @@
 import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
+// import WatercolorBackground from "../atoms/WatercolorBackground"
+import LiquidWavePaperweight from "../atoms/LiquidWavePaperweight"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
@@ -48,8 +50,10 @@ export default function HomePage() {
 
     return (
         <>
+            {/* <WatercolorBackground /> */}
+            <LiquidWavePaperweight />
             {introTxt.length > 0 &&
-                <div className="box-border flex flex-col w-full gap-5">
+                <div className="relative z-10 box-border flex flex-col w-full gap-5">
                     <div
                         className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) ${isMobile ? 'mb-20 text-5xl px-4 gap-x-3 gap-y-2' : 'mb-50 text-6xl pl-10 pr-[20%] gap-x-4 gap-y-6'}`}
                     >
