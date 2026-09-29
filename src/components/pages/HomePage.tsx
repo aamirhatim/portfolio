@@ -1,7 +1,8 @@
 import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
+// import LiquidWavePaperweight from "../atoms/LiquidWavePaperweight"
 // import WatercolorBackground from "../atoms/WatercolorBackground"
-import LiquidWavePaperweight from "../atoms/LiquidWavePaperweight"
+import SwarmFlockBackground from "../atoms/SwarmFlockBackground"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
@@ -50,8 +51,9 @@ export default function HomePage() {
 
     return (
         <>
+            <SwarmFlockBackground />
             {/* <WatercolorBackground /> */}
-            <LiquidWavePaperweight />
+            {/* <LiquidWavePaperweight /> */}
             {introTxt.length > 0 &&
                 <div className="relative z-10 box-border flex flex-col w-full gap-5">
                     <div
