@@ -316,7 +316,12 @@ interface Bloom {
     color: [number, number, number];
 }
 
-export default function WatercolorBackground() {
+export interface WatercolorBackgroundProps {
+    /** Optional additional Tailwind CSS classes for the canvas element */
+    className?: string;
+}
+
+export default function WatercolorBackground({ className = "" }: WatercolorBackgroundProps = {}) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -601,9 +606,9 @@ export default function WatercolorBackground() {
         <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className={`fixed inset-0 w-screen h-screen pointer-events-none -z-10 block transition-opacity duration-700 ease-out ${
+            className={`fixed inset-0 w-screen h-screen pointer-events-none -z-20 block transition-opacity duration-700 ease-out ${
                 isLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            } ${className}`}
         />
     );
 }
