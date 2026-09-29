@@ -97,30 +97,30 @@ export interface SwarmFlockConfig {
 }
 
 const SWARM_FLOCK_DEFAULT_CONFIG: SwarmFlockConfig = {
-    boidCount: 150,
+    boidCount: 200,
     boidSize: 8,
 
-    minSpeed: 0.1,
-    maxSpeed: 0.7,
-    maxForce: 0.03,
-    wanderStrength: 0.03,
-    headingPersistence: 0.8,
-    maxTurnRate: 0.02,
-    cursorFleeMaxTurnRate: 0.22,
+    minSpeed: 1,
+    maxSpeed: 4,
+    maxForce: .8,
+    wanderStrength: 0.05,
+    headingPersistence: 0.6,
+    maxTurnRate: 0.1,
+    cursorFleeMaxTurnRate: 0.25,
 
     flockRadius: 40,
-    separationWeight: 1.8,
-    alignmentWeight: 0.5,
-    cohesionWeight: 0.07,
+    separationWeight: 1,
+    alignmentWeight: 0.7,
+    cohesionWeight: 0.05,
 
-    cursorFleeRadius: 250,
-    cursorFleeForce: 10,
+    cursorFleeRadius: 150,
+    cursorFleeForce: 5,
     cursorStillDelay: 0.5,
     cursorSwarmRampDuration: 5,
-    cursorAttractRadius: 400,
-    cursorAttractForce: 0.5,
+    cursorAttractRadius: 200,
+    cursorAttractForce: 1.5,
     cursorOrbitRadius: 50,
-    cursorOrbitStrength: .5,
+    cursorOrbitStrength: 1,
 
     personalityVariance: 0.25,
 
@@ -132,9 +132,9 @@ const SWARM_FLOCK_DEFAULT_CONFIG: SwarmFlockConfig = {
     flockLineMaxDistance: 100,
     flockLineOpacity: 1,
 
-    frostedGlass: false,
-    frostedBlur: 0,
-    frostedNoise: false,
+    frostedGlass: true,
+    frostedBlur: 2,
+    frostedNoise: true,
 
     // Light Mode - Forest Sage Theme
     lightPalette: {
