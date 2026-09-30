@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 // ============================================================================
 // CONFIGURATION PARAMETERS (SPRITE LINE WALLPAPER)
-// Sprites sit on a single ground line axis, wandering with cute hops,
+// Sprites sit on walkable platforms and the ground line axis, wandering with cute hops,
 // and take larger escape hops away from the cursor when hovered.
 // ============================================================================
 
 export interface SpriteLineConfig {
-    /** Visual size of the sprite in pixels (default: 20) */
+    /** Visual size of the sprite in pixels (default: 10) */
     spriteSize: number;
 
     /** Small hop vertical height in pixels during normal wandering (default: 8) */
@@ -17,25 +17,23 @@ export interface SpriteLineConfig {
 
     /** Large hop vertical height in pixels when fleeing cursor (default: 22) */
     largeHopHeight: number;
-    /** Large hop horizontal distance in pixels when fleeing cursor (default: 38) */
+    /** Large hop horizontal distance in pixels when fleeing cursor (default: 50) */
     largeHopDistance: number;
 
-    /** Overall movement and hopping speed multiplier (default: 1.0) */
+    /** Overall movement and hopping speed multiplier (default: 2) */
     speed: number;
 
-    /** Hopping speed multiplier when fleeing from cursor (default: 1.0) */
+    /** Hopping speed multiplier when fleeing from cursor (default: 1) */
     fleeSpeed: number;
 
     /**
-     * Likelihood / probability (0.0 to 1.0 or 0 to 100%) of hopping during normal wandering (default: 0.5).
-     * Eliminates predictable hopping intervals in favor of a stochastic process where higher values
-     * increase the chance of taking a hop.
+     * Likelihood / probability (0.0 to 1.0) of hopping during normal wandering (default: 0.3).
      * Influenced by individual sprite personality variance (does not apply to fleeing).
      */
     hopChance?: number;
 
     /**
-     * Probability (0.0 to 1.0) of reversing direction when starting a wandering hop (default: 0.25).
+     * Probability (0.0 to 1.0) of reversing direction when starting a wandering hop (default: 0.2).
      * Controls how likely sprites are to turn around during wandering (not applied to fleeing).
      */
     turnChance?: number;
@@ -43,11 +41,11 @@ export interface SpriteLineConfig {
     /**
      * Personality variance between individual sprites (0.0 to 1.0, default: 0.3).
      * Controls individual variance in wandering speed, flee speed, hop size/length,
-     * hop frequency (idle interval), direction change likelihood, sensitivity to cursor, and idle patience.
+     * hop frequency, direction change likelihood, sensitivity to cursor, and idle patience.
      */
     personalityVariance: number;
 
-    /** Number of sprites along the ground line (default: 6, matching all sprite sheet columns) */
+    /** Number of sprites along the ground line (default: 6) */
     spriteCount?: number;
 
     /**
@@ -56,10 +54,10 @@ export interface SpriteLineConfig {
      */
     groundY?: number;
 
-    /** Distance in pixels from bottom of viewport to ground line (default: 80) */
+    /** Distance in pixels from bottom of viewport to ground line (default: 70) */
     groundOffsetFromBottom?: number;
 
-    /** Distance from cursor in pixels that triggers fleeing behavior (default: 150) */
+    /** Distance from cursor in pixels that triggers fleeing behavior (default: 50) */
     cursorFleeRadius?: number;
 
     /** Whether to draw a subtle horizontal ground line axis (default: false) */
@@ -71,15 +69,6 @@ export interface SpriteLineConfig {
     spriteSheetSrc?: string;
     /** Number of horizontal columns in sprite sheet (default: 6) */
     spriteSheetCols?: number;
-    /** Number of vertical rows in sprite sheet (default: 1) */
-    spriteSheetRows?: number;
-
-    /** Whether to overlay frosted glass pane over the simulation (default: false) */
-    frostedGlass?: boolean;
-    /** Frosted glass optical blur strength in pixels (default: 0.5) */
-    frostedBlur?: number;
-    /** Whether to add micro-etched sandblast tactile noise to frosted glass (default: false) */
-    frostedNoise?: boolean;
 
     // Platform Navigation Parameters
     /** Whether sprites treat DOM elements as walkable/jumpable platforms (default: true) */
@@ -88,23 +77,23 @@ export interface SpriteLineConfig {
     platformSelector?: string;
     /** CSS selector for elements to exclude from being platforms (default: "nav, header, [data-no-sprite-platform]") */
     platformExcludeSelector?: string;
-    /** Maximum vertical reach in pixels a sprite can leap up to reach an overhead platform (default: 140) */
+    /** Maximum vertical reach in pixels a sprite can leap up to reach an overhead platform (default: 200) */
     platformJumpReachY?: number;
-    /** Maximum horizontal reach in pixels a sprite can leap across to reach a nearby platform or adjacent word (default: 40) */
+    /** Maximum horizontal reach in pixels a sprite can leap across to reach a nearby platform or adjacent word (default: 20) */
     platformJumpReachX?: number;
-    /** Probability (0.0 to 1.0) of attempting a jump when an overhead platform is detected (default: 0.3) */
+    /** Probability (0.0 to 1.0) of attempting a jump when an overhead platform is detected (default: 0.15) */
     platformJumpChance?: number;
-    /** Probability (0.0 to 1.0) of hopping off a ledge and dropping down instead of turning around (default: 0.35) */
+    /** Probability (0.0 to 1.0) of hopping off a ledge and dropping down instead of turning around (default: 0.15) */
     platformDropChance?: number;
-    /** Probability (0.0 to 1.0) of performing a lateral platform shift when at the edge of a platform with an adjacent platform available (default: 0.4) */
+    /** Probability (0.0 to 1.0) of performing a lateral platform shift when at the edge of a platform with an adjacent platform available (default: 0.5) */
     platformShiftChance?: number;
-    /** Canvas container z-index. Set to 20 for sprites to walk on top of text/cards, or -10 for background (default: 20) */
+    /** Canvas container z-index. Set to 20 for sprites to walk on top of text/cards (default: 20) */
     zIndex?: number;
     /** Optional visual outline of detected platform surfaces for inspection (default: false) */
     showPlatforms?: boolean;
-    /** Delay in milliseconds before spawning sprites to allow page entrance animations to complete (default: 1200) */
+    /** Delay in milliseconds before spawning sprites to allow page entrance animations to complete (default: 1500) */
     spawnDelay?: number;
-    /** Vertical offset or adjustment applied to platform surfaces relative to element bounds. Set to "auto" to automatically align to visible text/content tops (default: "auto") */
+    /** Vertical offset applied to platform surfaces relative to element bounds. "auto" aligns to visible text/chips (default: "auto") */
     platformTopOffset?: number | "auto";
 }
 
@@ -129,11 +118,6 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
 
     spriteSheetSrc: "/sprites/sprites.png",
     spriteSheetCols: 6,
-    spriteSheetRows: 1,
-
-    frostedGlass: false,
-    frostedBlur: 0,
-    frostedNoise: false,
 
     enablePlatforms: true,
     platformSelector: "[data-sprite-platform], .feature > div, .chip-group, [role=button] > .title",
@@ -166,9 +150,14 @@ export interface SpriteLineWallpaperProps {
     hopChance?: number;
     turnChance?: number;
     personalityVariance?: number;
+    spriteCount?: number;
     groundY?: number;
+    groundOffsetFromBottom?: number;
     cursorFleeRadius?: number;
     showGroundLine?: boolean;
+    groundLineColor?: string;
+    spriteSheetSrc?: string;
+    spriteSheetCols?: number;
     enablePlatforms?: boolean;
     platformSelector?: string;
     platformExcludeSelector?: string;
@@ -184,11 +173,11 @@ export interface SpriteLineWallpaperProps {
 }
 
 // ============================================================================
-// INTERNAL DATA TYPES & PIXEL ART FALLBACKS
+// SPRITE PIXEL ART & PROCEDURAL GENERATOR
 // ============================================================================
 
-/** 4 discrete facing directions: 0 = Down, 1 = Up, 2 = Right (Side), 3 = Left (Side Flipped) */
-export type CatFacing = 0 | 1 | 2 | 3;
+/** 2 discrete lateral facing directions: 0 = Right, 1 = Left */
+export type CatFacing = 0 | 1;
 export type CatType = number;
 
 export interface CatPalette {
@@ -200,7 +189,6 @@ export interface CatPalette {
     eye: string;
     collar: string;
     bell: string;
-    dropShadow: string;
 }
 
 const CAT_LIGHT_PALETTES: CatPalette[] = [
@@ -213,7 +201,6 @@ const CAT_LIGHT_PALETTES: CatPalette[] = [
         eye: "#10b981",
         collar: "#dc2626",
         bell: "#f59e0b",
-        dropShadow: "transparent",
     },
     {
         outline: "#25282e",
@@ -224,7 +211,6 @@ const CAT_LIGHT_PALETTES: CatPalette[] = [
         eye: "#0284c7",
         collar: "#16a34a",
         bell: "#f59e0b",
-        dropShadow: "transparent",
     },
     {
         outline: "#663319",
@@ -235,7 +221,6 @@ const CAT_LIGHT_PALETTES: CatPalette[] = [
         eye: "#1e1b18",
         collar: "#0284c7",
         bell: "#f59e0b",
-        dropShadow: "transparent",
     },
     {
         outline: "#1c1917",
@@ -246,7 +231,6 @@ const CAT_LIGHT_PALETTES: CatPalette[] = [
         eye: "#d97706",
         collar: "#9333ea",
         bell: "#f59e0b",
-        dropShadow: "transparent",
     },
 ];
 
@@ -260,7 +244,6 @@ const CAT_DARK_PALETTES: CatPalette[] = [
         eye: "#34d399",
         collar: "#ef4444",
         bell: "#fde047",
-        dropShadow: "transparent",
     },
     {
         outline: "#334155",
@@ -271,7 +254,6 @@ const CAT_DARK_PALETTES: CatPalette[] = [
         eye: "#38bdf8",
         collar: "#22c55e",
         bell: "#fde047",
-        dropShadow: "transparent",
     },
     {
         outline: "#7c2d12",
@@ -282,7 +264,6 @@ const CAT_DARK_PALETTES: CatPalette[] = [
         eye: "#0f172a",
         collar: "#38bdf8",
         bell: "#fde047",
-        dropShadow: "transparent",
     },
     {
         outline: "#292524",
@@ -293,7 +274,6 @@ const CAT_DARK_PALETTES: CatPalette[] = [
         eye: "#fbbf24",
         collar: "#a855f7",
         bell: "#fde047",
-        dropShadow: "transparent",
     },
 ];
 
@@ -314,21 +294,17 @@ const CAT_SIDE_SPRITE: string[] = [
     "..OMMO.OMMO.OMMO.OMMO",
     "..OWWO.OWWO.OWWO.OWWO",
     "..OOOO.OOOO.OOOO.OOOO",
-    "DDDDDDDDDDDDDDDDDDDDD",
-    ".DDDDDDDDDDDDDDDDDDD.",
-    "...DDDDDDDDDDDDDDD...",
 ];
 
 const CAT_SIDE_LEFT_SPRITE: string[] = CAT_SIDE_SPRITE.map((row) =>
     row.split("").reverse().join("")
 );
 
+/** Generates procedural cat stamps for Right (0) and Left (1) directions */
 function generateCatSprites(palettes: CatPalette[]): HTMLCanvasElement[][] {
     const rawSprites = [
-        CAT_SIDE_SPRITE,      // 0: Down fallback
-        CAT_SIDE_SPRITE,      // 1: Up fallback
-        CAT_SIDE_SPRITE,      // 2: Right
-        CAT_SIDE_LEFT_SPRITE, // 3: Left
+        CAT_SIDE_SPRITE,      // 0: Right
+        CAT_SIDE_LEFT_SPRITE, // 1: Left
     ];
 
     const canvasWidth = 24;
@@ -346,12 +322,11 @@ function generateCatSprites(palettes: CatPalette[]): HTMLCanvasElement[][] {
             E: palette.eye,
             C: palette.collar,
             B: palette.bell,
-            D: palette.dropShadow,
         };
 
         const breedResult: HTMLCanvasElement[] = [];
 
-        for (let f = 0; f < 4; f++) {
+        for (let f = 0; f < 2; f++) {
             const matrix = rawSprites[f];
             const numRows = matrix.length;
             const numCols = matrix[0].length;
@@ -368,7 +343,6 @@ function generateCatSprites(palettes: CatPalette[]): HTMLCanvasElement[][] {
             }
 
             sCtx.imageSmoothingEnabled = false;
-            sCtx.globalAlpha = 1.0;
             for (let r = 0; r < matrix.length; r++) {
                 const row = matrix[r];
                 for (let c = 0; c < row.length; c++) {
@@ -388,79 +362,50 @@ function generateCatSprites(palettes: CatPalette[]): HTMLCanvasElement[][] {
     return allBreedsResult;
 }
 
+/** Slices a horizontal sprite sheet into Right (0) and mirrored Left (1) stamps */
 function sliceSpriteSheet(
     image: HTMLImageElement,
-    cols: number,
-    rows: number
+    cols: number
 ): HTMLCanvasElement[][] {
-    if (!image.naturalWidth || !image.naturalHeight || cols <= 0 || rows <= 0) {
+    if (!image.naturalWidth || !image.naturalHeight || cols <= 0) {
         return [];
     }
 
     const frameW = Math.floor(image.naturalWidth / cols);
-    const frameH = Math.floor(image.naturalHeight / rows);
+    const frameH = image.naturalHeight;
     const allBreedsResult: HTMLCanvasElement[][] = [];
 
-    if (rows === 1) {
-        for (let c = 0; c < cols; c++) {
-            const sx = c * frameW;
-            const sy = 0;
+    for (let c = 0; c < cols; c++) {
+        const sx = c * frameW;
+        const sy = 0;
 
-            // 1. Right-facing stamp (original image)
-            const rightCvs = document.createElement("canvas");
-            rightCvs.width = frameW;
-            rightCvs.height = frameH;
-            const rCtx = rightCvs.getContext("2d");
-            if (rCtx) {
-                rCtx.imageSmoothingEnabled = false;
-                rCtx.globalAlpha = 1.0;
-                rCtx.drawImage(image, sx, sy, frameW, frameH, 0, 0, frameW, frameH);
-            }
-
-            // 2. Left-facing stamp (mirrored horizontally)
-            const leftCvs = document.createElement("canvas");
-            leftCvs.width = frameW;
-            leftCvs.height = frameH;
-            const lCtx = leftCvs.getContext("2d");
-            if (lCtx) {
-                lCtx.imageSmoothingEnabled = false;
-                lCtx.globalAlpha = 1.0;
-                lCtx.save();
-                lCtx.translate(frameW, 0);
-                lCtx.scale(-1, 1);
-                lCtx.drawImage(image, sx, sy, frameW, frameH, 0, 0, frameW, frameH);
-                lCtx.restore();
-            }
-
-            // [0: Down, 1: Up, 2: Right, 3: Left]
-            allBreedsResult.push([rightCvs, leftCvs, rightCvs, leftCvs]);
+        // 1. Right-facing stamp (original image)
+        const rightCvs = document.createElement("canvas");
+        rightCvs.width = frameW;
+        rightCvs.height = frameH;
+        const rCtx = rightCvs.getContext("2d");
+        if (rCtx) {
+            rCtx.imageSmoothingEnabled = false;
+            rCtx.drawImage(image, sx, sy, frameW, frameH, 0, 0, frameW, frameH);
         }
-        return allBreedsResult;
-    }
 
-    for (let r = 0; r < rows; r++) {
-        const breedResult: HTMLCanvasElement[] = [];
-        for (let c = 0; c < cols; c++) {
-            const sx = c * frameW;
-            const sy = r * frameH;
-
-            const cvs = document.createElement("canvas");
-            cvs.width = frameW;
-            cvs.height = frameH;
-            const sCtx = cvs.getContext("2d");
-            if (!sCtx) {
-                breedResult.push(cvs);
-                continue;
-            }
-
-            sCtx.imageSmoothingEnabled = false;
-            sCtx.globalAlpha = 1.0;
-            sCtx.drawImage(image, sx, sy, frameW, frameH, 0, 0, frameW, frameH);
-            breedResult.push(cvs);
+        // 2. Left-facing stamp (mirrored horizontally)
+        const leftCvs = document.createElement("canvas");
+        leftCvs.width = frameW;
+        leftCvs.height = frameH;
+        const lCtx = leftCvs.getContext("2d");
+        if (lCtx) {
+            lCtx.imageSmoothingEnabled = false;
+            lCtx.save();
+            lCtx.translate(frameW, 0);
+            lCtx.scale(-1, 1);
+            lCtx.drawImage(image, sx, sy, frameW, frameH, 0, 0, frameW, frameH);
+            lCtx.restore();
         }
-        allBreedsResult.push(breedResult);
-    }
 
+        // [0: Right, 1: Left]
+        allBreedsResult.push([rightCvs, leftCvs]);
+    }
     return allBreedsResult;
 }
 
@@ -521,57 +466,62 @@ function extractPlatformSurfaces(
 
     try {
         const elements = document.querySelectorAll<HTMLElement>(selector);
-        const seenIds = new Set<string>();
-        seenIds.add("ground");
+        const seenIds = new Set<string>(["ground"]);
+
+        const pushSurface = (
+            idSuffix: string,
+            r: DOMRect | { left: number; right: number; top: number; width: number; height: number },
+            computedOffset: number
+        ) => {
+            if (r.width < 24 || r.height < 6) return;
+            let finalId = idSuffix;
+            if (seenIds.has(finalId)) {
+                finalId = `${idSuffix}_${++globalPlatformCounter}`;
+            }
+            seenIds.add(finalId);
+            const rOffset = Math.min(r.height * 0.55, Math.max(0, computedOffset));
+            surfaces.push({
+                id: finalId,
+                left: r.left + scrollX,
+                right: r.right + scrollX,
+                top: r.top + scrollY + rOffset,
+                width: r.width,
+            });
+        };
 
         elements.forEach((el) => {
-            // Remove legacy dataset attribute to prevent stale duplicates from contaminating scans
-            if (el.hasAttribute("data-sprite-plat-id")) {
-                el.removeAttribute("data-sprite-plat-id");
-            }
-
-            // Discard elements that are display:none, zero visibility, or transparent (< 0.05 opacity)
             if (el.offsetParent === null && el.offsetWidth === 0 && el.offsetHeight === 0) return;
             const style = window.getComputedStyle(el);
-            if (style.display === "none" || style.visibility === "hidden" || parseFloat(style.opacity) < 0.05) {
+            if (style.display === "none" || style.visibility === "hidden" || parseFloat(style.opacity) < 0.05 || style.position === "fixed") {
                 return;
             }
 
-            // Exclude fixed-position elements (e.g. sticky/fixed navigation bars)
-            if (style.position === "fixed") {
-                return;
-            }
-
-            // Exclude elements matching excludeSelector or located inside an excluded container
             if (excludeSelector) {
                 try {
-                    if (el.matches(excludeSelector) || el.closest(excludeSelector)) {
-                        return;
-                    }
+                    if (el.matches(excludeSelector) || el.closest(excludeSelector)) return;
                 } catch {
-                    // Gracefully skip selector error if invalid custom selector is provided
+                    // Ignore selector parse errors
                 }
             }
 
-            // Maintain stable, collision-free platform ID across re-scans via WeakMap
             let platId = platformElementWeakMap.get(el);
             if (!platId) {
                 platId = `plat_${++globalPlatformCounter}`;
                 platformElementWeakMap.set(el, platId);
             }
 
-            // Calculate visual content top offset (aligning platform to visible text/chips instead of floating box top)
+            const isTextElement = /^(H[1-6]|P|SPAN|A|DIV|LABEL|LI)$/i.test(el.tagName) && el.children.length === 0;
+
             let computedOffset = 0;
             if (platformTopOffset === "auto") {
                 const paddingTop = parseFloat(style.paddingTop) || 0;
                 const borderTop = parseFloat(style.borderTopWidth) || 0;
-                const isTextElement = /^(H[1-6]|P|SPAN|A|DIV|LABEL|LI)$/i.test(el.tagName) && el.children.length === 0;
 
                 if (isTextElement) {
                     const fontSize = parseFloat(style.fontSize) || 16;
                     const lineHeight = parseFloat(style.lineHeight) || (fontSize * 1.2);
                     const halfLeading = Math.max(0, (lineHeight - fontSize) * 0.5);
-                    const capGap = fontSize * 0.16; // Distance from font ascent line to visual cap height
+                    const capGap = fontSize * 0.16;
                     computedOffset = paddingTop + borderTop + halfLeading + capGap;
                 } else if (el.firstElementChild) {
                     const childRect = el.firstElementChild.getBoundingClientRect();
@@ -584,46 +534,14 @@ function extractPlatformSurfaces(
                 computedOffset = platformTopOffset;
             }
 
-            // Check if element has multi-line wrapped text rects
-            const isTextElement = /^(H[1-6]|P|SPAN|A|DIV)$/i.test(el.tagName) && el.children.length === 0;
             const rects = isTextElement && typeof el.getClientRects === "function" ? el.getClientRects() : null;
 
             if (rects && rects.length > 1) {
                 for (let i = 0; i < rects.length; i++) {
-                    const r = rects[i];
-                    if (r.width >= 24 && r.height >= 8) {
-                        let finalId = `${platId}_${i}`;
-                        if (seenIds.has(finalId)) {
-                            finalId = `${platId}_${i}_${++globalPlatformCounter}`;
-                        }
-                        seenIds.add(finalId);
-                        const rOffset = Math.min(r.height * 0.55, Math.max(0, computedOffset));
-                        surfaces.push({
-                            id: finalId,
-                            left: r.left + scrollX,
-                            right: r.right + scrollX,
-                            top: r.top + scrollY + rOffset,
-                            width: r.width,
-                        });
-                    }
+                    pushSurface(`${platId}_${i}`, rects[i], computedOffset);
                 }
             } else {
-                const r = el.getBoundingClientRect();
-                if (r.width >= 24 && r.height >= 6) {
-                    let finalId = platId;
-                    if (seenIds.has(finalId)) {
-                        finalId = `${platId}_${++globalPlatformCounter}`;
-                    }
-                    seenIds.add(finalId);
-                    const rOffset = Math.min(r.height * 0.55, Math.max(0, computedOffset));
-                    surfaces.push({
-                        id: finalId,
-                        left: r.left + scrollX,
-                        right: r.right + scrollX,
-                        top: r.top + scrollY + rOffset,
-                        width: r.width,
-                    });
-                }
+                pushSurface(platId, el.getBoundingClientRect(), computedOffset);
             }
         });
     } catch {
@@ -637,8 +555,6 @@ interface LineBoid {
     x: number;
     y: number; // Current feet contact Y in canvas coords
     direction: 1 | -1; // 1 = right, -1 = left
-    facing: CatFacing;  // 2 = right, 3 = left
-    catType: CatType;
 
     currentPlatformId: string;
 
@@ -668,18 +584,16 @@ interface LineBoid {
     spawnTargetPlatformId?: string; // If set, sprite is in initial spawn fall directly targeting this platform
 
     // Personality Variance Traits
+    catType: CatType;
     speedMod: number;
     fleeSpeedMod: number;
-    hopChanceMod: number; // Individual variance in wandering hop likelihood
+    hopChanceMod: number;
     turnChanceMod: number;
     sensitivity: number;
     hopHeightMod: number;
     hopDistMod: number;
     wanderPatience: number;
 }
-
-const FROSTED_NOISE_SVG =
-    "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E";
 
 // ============================================================================
 // COMPONENT
@@ -698,9 +612,14 @@ export default function SpriteLineWallpaper({
     hopChance,
     turnChance,
     personalityVariance,
+    spriteCount,
     groundY,
+    groundOffsetFromBottom,
     cursorFleeRadius,
     showGroundLine,
+    groundLineColor,
+    spriteSheetSrc,
+    spriteSheetCols,
     enablePlatforms,
     platformSelector,
     platformExcludeSelector,
@@ -715,10 +634,9 @@ export default function SpriteLineWallpaper({
     platformTopOffset,
 }: SpriteLineWallpaperProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [isLoaded, setIsLoaded] = useState(true);
 
-    // Merge configuration from props and config object
-    const cfgRef = useRef<SpriteLineConfig>({
+    // Merge configuration from props and config object once with useMemo
+    const activeCfg = useMemo<SpriteLineConfig>(() => ({
         ...SPRITE_LINE_DEFAULT_CONFIG,
         ...customConfig,
         ...(spriteSize !== undefined ? { spriteSize } : {}),
@@ -731,9 +649,14 @@ export default function SpriteLineWallpaper({
         ...(hopChance !== undefined ? { hopChance } : {}),
         ...(turnChance !== undefined ? { turnChance } : {}),
         ...(personalityVariance !== undefined ? { personalityVariance } : {}),
+        ...(spriteCount !== undefined ? { spriteCount } : {}),
+        ...(groundOffsetFromBottom !== undefined ? { groundOffsetFromBottom } : {}),
         ...(groundY !== undefined ? { groundY } : {}),
         ...(cursorFleeRadius !== undefined ? { cursorFleeRadius } : {}),
         ...(showGroundLine !== undefined ? { showGroundLine } : {}),
+        ...(groundLineColor !== undefined ? { groundLineColor } : {}),
+        ...(spriteSheetSrc !== undefined ? { spriteSheetSrc } : {}),
+        ...(spriteSheetCols !== undefined ? { spriteSheetCols } : {}),
         ...(enablePlatforms !== undefined ? { enablePlatforms } : {}),
         ...(platformSelector !== undefined ? { platformSelector } : {}),
         ...(platformExcludeSelector !== undefined ? { platformExcludeSelector } : {}),
@@ -746,39 +669,7 @@ export default function SpriteLineWallpaper({
         ...(showPlatforms !== undefined ? { showPlatforms } : {}),
         ...(spawnDelay !== undefined ? { spawnDelay } : {}),
         ...(platformTopOffset !== undefined ? { platformTopOffset } : {}),
-    });
-
-    useEffect(() => {
-        cfgRef.current = {
-            ...SPRITE_LINE_DEFAULT_CONFIG,
-            ...customConfig,
-            ...(spriteSize !== undefined ? { spriteSize } : {}),
-            ...(smallHopHeight !== undefined ? { smallHopHeight } : {}),
-            ...(smallHopDistance !== undefined ? { smallHopDistance } : {}),
-            ...(largeHopHeight !== undefined ? { largeHopHeight } : {}),
-            ...(largeHopDistance !== undefined ? { largeHopDistance } : {}),
-            ...(speed !== undefined ? { speed } : {}),
-            ...(fleeSpeed !== undefined ? { fleeSpeed } : {}),
-            ...(hopChance !== undefined ? { hopChance } : {}),
-            ...(turnChance !== undefined ? { turnChance } : {}),
-            ...(personalityVariance !== undefined ? { personalityVariance } : {}),
-            ...(groundY !== undefined ? { groundY } : {}),
-            ...(cursorFleeRadius !== undefined ? { cursorFleeRadius } : {}),
-            ...(showGroundLine !== undefined ? { showGroundLine } : {}),
-            ...(enablePlatforms !== undefined ? { enablePlatforms } : {}),
-            ...(platformSelector !== undefined ? { platformSelector } : {}),
-            ...(platformExcludeSelector !== undefined ? { platformExcludeSelector } : {}),
-            ...(platformJumpReachY !== undefined ? { platformJumpReachY } : {}),
-            ...(platformJumpReachX !== undefined ? { platformJumpReachX } : {}),
-            ...(platformJumpChance !== undefined ? { platformJumpChance } : {}),
-            ...(platformDropChance !== undefined ? { platformDropChance } : {}),
-            ...(platformShiftChance !== undefined ? { platformShiftChance } : {}),
-            ...(zIndex !== undefined ? { zIndex } : {}),
-            ...(showPlatforms !== undefined ? { showPlatforms } : {}),
-            ...(spawnDelay !== undefined ? { spawnDelay } : {}),
-            ...(platformTopOffset !== undefined ? { platformTopOffset } : {}),
-        };
-    }, [
+    }), [
         customConfig,
         spriteSize,
         smallHopHeight,
@@ -790,9 +681,14 @@ export default function SpriteLineWallpaper({
         hopChance,
         turnChance,
         personalityVariance,
+        spriteCount,
+        groundOffsetFromBottom,
         groundY,
         cursorFleeRadius,
         showGroundLine,
+        groundLineColor,
+        spriteSheetSrc,
+        spriteSheetCols,
         enablePlatforms,
         platformSelector,
         platformExcludeSelector,
@@ -807,25 +703,32 @@ export default function SpriteLineWallpaper({
         platformTopOffset,
     ]);
 
+    const cfgRef = useRef<SpriteLineConfig>(activeCfg);
+    useEffect(() => {
+        cfgRef.current = activeCfg;
+    }, [activeCfg]);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-
-        const ctx = canvas.getContext("2d", { alpha: true });
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         let dpr = Math.min(window.devicePixelRatio || 1, 2);
         let screenWidth = window.innerWidth;
         let screenHeight = window.innerHeight;
-        const currentCfg = cfgRef.current;
 
-        // Theme and reduced motion
+        // Theme and Motion preferences
         const mediaDark = window.matchMedia("(prefers-color-scheme: dark)");
-        let isDark = mediaDark.matches;
-        let catSprites = generateCatSprites(isDark ? CAT_DARK_PALETTES : CAT_LIGHT_PALETTES);
-
         const mediaReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        let isDark = mediaDark.matches;
         let isReduced = mediaReduced.matches;
+
+        let catSprites: HTMLCanvasElement[][] = generateCatSprites(
+            isDark ? CAT_DARK_PALETTES : CAT_LIGHT_PALETTES
+        );
+
         const handleReduced = (e: MediaQueryListEvent) => {
             isReduced = e.matches;
         };
@@ -833,14 +736,13 @@ export default function SpriteLineWallpaper({
 
         // Preload external sprite sheet
         let sheetStamps: HTMLCanvasElement[][] | null = null;
-        if (currentCfg.spriteSheetSrc) {
+        if (activeCfg.spriteSheetSrc) {
             const sheetImg = new Image();
-            sheetImg.src = currentCfg.spriteSheetSrc;
+            sheetImg.src = activeCfg.spriteSheetSrc;
             sheetImg.onload = () => {
                 const sliced = sliceSpriteSheet(
                     sheetImg,
-                    currentCfg.spriteSheetCols || 6,
-                    currentCfg.spriteSheetRows || 1
+                    activeCfg.spriteSheetCols || 6
                 );
                 if (sliced.length > 0) {
                     sheetStamps = sliced;
@@ -861,14 +763,15 @@ export default function SpriteLineWallpaper({
         let platforms: PlatformSurface[] = [];
         const boids: LineBoid[] = [];
 
+        // Cached document dimensions to avoid synchronous reflows at 60fps
+        let docDimensions = getDocumentDimensions();
+
         const computeGroundY = (pageH: number) => {
-            const activeCfg = cfgRef.current;
-            if (activeCfg.groundY !== undefined) {
-                return activeCfg.groundY <= 1.0
-                    ? pageH * activeCfg.groundY
-                    : activeCfg.groundY;
+            const cfg = cfgRef.current;
+            if (cfg.groundY !== undefined) {
+                return cfg.groundY <= 1.0 ? pageH * cfg.groundY : cfg.groundY;
             }
-            return pageH - (activeCfg.groundOffsetFromBottom ?? 80);
+            return pageH - (cfg.groundOffsetFromBottom ?? 70);
         };
 
         const distributeBoidsToPlatforms = (boidsList: LineBoid[]) => {
@@ -876,12 +779,11 @@ export default function SpriteLineWallpaper({
             const nonGround = platforms.filter((p) => !p.isGround);
             const ground = platforms.find((p) => p.isGround);
 
-            const { pageWidth, pageHeight } = getDocumentDimensions();
-            const activeCfg = cfgRef.current;
-            const baseSize = activeCfg.spriteSize;
+            const { pageWidth, pageHeight } = docDimensions;
+            const cfg = cfgRef.current;
+            const baseSize = cfg.spriteSize;
             const estimatedHalfW = Math.max(16, (baseSize * 1.2) * 0.5);
             const boundaryMargin = estimatedHalfW + 12;
-
             const currentScrollY = window.scrollY || window.pageYOffset || 0;
 
             if (nonGround.length === 0) {
@@ -910,7 +812,6 @@ export default function SpriteLineWallpaper({
                     b.fallStartY = dropStartY;
                     b.isHopping = false;
                     b.direction = Math.random() < 0.5 ? 1 : -1;
-                    b.facing = b.direction > 0 ? 2 : 3;
                     b.recoveryTimer = 0;
                 }
                 return;
@@ -944,7 +845,6 @@ export default function SpriteLineWallpaper({
 
                 const bandPlatforms = sortedElevated.slice(startIdx, endIdx);
 
-                // Prefer unused platform in this vertical band
                 let targetPlat = bandPlatforms.find((p) => !usedPlatformIds.has(p.id));
                 if (!targetPlat) {
                     targetPlat = sortedElevated.find((p) => !usedPlatformIds.has(p.id));
@@ -974,9 +874,7 @@ export default function SpriteLineWallpaper({
                 b.fallingFromPlatformId = undefined;
                 b.fallStartY = dropStartY;
                 b.isHopping = false;
-
                 b.direction = Math.random() < 0.5 ? 1 : -1;
-                b.facing = b.direction > 0 ? 2 : 3;
                 b.recoveryTimer = 0;
             }
 
@@ -1004,19 +902,18 @@ export default function SpriteLineWallpaper({
                     b.fallStartY = dropStartY;
                     b.isHopping = false;
                     b.direction = Math.random() < 0.5 ? 1 : -1;
-                    b.facing = b.direction > 0 ? 2 : 3;
                     b.recoveryTimer = 0;
                 }
             }
         };
 
-
         const scanPlatforms = () => {
-            const activeCfg = cfgRef.current;
-            const { pageWidth, pageHeight } = getDocumentDimensions();
+            const cfg = cfgRef.current;
+            docDimensions = getDocumentDimensions();
+            const { pageWidth, pageHeight } = docDimensions;
             const currentGroundY = computeGroundY(pageHeight);
 
-            if (!activeCfg.enablePlatforms) {
+            if (!cfg.enablePlatforms) {
                 platforms = [{
                     id: "ground",
                     left: 0,
@@ -1028,11 +925,11 @@ export default function SpriteLineWallpaper({
                 return;
             }
             platforms = extractPlatformSurfaces(
-                activeCfg.platformSelector || "[data-sprite-platform], .feature > div, h2, h3, [role='button'], button, a.btn",
+                cfg.platformSelector || "[data-sprite-platform], .feature > div, h2, h3, [role='button'], button, a.btn",
                 currentGroundY,
                 pageWidth,
-                activeCfg.platformExcludeSelector || "nav, header, [data-no-sprite-platform]",
-                activeCfg.platformTopOffset
+                cfg.platformExcludeSelector || "nav, header, [data-no-sprite-platform]",
+                cfg.platformTopOffset
             );
         };
 
@@ -1102,7 +999,7 @@ export default function SpriteLineWallpaper({
             const cfg = cfgRef.current;
             const count = cfg.spriteCount ?? cfg.spriteSheetCols ?? 6;
             const padding = Math.max(50, cfg.spriteSize * 2.5);
-            const { pageWidth: initialPageWidth, pageHeight: initialPageHeight } = getDocumentDimensions();
+            const { pageWidth: initialPageWidth, pageHeight: initialPageHeight } = docDimensions;
             const availableWidth = Math.max(100, initialPageWidth - padding * 2);
             const step = availableWidth / Math.max(1, count);
             const initialGroundY = computeGroundY(initialPageHeight);
@@ -1128,7 +1025,6 @@ export default function SpriteLineWallpaper({
                     x: initX,
                     y: initialGroundY,
                     direction: initialDir,
-                    facing: initialDir > 0 ? 2 : 3,
                     catType: i % (cfg.spriteSheetCols || 6),
 
                     currentPlatformId: "ground",
@@ -1168,12 +1064,11 @@ export default function SpriteLineWallpaper({
                 });
             }
 
-            // Distribute boids onto detected platforms now that animations have completed
+            // Distribute boids onto detected platforms with sky spawn fall
             distributeBoidsToPlatforms(boids);
-            setIsLoaded(true);
         };
 
-        const spawnDelay = currentCfg.spawnDelay ?? 1200;
+        const spawnDelay = activeCfg.spawnDelay ?? 1500;
         let spawnTimer: ReturnType<typeof setTimeout> | null = null;
         if (spawnDelay <= 0) {
             spawnBoids();
@@ -1205,13 +1100,13 @@ export default function SpriteLineWallpaper({
             const dt = Math.min(0.04, (now - lastFrameTime) / 1000);
             lastFrameTime = now;
 
-            const activeCfg = cfgRef.current;
+            const cfg = cfgRef.current;
             const speedMultiplier = isReduced ? 0.5 : 1.0;
-            const overallSpeed = activeCfg.speed * speedMultiplier;
-            const overallFleeSpeed = (activeCfg.fleeSpeed ?? (activeCfg.speed * 1.5)) * speedMultiplier;
+            const overallSpeed = cfg.speed * speedMultiplier;
+            const overallFleeSpeed = (cfg.fleeSpeed ?? (cfg.speed * 1.5)) * speedMultiplier;
 
-            // Current document dimensions & camera scroll
-            const { pageWidth, pageHeight } = getDocumentDimensions();
+            // Use cached document dimensions to avoid synchronous reflows
+            const { pageWidth, pageHeight } = docDimensions;
             const groundYBaseline = computeGroundY(pageHeight);
 
             const scrollX = window.scrollX || window.pageXOffset || 0;
@@ -1225,7 +1120,7 @@ export default function SpriteLineWallpaper({
                 groundPlat.width = pageWidth;
             }
 
-            const baseSize = activeCfg.spriteSize;
+            const baseSize = cfg.spriteSize;
             const estimatedHalfW = Math.max(16, (baseSize * 1.2) * 0.5);
             const boundaryMargin = estimatedHalfW + 12;
 
@@ -1236,7 +1131,7 @@ export default function SpriteLineWallpaper({
             // Update physics & hopping state machine
             for (let i = 0; i < boids.length; i++) {
                 const b = boids[i];
-                const effectiveFleeRadius = (activeCfg.cursorFleeRadius ?? 150) * b.sensitivity;
+                const effectiveFleeRadius = (cfg.cursorFleeRadius ?? 50) * b.sensitivity;
 
                 const dx = b.x - mouseWorldX;
                 const dy = b.y - mouseWorldY;
@@ -1265,12 +1160,11 @@ export default function SpriteLineWallpaper({
                             b.fallVelocity = 0;
                             b.fallingFromPlatformId = undefined;
                             b.fallStartY = undefined;
-                            b.squashTimer = 0.16; // Deeper squash on impact from initial sky fall
+                            b.squashTimer = 0.16; // Deeper squash on impact from sky fall
                             b.recoveryTimer = 0.12 + Math.random() * 0.2;
                             b.hopY = 0;
 
                             if (target) {
-                                // Clamp within platform bounds
                                 b.x = Math.max(target.left + 4, Math.min(target.right - 4, b.x));
                             }
                         }
@@ -1284,7 +1178,6 @@ export default function SpriteLineWallpaper({
                     let landedPlat: PlatformSurface | null = null;
                     for (let j = 0; j < platforms.length; j++) {
                         const p = platforms[j];
-                        // Skip the platform we just dropped from while still near its top edge to prevent instant re-landing
                         if (p.id === b.fallingFromPlatformId && b.y < (b.fallStartY ?? p.top) + 14) {
                             continue;
                         }
@@ -1307,23 +1200,19 @@ export default function SpriteLineWallpaper({
                         b.fallVelocity = 0;
                         b.fallingFromPlatformId = undefined;
                         b.fallStartY = undefined;
-                        b.squashTimer = 0.12; // Deeper squash on impact from fall
+                        b.squashTimer = 0.12;
                         b.recoveryTimer = 0.08;
                         b.hopY = 0;
 
                         if (isCursorNear) {
-                            const fleeDir: 1 | -1 = dx >= 0 ? 1 : -1;
-                            b.direction = fleeDir;
-                            b.facing = fleeDir > 0 ? 2 : 3;
+                            b.direction = dx >= 0 ? 1 : -1;
                         } else {
                             if (b.x <= landedPlat.left + 6) {
                                 b.x = landedPlat.left + 6;
                                 b.direction = 1;
-                                b.facing = 2;
                             } else if (b.x >= landedPlat.right - 6) {
                                 b.x = landedPlat.right - 6;
                                 b.direction = -1;
-                                b.facing = 3;
                             }
                         }
                     }
@@ -1364,19 +1253,12 @@ export default function SpriteLineWallpaper({
                                 const maxX = pageWidth - boundaryMargin;
                                 if (b.x <= minX) {
                                     b.x = minX;
-                                    if (!isCursorNear) {
-                                        b.direction = 1;
-                                        b.facing = 2;
-                                    }
+                                    if (!isCursorNear) b.direction = 1;
                                 } else if (b.x >= maxX) {
                                     b.x = maxX;
-                                    if (!isCursorNear) {
-                                        b.direction = -1;
-                                        b.facing = 3;
-                                    }
+                                    if (!isCursorNear) b.direction = -1;
                                 }
                             } else {
-                                // Clamp to platform boundaries without reversing direction so ledge drops can trigger
                                 b.x = Math.max(currentPlat.left + 2, Math.min(currentPlat.right - 2, b.x));
                             }
                         }
@@ -1386,7 +1268,7 @@ export default function SpriteLineWallpaper({
                             b.fleeIdleTimer = baseFleePause / Math.max(0.2, (overallFleeSpeed / 2) * b.fleeSpeedMod);
                         }
                     } else {
-                        // In flight: smoothstep horizontal displacement + elevation linear baseline + parabolic arc
+                        // In flight: smoothstep horizontal displacement + linear baseline + parabolic arc
                         const t = b.hopProgress;
                         const ease = t * t * (3 - 2 * t);
                         b.x = b.hopStartX + (b.hopTargetX - b.hopStartX) * ease;
@@ -1404,7 +1286,6 @@ export default function SpriteLineWallpaper({
                     currentPlat = groundPlat;
                 }
                 if (!currentPlat) {
-                    // Check if there is still a platform surface right under the cat's feet
                     const platUnderFeet = platforms.find(
                         (p) => !p.isGround && b.x >= p.left - 6 && b.x <= p.right + 6 && Math.abs(b.y - p.top) <= 20
                     );
@@ -1414,7 +1295,7 @@ export default function SpriteLineWallpaper({
                         b.y = platUnderFeet.top;
                         b.hopY = 0;
                     } else {
-                        // Platform is gone or moved: start falling naturally instead of teleporting
+                        // Platform is gone: start falling naturally
                         b.isFalling = true;
                         b.fallVelocity = 0;
                         b.fallingFromPlatformId = undefined;
@@ -1442,8 +1323,7 @@ export default function SpriteLineWallpaper({
                     }
                 } else if (b.recoveryTimer <= 0) {
                     // NORMAL WANDERING: Stochastic likelihood check
-                    let rawChance = activeCfg.hopChance ?? 0.3;
-                    if (rawChance > 1.0) rawChance /= 100;
+                    const rawChance = cfg.hopChance ?? 0.3;
                     const effectiveHopChance = Math.min(0.98, Math.max(0.01, rawChance * b.hopChanceMod));
                     const hopRate = (effectiveHopChance * 2.8) * Math.max(0.1, overallSpeed * b.speedMod);
                     const frameHopProbability = 1 - Math.exp(-hopRate * dt);
@@ -1464,24 +1344,19 @@ export default function SpriteLineWallpaper({
                     const plat = currentPlat || groundPlat!;
 
                     if (isFleeHop) {
-                        // FLEEING: Determine horizontal flee direction away from cursor
                         const fleeDir: 1 | -1 = dx >= 0 ? 1 : -1;
-
                         let didChooseVerticalEscape = false;
 
                         // VERTICAL ESCAPE PRIORITY:
                         // Search for reachable overhead platforms, lower platforms, or ledge drops
-                        // and prioritize them over staying on the same horizontal platform.
-                        if (activeCfg.enablePlatforms) {
-                            const maxReachY = activeCfg.platformJumpReachY ?? 140;
-                            // Allow reachable platforms horizontally with a comfortable flee reach
-                            const maxReachX = Math.max(activeCfg.platformJumpReachX ?? 40, 24);
+                        if (cfg.enablePlatforms) {
+                            const maxReachY = cfg.platformJumpReachY ?? 200;
+                            const maxReachX = Math.max(cfg.platformJumpReachX ?? 20, 24);
 
                             const fleeUpCandidates: PlatformSurface[] = [];
                             const fleeDownCandidates: PlatformSurface[] = [];
                             const fleeAcrossCandidates: PlatformSurface[] = [];
 
-                            // Ledge drop option: if on elevated platform and near an edge facing towards it
                             const isNearLeftLedge = b.x <= plat.left + 22 && fleeDir === -1;
                             const isNearRightLedge = b.x >= plat.right - 22 && fleeDir === 1;
                             const canLedgeDrop = !plat.isGround && (isNearLeftLedge || isNearRightLedge);
@@ -1489,21 +1364,16 @@ export default function SpriteLineWallpaper({
                             for (let j = 0; j < platforms.length; j++) {
                                 const q = platforms[j];
                                 if (q.id === plat.id) continue;
-                                const diffY = plat.top - q.top; // Positive = overhead, Negative = lower
+                                const diffY = plat.top - q.top;
 
                                 const distToQ = b.x < q.left ? q.left - b.x : (b.x > q.right ? b.x - q.right : 0);
 
                                 if (distToQ <= maxReachX) {
-                                    // Overhead platform within reach (Jump Up)
                                     if (diffY >= 14 && diffY <= maxReachY && q.top >= 20 && q.top <= pageHeight - 10) {
                                         fleeUpCandidates.push(q);
-                                    }
-                                    // Lower platform or ground within reach (Jump Down)
-                                    else if (diffY <= -14 && -diffY <= maxReachY && !plat.isGround) {
+                                    } else if (diffY <= -14 && -diffY <= maxReachY && !plat.isGround) {
                                         fleeDownCandidates.push(q);
-                                    }
-                                    // Adjacent platform at similar level in flee direction (Jump Across)
-                                    else if (Math.abs(diffY) <= 28) {
+                                    } else if (Math.abs(diffY) <= 28) {
                                         if (isNearRightLedge && q.left >= plat.right - 10 && q.left <= plat.right + maxReachX) {
                                             fleeAcrossCandidates.push(q);
                                         } else if (isNearLeftLedge && q.right <= plat.left + 10 && q.right >= plat.left - maxReachX) {
@@ -1521,38 +1391,31 @@ export default function SpriteLineWallpaper({
 
                             const escapeOptions: EscapeOption[] = [];
 
-                            // Helper to score a candidate platform based on resulting distance from cursor
                             const scoreCandidate = (targetPlat: PlatformSurface) => {
                                 const margin = Math.min(12, targetPlat.width * 0.25);
-                                let candX = b.x + fleeDir * Math.max(10, (activeCfg.largeHopDistance ?? 60) * 0.7);
+                                let candX = b.x + fleeDir * Math.max(10, (cfg.largeHopDistance ?? 50) * 0.7);
                                 candX = Math.max(targetPlat.left + margin, Math.min(targetPlat.right - margin, candX));
                                 const distFromCursor = Math.hypot(candX - mouseWorldX, targetPlat.top - mouseWorldY);
                                 return { targetX: candX, distFromCursor };
                             };
 
-                            // Score UP candidates
                             for (const q of fleeUpCandidates) {
                                 const { distFromCursor } = scoreCandidate(q);
-                                // dy < 0 means cursor is below sprite -> bonus for jumping UP
                                 const verticalBonus = dy < 0 ? 60 : (Math.abs(dy) <= 30 ? 40 : 10);
                                 escapeOptions.push({ type: "up", plat: q, score: distFromCursor + verticalBonus });
                             }
 
-                            // Score DOWN candidates
                             for (const q of fleeDownCandidates) {
                                 const { distFromCursor } = scoreCandidate(q);
-                                // dy > 0 means cursor is above sprite -> bonus for jumping DOWN
                                 const verticalBonus = dy > 0 ? 60 : (Math.abs(dy) <= 30 ? 40 : 10);
                                 escapeOptions.push({ type: "down", plat: q, score: distFromCursor + verticalBonus });
                             }
 
-                            // Score ACROSS candidates (lateral platform escape at edge)
                             for (const q of fleeAcrossCandidates) {
                                 const { distFromCursor } = scoreCandidate(q);
                                 escapeOptions.push({ type: "across", plat: q, score: distFromCursor + 45 });
                             }
 
-                            // Score Ledge Drop option
                             if (canLedgeDrop) {
                                 const estimatedDropY = Math.min(pageHeight - 20, plat.top + 70);
                                 const estimatedDropX = b.x + fleeDir * 25;
@@ -1561,7 +1424,6 @@ export default function SpriteLineWallpaper({
                                 escapeOptions.push({ type: "drop", score: distFromCursor + dropBonus });
                             }
 
-                            // PRIORITIZE VERTICAL ESCAPE: If any vertical escape option is available, execute the best one!
                             if (escapeOptions.length > 0) {
                                 escapeOptions.sort((a, b) => b.score - a.score);
                                 const chosen = escapeOptions[0];
@@ -1570,11 +1432,10 @@ export default function SpriteLineWallpaper({
                                     didChooseVerticalEscape = true;
                                     const targetPlat = chosen.plat;
                                     const margin = Math.min(12, targetPlat.width * 0.25);
-                                    let targetX = b.x + fleeDir * Math.max(12, (activeCfg.largeHopDistance ?? 60) * b.hopDistMod);
+                                    let targetX = b.x + fleeDir * Math.max(12, (cfg.largeHopDistance ?? 50) * b.hopDistMod);
                                     targetX = Math.max(targetPlat.left + margin, Math.min(targetPlat.right - margin, targetX));
 
                                     b.direction = targetX >= b.x ? 1 : -1;
-                                    b.facing = b.direction > 0 ? 2 : 3;
 
                                     const diffY = plat.top - targetPlat.top;
                                     b.hopTargetX = targetX;
@@ -1582,7 +1443,7 @@ export default function SpriteLineWallpaper({
                                     b.targetPlatformId = targetPlat.id;
 
                                     const absDiffY = Math.abs(diffY);
-                                    b.hopArcPeak = Math.max((activeCfg.largeHopHeight ?? 45) * b.hopHeightMod, absDiffY * 0.45 + 14);
+                                    b.hopArcPeak = Math.max((cfg.largeHopHeight ?? 22) * b.hopHeightMod, absDiffY * 0.45 + 14);
                                     b.currentHopDuration = (0.22 / Math.max(0.1, overallFleeSpeed * b.fleeSpeedMod)) * Math.sqrt(b.hopArcPeak / 10);
                                 } else if (chosen.type === "drop") {
                                     b.isHopping = false;
@@ -1591,53 +1452,45 @@ export default function SpriteLineWallpaper({
                                     b.fallingFromPlatformId = plat.id;
                                     b.fallStartY = plat.top;
                                     b.direction = fleeDir;
-                                    b.facing = fleeDir > 0 ? 2 : 3;
-                                    b.x += fleeDir * 8; // Nudge past ledge into air
+                                    b.x += fleeDir * 8;
                                     continue;
                                 }
                             }
                         }
 
-                        // FALLBACK: Horizontal Platform Jump (Only if no vertical escape options were available)
+                        // FALLBACK: Horizontal Platform Jump
                         if (!didChooseVerticalEscape) {
                             const minX = plat.isGround ? boundaryMargin : plat.left + 6;
                             const maxX = plat.isGround ? pageWidth - boundaryMargin : plat.right - 6;
 
-                            // Check if trapped against the boundary
                             const isCornered = (fleeDir === 1 && b.x >= maxX - 10) || (fleeDir === -1 && b.x <= minX + 10);
 
                             if (isCornered) {
-                                // Trapped at edge with no vertical platforms available
                                 if (distToCursor < 90) {
                                     // Desperation leap over the cursor
                                     b.direction = (fleeDir === 1 ? -1 : 1) as 1 | -1;
-                                    b.facing = b.direction > 0 ? 2 : 3;
-                                    b.currentHopHeight = (activeCfg.largeHopHeight ?? 45) * b.hopHeightMod * 1.5;
-                                    b.currentHopDistance = Math.min(plat.width * 0.7, (activeCfg.largeHopDistance ?? 60) * b.hopDistMod * 1.5);
+                                    b.currentHopHeight = (cfg.largeHopHeight ?? 22) * b.hopHeightMod * 1.5;
+                                    b.currentHopDistance = Math.min(plat.width * 0.7, (cfg.largeHopDistance ?? 50) * b.hopDistMod * 1.5);
                                     b.hopArcPeak = b.currentHopHeight;
                                     b.currentHopDuration = (0.26 / Math.max(0.1, overallFleeSpeed * b.fleeSpeedMod));
                                     b.hopTargetX = Math.max(minX, Math.min(maxX, b.x + b.direction * b.currentHopDistance));
                                     b.hopTargetY = plat.top;
                                     b.targetPlatformId = plat.id;
                                 } else {
-                                    // Face away, stay rooted to avoid rapid flipping
                                     b.direction = fleeDir;
-                                    b.facing = fleeDir > 0 ? 2 : 3;
                                     b.isHopping = false;
                                     b.squashTimer = 0.12;
                                     b.fleeIdleTimer = 0.1;
                                     continue;
                                 }
                             } else {
-                                // Standard horizontal flee hop away from cursor
                                 b.direction = fleeDir;
-                                b.facing = fleeDir > 0 ? 2 : 3;
 
-                                const hopJitter = 1.0 + (Math.random() * 2 - 1) * (activeCfg.personalityVariance * 0.25);
-                                b.currentHopHeight = Math.max(4, (activeCfg.largeHopHeight ?? 45) * b.hopHeightMod * hopJitter);
-                                b.currentHopDistance = Math.max(6, (activeCfg.largeHopDistance ?? 60) * b.hopDistMod * hopJitter);
+                                const hopJitter = 1.0 + (Math.random() * 2 - 1) * (cfg.personalityVariance * 0.25);
+                                b.currentHopHeight = Math.max(4, (cfg.largeHopHeight ?? 22) * b.hopHeightMod * hopJitter);
+                                b.currentHopDistance = Math.max(6, (cfg.largeHopDistance ?? 50) * b.hopDistMod * hopJitter);
                                 b.hopArcPeak = b.currentHopHeight;
-                                b.currentHopDuration = (0.22 / Math.max(0.1, overallFleeSpeed * b.fleeSpeedMod)) * Math.sqrt(b.currentHopHeight / Math.max(1, activeCfg.largeHopHeight ?? 45));
+                                b.currentHopDuration = (0.22 / Math.max(0.1, overallFleeSpeed * b.fleeSpeedMod)) * Math.sqrt(b.currentHopHeight / Math.max(1, cfg.largeHopHeight ?? 22));
 
                                 b.hopTargetX = Math.max(minX, Math.min(maxX, b.x + b.direction * b.currentHopDistance));
                                 b.hopTargetY = plat.top;
@@ -1648,10 +1501,9 @@ export default function SpriteLineWallpaper({
                         // NORMAL WANDERING HOP
                         let didChooseJumpUp = false;
 
-                        // 1. Check Jump Up to overhead platform, Jump Down to lower platform, or Jump Across to adjacent platform
-                        if (activeCfg.enablePlatforms) {
-                            const maxReachY = activeCfg.platformJumpReachY ?? 140;
-                            const maxReachX = activeCfg.platformJumpReachX ?? 40;
+                        if (cfg.enablePlatforms) {
+                            const maxReachY = cfg.platformJumpReachY ?? 200;
+                            const maxReachX = cfg.platformJumpReachX ?? 20;
                             const upCandidates: PlatformSurface[] = [];
                             const downCandidates: PlatformSurface[] = [];
                             const acrossCandidates: PlatformSurface[] = [];
@@ -1665,24 +1517,19 @@ export default function SpriteLineWallpaper({
                             for (let j = 0; j < platforms.length; j++) {
                                 const q = platforms[j];
                                 if (q.id === plat.id) continue;
-                                const diffY = plat.top - q.top; // Positive = overhead, Negative = lower platform
+                                const diffY = plat.top - q.top;
 
-                                // Overhead platform (Jump up)
                                 if (diffY >= 14 && diffY <= maxReachY && q.top >= 20 && q.top <= pageHeight - 10) {
                                     const distToQ = b.x < q.left ? q.left - b.x : (b.x > q.right ? b.x - q.right : 0);
                                     if (distToQ <= maxReachX) {
                                         upCandidates.push(q);
                                     }
-                                }
-                                // Lower platform (Jump down)
-                                else if (diffY <= -14 && diffY >= -maxReachY && !plat.isGround) {
+                                } else if (diffY <= -14 && diffY >= -maxReachY && !plat.isGround) {
                                     const distToQ = b.x < q.left ? q.left - b.x : (b.x > q.right ? b.x - q.right : 0);
                                     if (distToQ <= maxReachX) {
                                         downCandidates.push(q);
                                     }
-                                }
-                                // Adjacent platform at similar level (Jump across) - ONLY if sprite is at the edge of its current platform!
-                                else if (isAtEdge && Math.abs(diffY) <= 28) {
+                                } else if (isAtEdge && Math.abs(diffY) <= 28) {
                                     if (isAtRightEdge && q.left >= plat.right - 10 && q.left <= plat.right + maxReachX) {
                                         acrossCandidates.push(q);
                                     } else if (isAtLeftEdge && q.right <= plat.left + 10 && q.right >= plat.left - maxReachX) {
@@ -1691,9 +1538,9 @@ export default function SpriteLineWallpaper({
                                 }
                             }
 
-                            const jumpChance = (activeCfg.platformJumpChance ?? 0.3) * b.hopChanceMod;
-                            const dropChance = (activeCfg.platformDropChance ?? 0.35) * (1 / Math.max(0.5, b.wanderPatience));
-                            const shiftChance = (activeCfg.platformShiftChance ?? 0.4) * b.hopChanceMod;
+                            const jumpChance = (cfg.platformJumpChance ?? 0.15) * b.hopChanceMod;
+                            const dropChance = (cfg.platformDropChance ?? 0.15) * (1 / Math.max(0.5, b.wanderPatience));
+                            const shiftChance = (cfg.platformShiftChance ?? 0.5) * b.hopChanceMod;
 
                             // 1. Horizontal platform shift attempt (lateral jump to adjacent platform when at edge)
                             if (acrossCandidates.length > 0 && Math.random() < shiftChance) {
@@ -1706,7 +1553,7 @@ export default function SpriteLineWallpaper({
                                 b.hopTargetX = targetX;
                                 b.hopTargetY = targetPlat.top;
                                 b.targetPlatformId = targetPlat.id;
-                                b.hopArcPeak = Math.max(3, activeCfg.smallHopHeight * b.hopHeightMod);
+                                b.hopArcPeak = Math.max(3, cfg.smallHopHeight * b.hopHeightMod);
                                 const gapDist = Math.abs(targetX - b.x);
                                 b.currentHopDuration = (0.28 / Math.max(0.1, overallSpeed * b.speedMod)) * Math.sqrt(gapDist / 20 + 1);
                             }
@@ -1720,13 +1567,12 @@ export default function SpriteLineWallpaper({
                                 const targetX = Math.max(targetPlat.left + margin, Math.min(targetPlat.right - margin, b.x + (Math.random() - 0.5) * 40));
 
                                 b.direction = targetX >= b.x ? 1 : -1;
-                                b.facing = b.direction > 0 ? 2 : 3;
 
                                 const diffY = plat.top - targetPlat.top;
                                 b.hopTargetX = targetX;
                                 b.hopTargetY = targetPlat.top;
                                 b.targetPlatformId = targetPlat.id;
-                                b.hopArcPeak = Math.max(activeCfg.smallHopHeight * b.hopHeightMod, diffY * 0.45 + 12);
+                                b.hopArcPeak = Math.max(cfg.smallHopHeight * b.hopHeightMod, diffY * 0.45 + 12);
                                 b.currentHopDuration = (0.36 / Math.max(0.1, overallSpeed * b.speedMod)) * Math.sqrt(b.hopArcPeak / 10);
                             }
 
@@ -1739,13 +1585,12 @@ export default function SpriteLineWallpaper({
                                 const targetX = Math.max(targetPlat.left + margin, Math.min(targetPlat.right - margin, b.x + (Math.random() - 0.5) * 30));
 
                                 b.direction = targetX >= b.x ? 1 : -1;
-                                b.facing = b.direction > 0 ? 2 : 3;
 
                                 const distY = targetPlat.top - plat.top;
                                 b.hopTargetX = targetX;
                                 b.hopTargetY = targetPlat.top;
                                 b.targetPlatformId = targetPlat.id;
-                                b.hopArcPeak = Math.max(3, activeCfg.smallHopHeight * b.hopHeightMod);
+                                b.hopArcPeak = Math.max(3, cfg.smallHopHeight * b.hopHeightMod);
                                 b.currentHopDuration = (0.32 / Math.max(0.1, overallSpeed * b.speedMod)) * Math.sqrt(distY / 40 + 1);
                             }
                         }
@@ -1757,7 +1602,7 @@ export default function SpriteLineWallpaper({
                             const isAtRightLedge = b.x >= plat.right - ledgeMargin && b.direction === 1;
 
                             if (!plat.isGround && (isAtLeftLedge || isAtRightLedge)) {
-                                const dropChance = (activeCfg.platformDropChance ?? 0.35) * (1 / Math.max(0.5, b.wanderPatience));
+                                const dropChance = (cfg.platformDropChance ?? 0.15) * (1 / Math.max(0.5, b.wanderPatience));
                                 if (Math.random() < dropChance) {
                                     b.isHopping = false;
                                     b.isFalling = true;
@@ -1768,37 +1613,29 @@ export default function SpriteLineWallpaper({
                                     continue;
                                 } else {
                                     b.direction = (b.direction === 1 ? -1 : 1) as 1 | -1;
-                                    b.facing = b.direction > 0 ? 2 : 3;
                                 }
-                            } else if (plat.isGround) {
-                                if (b.x <= boundaryMargin + 20) {
+                            } else {
+                                const isAtGroundLeft = plat.isGround && b.x <= boundaryMargin + 20 && b.direction === -1;
+                                const isAtGroundRight = plat.isGround && b.x >= pageWidth - boundaryMargin - 20 && b.direction === 1;
+
+                                if (isAtGroundLeft) {
                                     b.direction = 1;
-                                    b.facing = 2;
-                                } else if (b.x >= pageWidth - boundaryMargin - 20) {
+                                } else if (isAtGroundRight) {
                                     b.direction = -1;
-                                    b.facing = 3;
                                 } else {
-                                    const baseTurnChance = activeCfg.turnChance ?? 0.2;
+                                    const baseTurnChance = cfg.turnChance ?? 0.2;
                                     const effectiveTurnChance = Math.min(0.95, Math.max(0.02, baseTurnChance * b.turnChanceMod));
                                     if (Math.random() < effectiveTurnChance) {
                                         b.direction = (b.direction === 1 ? -1 : 1) as 1 | -1;
-                                        b.facing = b.direction > 0 ? 2 : 3;
                                     }
-                                }
-                            } else {
-                                const baseTurnChance = activeCfg.turnChance ?? 0.2;
-                                const effectiveTurnChance = Math.min(0.95, Math.max(0.02, baseTurnChance * b.turnChanceMod));
-                                if (Math.random() < effectiveTurnChance) {
-                                    b.direction = (b.direction === 1 ? -1 : 1) as 1 | -1;
-                                    b.facing = b.direction > 0 ? 2 : 3;
                                 }
                             }
 
-                            const hopJitter = 1.0 + (Math.random() * 2 - 1) * (activeCfg.personalityVariance * 0.25);
-                            b.currentHopHeight = Math.max(2, activeCfg.smallHopHeight * b.hopHeightMod * hopJitter);
-                            b.currentHopDistance = Math.max(4, activeCfg.smallHopDistance * b.hopDistMod * hopJitter);
+                            const hopJitter = 1.0 + (Math.random() * 2 - 1) * (cfg.personalityVariance * 0.25);
+                            b.currentHopHeight = Math.max(2, cfg.smallHopHeight * b.hopHeightMod * hopJitter);
+                            b.currentHopDistance = Math.max(4, cfg.smallHopDistance * b.hopDistMod * hopJitter);
                             b.hopArcPeak = b.currentHopHeight;
-                            b.currentHopDuration = (0.32 / Math.max(0.1, overallSpeed * b.speedMod)) * Math.sqrt(b.currentHopHeight / Math.max(1, activeCfg.smallHopHeight));
+                            b.currentHopDuration = (0.32 / Math.max(0.1, overallSpeed * b.speedMod)) * Math.sqrt(b.currentHopHeight / Math.max(1, cfg.smallHopHeight));
 
                             const minX = plat.isGround ? boundaryMargin : plat.left + 6;
                             const maxX = plat.isGround ? pageWidth - boundaryMargin : plat.right - 6;
@@ -1812,14 +1649,14 @@ export default function SpriteLineWallpaper({
             }
 
             // ================================================================
-            // RENDERING (Camera projection via scroll offset)
+            // RENDERING
             // ================================================================
             ctx.save();
             ctx.scale(dpr, dpr);
             ctx.clearRect(0, 0, screenWidth, screenHeight);
 
             // Optional debug visualization of detected platform surfaces
-            if (activeCfg.showPlatforms) {
+            if (cfg.showPlatforms) {
                 ctx.save();
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = "rgba(16, 185, 129, 0.75)";
@@ -1837,12 +1674,12 @@ export default function SpriteLineWallpaper({
             }
 
             // Optional ground line axis
-            if (activeCfg.showGroundLine) {
+            if (cfg.showGroundLine) {
                 const screenGroundY = groundYBaseline - scrollY;
                 if (screenGroundY >= -10 && screenGroundY <= screenHeight + 10) {
                     ctx.save();
                     ctx.strokeStyle =
-                        activeCfg.groundLineColor ||
+                        cfg.groundLineColor ||
                         (isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.1)");
                     ctx.lineWidth = 1;
                     ctx.beginPath();
@@ -1863,13 +1700,14 @@ export default function SpriteLineWallpaper({
 
                 const breedSprites = catSprites[b.catType % catSprites.length];
                 if (!breedSprites) continue;
-                const sprite = breedSprites[b.facing % breedSprites.length];
+                // Facing: 0 = Right (direction 1), 1 = Left (direction -1)
+                const sprite = breedSprites[b.direction === 1 ? 0 : 1];
                 if (!sprite) continue;
 
                 const renderW = Math.round(sprite.width * (baseSize / 20));
                 const renderH = Math.round(sprite.height * (baseSize / 20));
 
-                // Off-screen culling: skip drawing sprites outside the visible camera view
+                // Off-screen culling: skip drawing sprites outside visible viewport
                 if (
                     screenX < -renderW ||
                     screenX > screenWidth + renderW ||
@@ -1884,9 +1722,8 @@ export default function SpriteLineWallpaper({
                 let scaleY = 1.0;
 
                 if (b.squashTimer > 0) {
-                    // Landing squash
-                    const squashRatio = b.squashTimer / 0.08;
-                    scaleX = 1.0 + 0.16 * squashRatio;
+                    const squashRatio = b.squashTimer / 0.12;
+                    scaleX = 1.0 + 0.22 * squashRatio;
                     scaleY = 1.0 - 0.16 * squashRatio;
                     b.squashTimer -= dt;
                 } else if (b.isHopping) {
@@ -1920,87 +1757,28 @@ export default function SpriteLineWallpaper({
 
         return () => {
             if (rafId !== null) cancelAnimationFrame(rafId);
-            if (spawnTimer !== null) clearTimeout(spawnTimer);
-            clearTimeout(scanTimer1);
-            clearTimeout(scanTimer2);
-            clearTimeout(scanTimer3);
-            observer.disconnect();
-            if (resizeObserver) resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
             window.removeEventListener("pointermove", handlePointerMove);
             window.removeEventListener("pointerleave", handlePointerLeave);
-            document.removeEventListener("visibilitychange", handleVisibility);
-            mediaDark.removeEventListener("change", handleTheme);
             mediaReduced.removeEventListener("change", handleReduced);
+            mediaDark.removeEventListener("change", handleTheme);
+            document.removeEventListener("visibilitychange", handleVisibility);
+            if (observer) observer.disconnect();
+            if (resizeObserver) resizeObserver.disconnect();
+            clearTimeout(scanTimer1);
+            clearTimeout(scanTimer2);
+            clearTimeout(scanTimer3);
+            if (spawnTimer !== null) clearTimeout(spawnTimer);
         };
-    }, []);
-
-    const activeCfg = {
-        ...SPRITE_LINE_DEFAULT_CONFIG,
-        ...customConfig,
-        ...(spriteSize !== undefined ? { spriteSize } : {}),
-        ...(smallHopHeight !== undefined ? { smallHopHeight } : {}),
-        ...(smallHopDistance !== undefined ? { smallHopDistance } : {}),
-        ...(largeHopHeight !== undefined ? { largeHopHeight } : {}),
-        ...(largeHopDistance !== undefined ? { largeHopDistance } : {}),
-        ...(speed !== undefined ? { speed } : {}),
-        ...(fleeSpeed !== undefined ? { fleeSpeed } : {}),
-        ...(hopChance !== undefined ? { hopChance } : {}),
-        ...(turnChance !== undefined ? { turnChance } : {}),
-        ...(personalityVariance !== undefined ? { personalityVariance } : {}),
-        ...(groundY !== undefined ? { groundY } : {}),
-        ...(cursorFleeRadius !== undefined ? { cursorFleeRadius } : {}),
-        ...(showGroundLine !== undefined ? { showGroundLine } : {}),
-        ...(enablePlatforms !== undefined ? { enablePlatforms } : {}),
-        ...(platformSelector !== undefined ? { platformSelector } : {}),
-        ...(platformExcludeSelector !== undefined ? { platformExcludeSelector } : {}),
-        ...(platformJumpReachY !== undefined ? { platformJumpReachY } : {}),
-        ...(platformJumpReachX !== undefined ? { platformJumpReachX } : {}),
-        ...(platformJumpChance !== undefined ? { platformJumpChance } : {}),
-        ...(platformDropChance !== undefined ? { platformDropChance } : {}),
-        ...(platformShiftChance !== undefined ? { platformShiftChance } : {}),
-        ...(zIndex !== undefined ? { zIndex } : {}),
-        ...(showPlatforms !== undefined ? { showPlatforms } : {}),
-        ...(spawnDelay !== undefined ? { spawnDelay } : {}),
-        ...(platformTopOffset !== undefined ? { platformTopOffset } : {}),
-    };
+    }, [activeCfg]);
 
     return (
         <div
             aria-hidden="true"
-            className={`fixed inset-0 w-screen h-screen pointer-events-none overflow-hidden transition-opacity duration-700 ease-out ${isLoaded ? "opacity-100" : "opacity-0"
-                } ${className || ""}`}
+            className={`fixed inset-0 w-screen h-screen pointer-events-none overflow-hidden ${className || ""}`}
             style={{ zIndex: activeCfg.zIndex ?? 20 }}
         >
-            <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
-            {activeCfg.frostedGlass && (
-                <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                        backdropFilter: `blur(${activeCfg.frostedBlur}px)`,
-                        WebkitBackdropFilter: `blur(${activeCfg.frostedBlur}px)`,
-                        backgroundColor: "color-mix(in srgb, var(--bg-color) 45%, transparent)",
-                    }}
-                >
-                    <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            background:
-                                "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.04) 100%)",
-                        }}
-                    />
-                    {activeCfg.frostedNoise && (
-                        <div
-                            className="absolute inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay"
-                            style={{
-                                backgroundImage: `url("${FROSTED_NOISE_SVG}")`,
-                                backgroundRepeat: "repeat",
-                                backgroundSize: "160px 160px",
-                            }}
-                        />
-                    )}
-                </div>
-            )}
+            <canvas ref={canvasRef} className="w-full h-full block" />
         </div>
     );
 }
