@@ -55,7 +55,7 @@ export default function HomePage() {
             {/* <WatercolorWallpaper className="-z-20" /> */}
             {/* <FlockSwarmWallpaper className="-z-10" /> */}
             {introTxt.length > 0 &&
-                <div className="relative z-10 box-border flex flex-col w-full gap-5">
+                <div className="relative box-border flex flex-col w-full gap-5">
                     <div
                         className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) ${isMobile ? 'mb-20 text-5xl px-4 gap-x-3 gap-y-2' : 'mb-50 text-6xl pl-10 pr-[20%] gap-x-4 gap-y-6'}`}
                     >
