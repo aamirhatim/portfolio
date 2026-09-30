@@ -6,7 +6,8 @@ import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
-import SpriteSwarmWallpaper from "../organisms/wallpapers/SpriteSwarmWallpaper"
+// import SpriteSwarmWallpaper from "../organisms/wallpapers/SpriteSwarmWallpaper"
+import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
 // import WatercolorWallpaper from "../organisms/wallpapers/WatercolorWallpaper"
 // import FlockSwarmWallpaper from "../organisms/wallpapers/FlockSwarmWallpaper"
 
@@ -51,7 +52,8 @@ export default function HomePage() {
 
     return (
         <>
-            <SpriteSwarmWallpaper />
+            <SpriteLineWallpaper />
+            {/* <SpriteSwarmWallpaper /> */}
             {/* <WatercolorWallpaper className="-z-20" /> */}
             {/* <FlockSwarmWallpaper className="-z-10" /> */}
             {introTxt.length > 0 &&
