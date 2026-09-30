@@ -54,13 +54,10 @@ export default function HomePage() {
         <>
             <SpriteLineWallpaper
                 spriteCount={6}
-                spawnDelay={500}
+                spawnDelay={300}
                 enableGroundPlatform={false}
                 showGroundLine={false}
             />
-            {/* <SpriteSwarmWallpaper /> */}
-            {/* <WatercolorWallpaper className="-z-20" /> */}
-            {/* <FlockSwarmWallpaper className="-z-10" /> */}
             {introTxt.length > 0 &&
                 <div className="relative box-border flex flex-col w-full gap-5">
                     <div

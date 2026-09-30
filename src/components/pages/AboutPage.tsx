@@ -152,7 +152,7 @@ export default function AboutPage() {
                 enableLedgeDrop={false}
                 platformShiftChance={0}
                 platformTopOffset={0}
-                spawnDelay={500}
+                spawnDelay={0}
                 randomizeSprites={true}
             />
         </div>
