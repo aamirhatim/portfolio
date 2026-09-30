@@ -4,14 +4,14 @@ import CurrentWork from "../molecules/currentWork"
 import Patents from "../molecules/patents"
 import PrevWork from "../molecules/prevWork"
 import Schooling from "../molecules/schooling"
-import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
+import Sprites from "../organisms/wallpapers/Sprites"
 
 export default function ResumePage() {
     const isMobile = useIsMobile();
 
     return (
         <>
-            <SpriteLineWallpaper
+            <Sprites
                 spriteCount={2}
                 platformSelector="[data-sprite-platform='resume-divider']"
                 spawnType="appear"

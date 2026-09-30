@@ -8,7 +8,7 @@ import ParallaxWrapper from "../atoms/ParallaxWrapper"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 import SocialsBar from "../molecules/socialsBar"
-import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
+import Sprites from "../organisms/wallpapers/Sprites"
 
 export default function AboutPage() {
     // Get context
@@ -142,7 +142,7 @@ export default function AboutPage() {
                 <SocialsBar />
             </div>
 
-            <SpriteLineWallpaper
+            <Sprites
                 spriteCount={1}
                 selectedSprites={5}
                 platformSelector="[data-sprite-platform]"

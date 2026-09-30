@@ -7,7 +7,7 @@ import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 // import SpriteSwarmWallpaper from "../organisms/wallpapers/SpriteSwarmWallpaper"
-import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
+import Sprites from "../organisms/wallpapers/Sprites"
 // import WatercolorWallpaper from "../organisms/wallpapers/WatercolorWallpaper"
 // import FlockSwarmWallpaper from "../organisms/wallpapers/FlockSwarmWallpaper"
 
@@ -52,12 +52,13 @@ export default function HomePage() {
 
     return (
         <>
-            <SpriteLineWallpaper
+            <Sprites
                 spriteCount={6}
                 spawnDelay={300}
-                enableGroundPlatform={false}
+                enableGroundPlatform={true}
                 showGroundLine={false}
             />
+
             {introTxt.length > 0 &&
                 <div className="relative box-border flex flex-col w-full gap-5">
                     <div

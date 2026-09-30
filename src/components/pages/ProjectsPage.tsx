@@ -9,7 +9,7 @@ import AnimateInView from "../atoms/AnimateInView";
 import GithubContributionTracker from "../organisms/GithubContributionTracker";
 import FeaturedWorkCarousel from "../organisms/FeaturedWorkCarousel";
 import lodash from "lodash";
-import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper";
+import Sprites from "../organisms/wallpapers/Sprites";
 
 export default function ProjectsPage() {
     // Get context
@@ -86,7 +86,7 @@ export default function ProjectsPage() {
                 Object.entries(projectList).reverse().map(([year, projects]) => createProjectSection(projects, year))
             }
 
-            <SpriteLineWallpaper
+            <Sprites
                 spriteCount={4}
                 platformSelector="data-sprite-platform"
                 spawnType="appear"

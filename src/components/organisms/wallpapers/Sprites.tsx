@@ -151,7 +151,7 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     randomizeSprites: false,
 };
 
-export interface SpriteLineWallpaperProps {
+export interface SpritesProps {
     /** Optional overrides for simulation configuration */
     config?: Partial<SpriteLineConfig>;
     /** Optional additional Tailwind CSS classes for the canvas element */
@@ -645,7 +645,7 @@ interface LineBoid {
 // COMPONENT
 // ============================================================================
 
-export default function SpriteLineWallpaper({
+export default function Sprites({
     config: customConfig,
     className,
     spriteSize,
@@ -684,7 +684,7 @@ export default function SpriteLineWallpaper({
     spriteIndices,
     selectedSprites,
     randomizeSprites,
-}: SpriteLineWallpaperProps) {
+}: SpritesProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     // Merge configuration from props and config object once with useMemo
