@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.14.0] - 2026-09-30 15:42:45
+
+### Added
+- Created interactive `Sprites` component (`src/components/organisms/wallpapers/Sprites.tsx`) featuring autonomous animated pixel art cats with procedural walking, physics-based hopping, cursor avoidance, and ledge edge handling.
+- Implemented DOM platform navigation allowing sprites to detect, hop onto, and traverse custom page elements via `data-sprite-platform` and CSS selectors.
+- Added multi-page sprite support with bespoke configurations across the Home, Projects, About, and Resume pages.
+- Added configurable `spawnType` options (`"fall"`, `"fade"`, `"appear"`) and non-repeating random breed selection (`randomizeSprites`).
+- Added boundary confinement controls (`enableGroundPlatform`, `enableLedgeDrop`) for constraining sprites to specific elements.
+
+### Changed
+- Refactored platform detection to use a 40ms debounced scanner with `MutationObserver` and `ResizeObserver` to eliminate layout thrashing.
+- Replaced biased array sorting with uniform Fisher-Yates shuffling for slot assignment and sprite type distribution.
+- Enhanced asynchronous platform recovery to handle dynamic Firestore data loads seamlessly.
+
+
 ## [9.13.0] - 2026-09-27 16:05:50
 
 ### Upgraded
