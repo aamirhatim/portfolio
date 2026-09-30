@@ -44,15 +44,16 @@ export default function Navbar() {
         }
     }
 
-    const commonClasses = `fixed left-0 box-border w-full flex z-10 backdrop-blur-md bg-(--bg-color)/60`;
+    const commonClasses = `fixed top-0 left-0 box-border w-full flex z-[10000] backdrop-blur-md bg-(--bg-color)/60`;
     
     // Inline animation style to replicate the spring
     const animationStyle = { animation: 'slideDown 0.5s ease-out forwards' };
 
     const desktopLayout = (
-        <div
+        <header
             className={`py-6 ${commonClasses}`}
             style={animationStyle}
+            data-no-sprite-platform
         >
             <nav className='box-border px-10 w-full mx-auto max-w-(--max-width) flex items-center gap-8'>
                 <ParallaxWrapper multiplier={3}>
@@ -89,19 +90,20 @@ export default function Navbar() {
                     )}
                 </div>
             </nav>
-        </div>
+        </header>
     );
 
     const mobileLayout = (
-        <div
+        <header
             className={`px-6 py-3 items-center justify-between ${commonClasses}`}
             style={animationStyle}
+            data-no-sprite-platform
         >
             <button aria-label="Home" className="cursor-pointer appearance-none bg-transparent border-none p-0" onClick={() => handleNavClick("home")}>
                 <Logo className='h-5 w-auto fill-(--txt-body-color)' />
             </button>
             <NavMenu />
-        </div>
+        </header>
     );
 
     return (
