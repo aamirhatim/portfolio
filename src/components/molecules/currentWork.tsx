@@ -35,10 +35,15 @@ export default function CurrentWork() {
     return (
         <>
             {currentWork !== undefined &&
-                <section className={`flex flex-col gap-6 border-b border-b-(--border-color) ${isMobile ? 'py-20' : 'pb-20'}`}>
+                <section className={`flex flex-col gap-6 ${isMobile ? 'pt-20' : ''}`}>
                     <h2 className='title text-4xl text-(--txt-title-color) mb-8'>current role.</h2>
 
                     <ExpJobItem job={currentWork.data as JobType} showDetail={true} />
+
+                    <div
+                        data-sprite-platform="resume-divider"
+                        className="w-full border-b border-b-(--border-color) mt-20"
+                    />
                 </section>
             }
         </>

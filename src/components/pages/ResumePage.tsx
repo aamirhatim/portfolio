@@ -4,16 +4,31 @@ import CurrentWork from "../molecules/currentWork"
 import Patents from "../molecules/patents"
 import PrevWork from "../molecules/prevWork"
 import Schooling from "../molecules/schooling"
+import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
 
 export default function ResumePage() {
     const isMobile = useIsMobile();
 
     return (
-        <section className={`flex flex-col gap-30 w-full px-4 ${isMobile ? '' : 'max-w-[800px] mx-auto'}`}>
-            <AnimateInView><CurrentWork /></AnimateInView>
-            <PrevWork />
-            <Patents />
-            <Schooling />
-        </section>
+        <>
+            <SpriteLineWallpaper
+                spriteCount={2}
+                platformSelector="[data-sprite-platform='resume-divider']"
+                spawnType="appear"
+                showGroundLine={false}
+                enableGroundPlatform={false}
+                enableLedgeDrop={false}
+                platformShiftChance={0}
+                platformTopOffset={0}
+                spawnDelay={300}
+                randomizeSprites={true}
+            />
+            <section className={`flex flex-col gap-30 w-full px-4 ${isMobile ? '' : 'max-w-[800px] mx-auto'}`}>
+                <AnimateInView><CurrentWork /></AnimateInView>
+                <PrevWork />
+                <Patents />
+                <Schooling />
+            </section>
+        </>
     )
 }

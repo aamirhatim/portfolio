@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef } from "react";
 // and take larger escape hops away from the cursor when hovered.
 // ============================================================================
 
+export type SpawnType = "fall" | "fade" | "appear";
+
 export interface SpriteLineConfig {
     /** Visual size of the sprite in pixels (default: 10) */
     spriteSize: number;
@@ -95,6 +97,18 @@ export interface SpriteLineConfig {
     spawnDelay?: number;
     /** Vertical offset applied to platform surfaces relative to element bounds. "auto" aligns to visible text/chips (default: "auto") */
     platformTopOffset?: number | "auto";
+    /** Spawning visual behavior: "fall" (sky drop with squash), "fade" (smooth opacity transition), "appear" (instant) (default: "fall") */
+    spawnType?: SpawnType;
+    /** Whether to register the document bottom ground line as an available platform (default: true) */
+    enableGroundPlatform?: boolean;
+    /** Whether sprites can drop/fall off platform edges (default: true). Set to false to confine sprites strictly to their platform */
+    enableLedgeDrop?: boolean;
+    /** Specific sprite index or array of sprite indices (0 to spriteSheetCols - 1) to use for spawned sprites, or "random" (optional) */
+    spriteIndices?: number | number[] | "random";
+    /** Alias for spriteIndices */
+    selectedSprites?: number | number[] | "random";
+    /** If true, randomly selects sprite breeds/palettes for each spawned instance (default: false) */
+    randomizeSprites?: boolean;
 }
 
 const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
@@ -131,6 +145,10 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     showPlatforms: false,
     spawnDelay: 500,
     platformTopOffset: "auto",
+    spawnType: "fall",
+    enableGroundPlatform: true,
+    enableLedgeDrop: true,
+    randomizeSprites: false,
 };
 
 export interface SpriteLineWallpaperProps {
@@ -170,6 +188,12 @@ export interface SpriteLineWallpaperProps {
     showPlatforms?: boolean;
     spawnDelay?: number;
     platformTopOffset?: number | "auto";
+    spawnType?: SpawnType;
+    enableGroundPlatform?: boolean;
+    enableLedgeDrop?: boolean;
+    spriteIndices?: number | number[] | "random";
+    selectedSprites?: number | number[] | "random";
+    randomizeSprites?: boolean;
 }
 
 // ============================================================================
@@ -448,32 +472,35 @@ function extractPlatformSurfaces(
     groundYBaseline: number,
     pageWidth: number,
     excludeSelector?: string,
-    platformTopOffset: number | "auto" = "auto"
+    platformTopOffset: number | "auto" = "auto",
+    enableGroundPlatform: boolean = true
 ): PlatformSurface[] {
     const surfaces: PlatformSurface[] = [];
     const scrollX = window.scrollX || window.pageXOffset || 0;
     const scrollY = window.scrollY || window.pageYOffset || 0;
 
-    // Always include the document ground line as platform 0
-    surfaces.push({
-        id: "ground",
-        left: 0,
-        right: pageWidth,
-        top: groundYBaseline,
-        width: pageWidth,
-        isGround: true,
-    });
+    // Include the document ground line as platform 0 if enabled
+    if (enableGroundPlatform) {
+        surfaces.push({
+            id: "ground",
+            left: 0,
+            right: pageWidth,
+            top: groundYBaseline,
+            width: pageWidth,
+            isGround: true,
+        });
+    }
 
     try {
         const elements = document.querySelectorAll<HTMLElement>(selector);
-        const seenIds = new Set<string>(["ground"]);
+        const seenIds = new Set<string>(enableGroundPlatform ? ["ground"] : []);
 
         const pushSurface = (
             idSuffix: string,
             r: DOMRect | { left: number; right: number; top: number; width: number; height: number },
             computedOffset: number
         ) => {
-            if (r.width < 24 || r.height < 6) return;
+            if (r.width < 24 || r.height < 1) return;
             let finalId = idSuffix;
             if (seenIds.has(finalId)) {
                 finalId = `${idSuffix}_${++globalPlatformCounter}`;
@@ -582,6 +609,7 @@ interface LineBoid {
     fallingFromPlatformId?: string;
     fallStartY?: number;
     spawnTargetPlatformId?: string; // If set, sprite is in initial spawn fall directly targeting this platform
+    spawnFadeProgress?: number; // 0.0 to 1.0 for "fade" spawnType
 
     // Personality Variance Traits
     catType: CatType;
@@ -632,6 +660,12 @@ export default function SpriteLineWallpaper({
     showPlatforms,
     spawnDelay,
     platformTopOffset,
+    spawnType,
+    enableGroundPlatform,
+    enableLedgeDrop,
+    spriteIndices,
+    selectedSprites,
+    randomizeSprites,
 }: SpriteLineWallpaperProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -669,6 +703,12 @@ export default function SpriteLineWallpaper({
         ...(showPlatforms !== undefined ? { showPlatforms } : {}),
         ...(spawnDelay !== undefined ? { spawnDelay } : {}),
         ...(platformTopOffset !== undefined ? { platformTopOffset } : {}),
+        ...(spawnType !== undefined ? { spawnType } : {}),
+        ...(enableGroundPlatform !== undefined ? { enableGroundPlatform } : {}),
+        ...(enableLedgeDrop !== undefined ? { enableLedgeDrop } : {}),
+        ...(spriteIndices !== undefined ? { spriteIndices } : {}),
+        ...(selectedSprites !== undefined ? { selectedSprites } : {}),
+        ...(randomizeSprites !== undefined ? { randomizeSprites } : {}),
     }), [
         customConfig,
         spriteSize,
@@ -701,6 +741,12 @@ export default function SpriteLineWallpaper({
         showPlatforms,
         spawnDelay,
         platformTopOffset,
+        spawnType,
+        enableGroundPlatform,
+        enableLedgeDrop,
+        spriteIndices,
+        selectedSprites,
+        randomizeSprites,
     ]);
 
     const cfgRef = useRef<SpriteLineConfig>(activeCfg);
@@ -781,6 +827,7 @@ export default function SpriteLineWallpaper({
 
             const { pageWidth, pageHeight } = docDimensions;
             const cfg = cfgRef.current;
+            const spawnType = cfg.spawnType ?? "fall";
             const baseSize = cfg.spriteSize;
             const estimatedHalfW = Math.max(16, (baseSize * 1.2) * 0.5);
             const boundaryMargin = estimatedHalfW + 12;
@@ -798,21 +845,33 @@ export default function SpriteLineWallpaper({
                     const dropStartY = Math.min(groundTop - 120, currentScrollY - 30) - (i * 20 + Math.random() * 30);
 
                     b.x = spawnX;
-                    b.y = dropStartY;
                     b.hopStartX = spawnX;
                     b.hopStartY = groundTop;
                     b.hopTargetX = spawnX;
                     b.hopTargetY = groundTop;
                     b.currentPlatformId = "ground";
                     b.targetPlatformId = "ground";
-                    b.isFalling = true;
-                    b.fallVelocity = 60 + Math.random() * 80;
-                    b.spawnTargetPlatformId = "ground";
-                    b.fallingFromPlatformId = undefined;
-                    b.fallStartY = dropStartY;
                     b.isHopping = false;
                     b.direction = Math.random() < 0.5 ? 1 : -1;
                     b.recoveryTimer = 0;
+
+                    if (spawnType === "fade") {
+                        b.y = groundTop;
+                        b.isFalling = false;
+                        b.spawnFadeProgress = 0;
+                    } else if (spawnType === "appear") {
+                        b.y = groundTop;
+                        b.isFalling = false;
+                        b.spawnFadeProgress = 1;
+                    } else {
+                        b.y = dropStartY;
+                        b.isFalling = true;
+                        b.fallVelocity = 60 + Math.random() * 80;
+                        b.spawnTargetPlatformId = "ground";
+                        b.fallingFromPlatformId = undefined;
+                        b.fallStartY = dropStartY;
+                        b.spawnFadeProgress = 1;
+                    }
                 }
                 return;
             }
@@ -820,8 +879,8 @@ export default function SpriteLineWallpaper({
             // Sort elevated platforms by vertical position (top to bottom)
             const sortedElevated = [...nonGround].sort((a, b) => a.top - b.top);
 
-            // Reserve at least 1 sprite for the ground line if multiple sprites
-            const groundSpriteIndex = (boidsList.length > 2 && ground) ? 0 : -1;
+            // Reserve at least 1 sprite for the ground line if multiple sprites AND ground platform enabled
+            const groundSpriteIndex = (boidsList.length > 2 && ground && cfg.enableGroundPlatform !== false) ? 0 : -1;
 
             const elevatedSpriteIndices = boidsList
                 .map((_, idx) => idx)
@@ -861,21 +920,33 @@ export default function SpriteLineWallpaper({
                 const dropStartY = Math.min(targetPlat.top - 120, currentScrollY - 30) - (k * 20 + Math.random() * 30);
 
                 b.x = spawnX;
-                b.y = dropStartY;
                 b.hopStartX = spawnX;
                 b.hopStartY = targetPlat.top;
                 b.hopTargetX = spawnX;
                 b.hopTargetY = targetPlat.top;
                 b.currentPlatformId = targetPlat.id;
                 b.targetPlatformId = targetPlat.id;
-                b.isFalling = true;
-                b.fallVelocity = 60 + Math.random() * 80;
-                b.spawnTargetPlatformId = targetPlat.id;
-                b.fallingFromPlatformId = undefined;
-                b.fallStartY = dropStartY;
                 b.isHopping = false;
                 b.direction = Math.random() < 0.5 ? 1 : -1;
                 b.recoveryTimer = 0;
+
+                if (spawnType === "fade") {
+                    b.y = targetPlat.top;
+                    b.isFalling = false;
+                    b.spawnFadeProgress = 0;
+                } else if (spawnType === "appear") {
+                    b.y = targetPlat.top;
+                    b.isFalling = false;
+                    b.spawnFadeProgress = 1;
+                } else {
+                    b.y = dropStartY;
+                    b.isFalling = true;
+                    b.fallVelocity = 60 + Math.random() * 80;
+                    b.spawnTargetPlatformId = targetPlat.id;
+                    b.fallingFromPlatformId = undefined;
+                    b.fallStartY = dropStartY;
+                    b.spawnFadeProgress = 1;
+                }
             }
 
             // Position ground sprite if applicable
@@ -888,21 +959,33 @@ export default function SpriteLineWallpaper({
                     const dropStartY = Math.min(ground.top - 120, currentScrollY - 30) - (numElevatedSprites * 20 + Math.random() * 30);
 
                     b.x = spawnX;
-                    b.y = dropStartY;
                     b.hopStartX = spawnX;
                     b.hopStartY = ground.top;
                     b.hopTargetX = spawnX;
                     b.hopTargetY = ground.top;
                     b.currentPlatformId = "ground";
                     b.targetPlatformId = "ground";
-                    b.isFalling = true;
-                    b.fallVelocity = 60 + Math.random() * 80;
-                    b.spawnTargetPlatformId = "ground";
-                    b.fallingFromPlatformId = undefined;
-                    b.fallStartY = dropStartY;
                     b.isHopping = false;
                     b.direction = Math.random() < 0.5 ? 1 : -1;
                     b.recoveryTimer = 0;
+
+                    if (spawnType === "fade") {
+                        b.y = ground.top;
+                        b.isFalling = false;
+                        b.spawnFadeProgress = 0;
+                    } else if (spawnType === "appear") {
+                        b.y = ground.top;
+                        b.isFalling = false;
+                        b.spawnFadeProgress = 1;
+                    } else {
+                        b.y = dropStartY;
+                        b.isFalling = true;
+                        b.fallVelocity = 60 + Math.random() * 80;
+                        b.spawnTargetPlatformId = "ground";
+                        b.fallingFromPlatformId = undefined;
+                        b.fallStartY = dropStartY;
+                        b.spawnFadeProgress = 1;
+                    }
                 }
             }
         };
@@ -914,14 +997,18 @@ export default function SpriteLineWallpaper({
             const currentGroundY = computeGroundY(pageHeight);
 
             if (!cfg.enablePlatforms) {
-                platforms = [{
-                    id: "ground",
-                    left: 0,
-                    right: pageWidth,
-                    top: currentGroundY,
-                    width: pageWidth,
-                    isGround: true,
-                }];
+                if (cfg.enableGroundPlatform !== false) {
+                    platforms = [{
+                        id: "ground",
+                        left: 0,
+                        right: pageWidth,
+                        top: currentGroundY,
+                        width: pageWidth,
+                        isGround: true,
+                    }];
+                } else {
+                    platforms = [];
+                }
                 return;
             }
             platforms = extractPlatformSurfaces(
@@ -929,7 +1016,8 @@ export default function SpriteLineWallpaper({
                 currentGroundY,
                 pageWidth,
                 cfg.platformExcludeSelector || "nav, header, [data-no-sprite-platform]",
-                cfg.platformTopOffset
+                cfg.platformTopOffset,
+                cfg.enableGroundPlatform !== false
             );
         };
 
@@ -1006,6 +1094,33 @@ export default function SpriteLineWallpaper({
 
             const shuffledSlots = Array.from({ length: count }, (_, idx) => idx).sort(() => Math.random() - 0.5);
 
+            // Build candidate sprite pool
+            const totalCols = Math.max(1, cfg.spriteSheetCols || 6);
+            const rawSelection = cfg.spriteIndices ?? cfg.selectedSprites;
+            const isRandom = cfg.randomizeSprites || rawSelection === "random";
+
+            const spritePool: number[] = Array.isArray(rawSelection) && rawSelection.length > 0
+                ? rawSelection.map((idx) => Math.abs(idx) % totalCols)
+                : (typeof rawSelection === "number"
+                    ? [Math.abs(rawSelection) % totalCols]
+                    : Array.from({ length: totalCols }, (_, idx) => idx));
+
+            // Distribute sprite types without repeating until pool is exhausted
+            const assignedSpriteTypes: number[] = [];
+            if (isRandom) {
+                let currentShuffled: number[] = [];
+                for (let i = 0; i < count; i++) {
+                    if (currentShuffled.length === 0) {
+                        currentShuffled = [...spritePool].sort(() => Math.random() - 0.5);
+                    }
+                    assignedSpriteTypes.push(currentShuffled.pop()!);
+                }
+            } else {
+                for (let i = 0; i < count; i++) {
+                    assignedSpriteTypes.push(spritePool[i % spritePool.length]);
+                }
+            }
+
             for (let i = 0; i < count; i++) {
                 const initX = padding + (shuffledSlots[i] + 0.15 + Math.random() * 0.7) * step;
                 const initialDir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
@@ -1021,11 +1136,13 @@ export default function SpriteLineWallpaper({
                 const hopChanceMod = Math.max(0.2, 1.0 + (Math.random() * 2 - 1) * pVar);
                 const turnChanceMod = Math.max(0.2, 1.0 + (Math.random() * 2 - 1) * pVar);
 
+                const catType = assignedSpriteTypes[i];
+
                 boids.push({
                     x: initX,
                     y: initialGroundY,
                     direction: initialDir,
-                    catType: i % (cfg.spriteSheetCols || 6),
+                    catType,
 
                     currentPlatformId: "ground",
 
@@ -1190,7 +1307,7 @@ export default function SpriteLineWallpaper({
                         }
                     }
                     if (!landedPlat && b.y >= groundYBaseline) {
-                        landedPlat = groundPlat || null;
+                        landedPlat = groundPlat || (platforms.length > 0 ? platforms[0] : null);
                     }
 
                     if (landedPlat) {
@@ -1341,7 +1458,8 @@ export default function SpriteLineWallpaper({
                     b.hopStartX = b.x;
                     b.hopStartY = b.y;
 
-                    const plat = currentPlat || groundPlat!;
+                    const plat = currentPlat || groundPlat || (platforms.length > 0 ? platforms[0] : null);
+                    if (!plat) continue;
 
                     if (isFleeHop) {
                         const fleeDir: 1 | -1 = dx >= 0 ? 1 : -1;
@@ -1359,7 +1477,7 @@ export default function SpriteLineWallpaper({
 
                             const isNearLeftLedge = b.x <= plat.left + 22 && fleeDir === -1;
                             const isNearRightLedge = b.x >= plat.right - 22 && fleeDir === 1;
-                            const canLedgeDrop = !plat.isGround && (isNearLeftLedge || isNearRightLedge);
+                            const canLedgeDrop = cfg.enableLedgeDrop !== false && !plat.isGround && (isNearLeftLedge || isNearRightLedge);
 
                             for (let j = 0; j < platforms.length; j++) {
                                 const q = platforms[j];
@@ -1602,15 +1720,19 @@ export default function SpriteLineWallpaper({
                             const isAtRightLedge = b.x >= plat.right - ledgeMargin && b.direction === 1;
 
                             if (!plat.isGround && (isAtLeftLedge || isAtRightLedge)) {
-                                const dropChance = (cfg.platformDropChance ?? 0.15) * (1 / Math.max(0.5, b.wanderPatience));
-                                if (Math.random() < dropChance) {
-                                    b.isHopping = false;
-                                    b.isFalling = true;
-                                    b.fallVelocity = 25;
-                                    b.fallingFromPlatformId = plat.id;
-                                    b.fallStartY = plat.top;
-                                    b.x += b.direction * 6;
-                                    continue;
+                                if (cfg.enableLedgeDrop !== false) {
+                                    const dropChance = (cfg.platformDropChance ?? 0.15) * (1 / Math.max(0.5, b.wanderPatience));
+                                    if (Math.random() < dropChance) {
+                                        b.isHopping = false;
+                                        b.isFalling = true;
+                                        b.fallVelocity = 25;
+                                        b.fallingFromPlatformId = plat.id;
+                                        b.fallStartY = plat.top;
+                                        b.x += b.direction * 6;
+                                        continue;
+                                    } else {
+                                        b.direction = (b.direction === 1 ? -1 : 1) as 1 | -1;
+                                    }
                                 } else {
                                     b.direction = (b.direction === 1 ? -1 : 1) as 1 | -1;
                                 }
@@ -1744,6 +1866,10 @@ export default function SpriteLineWallpaper({
                 ctx.save();
                 ctx.translate(screenX, screenY);
                 ctx.scale(scaleX, scaleY);
+                if (b.spawnFadeProgress !== undefined && b.spawnFadeProgress < 1.0) {
+                    b.spawnFadeProgress = Math.min(1.0, b.spawnFadeProgress + dt / 0.5);
+                    ctx.globalAlpha = (ctx.globalAlpha || 1.0) * b.spawnFadeProgress;
+                }
                 ctx.drawImage(sprite, -renderW * 0.5, -renderH, renderW, renderH);
                 ctx.restore();
             }
