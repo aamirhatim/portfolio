@@ -185,12 +185,14 @@ void main() {
 }
 `;
 
-export interface WatercolorBackgroundProps {
+export interface WatercolorWallpaperProps {
     /** Optional additional Tailwind CSS classes for the canvas element */
     className?: string;
 }
 
-export default function WatercolorBackground({ className = "" }: WatercolorBackgroundProps = {}) {
+export type WatercolorBackgroundProps = WatercolorWallpaperProps;
+
+export default function WatercolorWallpaper({ className = "" }: WatercolorWallpaperProps = {}) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
 

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 // and dynamic cursor response (avoidance while moving, swarming while still).
 // ============================================================================
 
-export interface SwarmSpriteConfig {
+export interface SpriteSwarmConfig {
     /** Total number of flock members in the simulation */
     boidCount: number;
     /** Visual body size in pixels (length and wingspan) */
@@ -107,7 +107,9 @@ export interface SwarmSpriteConfig {
     };
 }
 
-const SWARM_SPRITE_DEFAULT_CONFIG: SwarmSpriteConfig = {
+export type SwarmSpriteConfig = SpriteSwarmConfig;
+
+const SPRITE_SWARM_DEFAULT_CONFIG: SpriteSwarmConfig = {
     boidCount: 6 * 2,
     boidSize: 10,
 
@@ -173,12 +175,16 @@ const SWARM_SPRITE_DEFAULT_CONFIG: SwarmSpriteConfig = {
     },
 };
 
-export interface SwarmSpriteBackgroundProps {
+export const SWARM_SPRITE_DEFAULT_CONFIG = SPRITE_SWARM_DEFAULT_CONFIG;
+
+export interface SpriteSwarmWallpaperProps {
     /** Optional overrides for any high-level simulation configuration parameters */
-    config?: Partial<SwarmSpriteConfig>;
+    config?: Partial<SpriteSwarmConfig>;
     /** Optional additional Tailwind CSS classes for the canvas element */
     className?: string;
 }
+
+export type SwarmSpriteBackgroundProps = SpriteSwarmWallpaperProps;
 
 // ============================================================================
 // INTERNAL CONSTANTS & HEURISTICS
@@ -632,20 +638,20 @@ interface Boid {
     catType: CatType; // 0 = Black Cat, 1 = Cow Cat, 2 = Tabby Cat, 3 = Tortie Cat
 }
 
-export default function SwarmSpriteBackground({ config: customConfig, className }: SwarmSpriteBackgroundProps) {
+export default function SpriteSwarmWallpaper({ config: customConfig, className }: SpriteSwarmWallpaperProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Merge high-level parameters
-    const cfgRef = useRef<SwarmSpriteConfig>({
-        ...SWARM_SPRITE_DEFAULT_CONFIG,
+    const cfgRef = useRef<SpriteSwarmConfig>({
+        ...SPRITE_SWARM_DEFAULT_CONFIG,
         ...customConfig,
     });
 
     // Keep config reference synchronized if props change
     useEffect(() => {
         cfgRef.current = {
-            ...SWARM_SPRITE_DEFAULT_CONFIG,
+            ...SPRITE_SWARM_DEFAULT_CONFIG,
             ...customConfig,
         };
     }, [customConfig]);
@@ -1417,7 +1423,7 @@ export default function SwarmSpriteBackground({ config: customConfig, className 
     }, []);
 
     const activeCfg = {
-        ...SWARM_SPRITE_DEFAULT_CONFIG,
+        ...SPRITE_SWARM_DEFAULT_CONFIG,
         ...customConfig,
     };
 

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 // and dynamic cursor response (avoidance while moving, swarming while still).
 // ============================================================================
 
-export interface SwarmFlockConfig {
+export interface FlockSwarmConfig {
     /** Total number of flocking boids in the simulation (default: 5) */
     boidCount: number;
     /** Base rendering size in pixels (length and wingspan) */
@@ -96,7 +96,9 @@ export interface SwarmFlockConfig {
     };
 }
 
-const SWARM_FLOCK_DEFAULT_CONFIG: SwarmFlockConfig = {
+export type SwarmFlockConfig = FlockSwarmConfig;
+
+const FLOCK_SWARM_DEFAULT_CONFIG: FlockSwarmConfig = {
     boidCount: 200,
     boidSize: 8,
 
@@ -155,12 +157,16 @@ const SWARM_FLOCK_DEFAULT_CONFIG: SwarmFlockConfig = {
     },
 };
 
-export interface SwarmFlockBackgroundProps {
+export const SWARM_FLOCK_DEFAULT_CONFIG = FLOCK_SWARM_DEFAULT_CONFIG;
+
+export interface FlockSwarmWallpaperProps {
     /** Optional overrides for any high-level simulation configuration parameters */
-    config?: Partial<SwarmFlockConfig>;
+    config?: Partial<FlockSwarmConfig>;
     /** Optional additional Tailwind CSS classes for the canvas element */
     className?: string;
 }
+
+export type SwarmFlockBackgroundProps = FlockSwarmWallpaperProps;
 
 // ============================================================================
 // INTERNAL CONSTANTS & HEURISTICS
@@ -405,20 +411,20 @@ interface Boid {
     isFlocking: boolean; // Whether boid currently has enough flockmates to be part of a flock
 }
 
-export default function SwarmFlockBackground({ config: customConfig, className }: SwarmFlockBackgroundProps) {
+export default function FlockSwarmWallpaper({ config: customConfig, className }: FlockSwarmWallpaperProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
     // Merge high-level parameters
-    const cfgRef = useRef<SwarmFlockConfig>({
-        ...SWARM_FLOCK_DEFAULT_CONFIG,
+    const cfgRef = useRef<FlockSwarmConfig>({
+        ...FLOCK_SWARM_DEFAULT_CONFIG,
         ...customConfig,
     });
 
     // Keep config reference synchronized if props change
     useEffect(() => {
         cfgRef.current = {
-            ...SWARM_FLOCK_DEFAULT_CONFIG,
+            ...FLOCK_SWARM_DEFAULT_CONFIG,
             ...customConfig,
         };
     }, [customConfig]);
@@ -1107,7 +1113,7 @@ export default function SwarmFlockBackground({ config: customConfig, className }
     }, []);
 
     const activeCfg = {
-        ...SWARM_FLOCK_DEFAULT_CONFIG,
+        ...FLOCK_SWARM_DEFAULT_CONFIG,
         ...customConfig,
     };
 

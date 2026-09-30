@@ -1,15 +1,14 @@
 import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
-// import LiquidWavePaperweight from "../atoms/LiquidWavePaperweight"
-// import WatercolorBackground from "../atoms/WatercolorBackground"
-// import SwarmFlockBackground from "../atoms/SwarmFlockBackground"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
-import SwarmSpriteBackground from "../atoms/SwarmSpriteBackground"
+import SpriteSwarmWallpaper from "../organisms/wallpapers/SpriteSwarmWallpaper"
+// import WatercolorWallpaper from "../organisms/wallpapers/WatercolorWallpaper"
+// import FlockSwarmWallpaper from "../organisms/wallpapers/FlockSwarmWallpaper"
 
 export default function HomePage() {
     // Get context
@@ -52,10 +51,9 @@ export default function HomePage() {
 
     return (
         <>
-            <SwarmSpriteBackground />
-            {/* <WatercolorBackground className="-z-20" /> */}
-            {/* <SwarmFlockBackground className="-z-10" /> */}
-            {/* <LiquidWavePaperweight /> */}
+            <SpriteSwarmWallpaper />
+            {/* <WatercolorWallpaper className="-z-20" /> */}
+            {/* <FlockSwarmWallpaper className="-z-10" /> */}
             {introTxt.length > 0 &&
                 <div className="relative z-10 box-border flex flex-col w-full gap-5">
                     <div
