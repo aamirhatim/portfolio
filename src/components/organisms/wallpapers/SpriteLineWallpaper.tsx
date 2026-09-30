@@ -104,16 +104,16 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     largeHopHeight: 22,
     largeHopDistance: 50,
     speed: 2,
-    fleeSpeed: 1,
+    fleeSpeed: 1.5,
     hopChance: 0.3,
     turnChance: 0.2,
     personalityVariance: 0.3,
 
     spriteCount: 6,
     groundOffsetFromBottom: 70,
-    cursorFleeRadius: 50,
+    cursorFleeRadius: 60,
 
-    showGroundLine: false,
+    showGroundLine: true,
     groundLineColor: "rgba(128, 128, 128, 0.2)",
 
     spriteSheetSrc: "/sprites/sprites.png",
@@ -129,7 +129,7 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     platformShiftChance: 0.5,
     zIndex: 20,
     showPlatforms: false,
-    spawnDelay: 1500,
+    spawnDelay: 500,
     platformTopOffset: "auto",
 };
 
