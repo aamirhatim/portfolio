@@ -1197,11 +1197,17 @@ export default function Sprites({
             screenHeight = window.innerHeight;
             canvas.width = Math.floor(screenWidth * dpr);
             canvas.height = Math.floor(screenHeight * dpr);
+            canvas.style.width = `${screenWidth}px`;
+            canvas.style.height = `${screenHeight}px`;
             debouncedScan();
         };
         handleResize();
         scanPlatforms();
         window.addEventListener("resize", handleResize, { passive: true });
+        const visualViewport = window.visualViewport;
+        if (visualViewport) {
+            visualViewport.addEventListener("resize", handleResize, { passive: true });
+        }
 
         // Observers for layout and dynamic content changes
         const observer = new MutationObserver(() => {
@@ -1947,6 +1953,9 @@ export default function Sprites({
         return () => {
             if (rafId !== null) cancelAnimationFrame(rafId);
             window.removeEventListener("resize", handleResize);
+            if (visualViewport) {
+                visualViewport.removeEventListener("resize", handleResize);
+            }
             window.removeEventListener("pointermove", handlePointerMove);
             window.removeEventListener("pointerleave", handlePointerLeave);
             mediaReduced.removeEventListener("change", handleReduced);
@@ -1965,10 +1974,10 @@ export default function Sprites({
     return (
         <div
             aria-hidden="true"
-            className={`fixed inset-0 w-screen h-screen pointer-events-none overflow-hidden ${className || ""}`}
+            className={`fixed inset-0 pointer-events-none overflow-hidden ${className || ""}`}
             style={{ zIndex: activeCfg.zIndex ?? 20 }}
         >
-            <canvas ref={canvasRef} className="w-full h-full block" />
+            <canvas ref={canvasRef} className="block" />
         </div>
     );
 }
