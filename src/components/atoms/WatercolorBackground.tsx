@@ -2,29 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 const VERTEX_SHADER = `
 attribute vec2 a_position;
-void main() {
-    gl_Position = vec4(a_position, 0.0, 1.0);
-}
-`;
 
-const FRAGMENT_SHADER = `
-precision highp float;
-uniform vec2 u_res;
-uniform float u_time;
-uniform vec2 u_mouse;
-uniform vec2 u_velocity;
-uniform float u_seed;
 uniform float u_dark;
-uniform float u_reducedMotion;
-
-#define MAX_BLOOMS 16
-uniform vec4 u_bloomData[MAX_BLOOMS]; // xy: pos, z: age, w: maxRadius
-uniform vec3 u_bloomColors[MAX_BLOOMS]; // rgb color
-
-const float SPEED = 0.07;
-const float SCALE = 3.2;
-const float WARP = 1.25;
-const float STREAK = 1.8;
 
 // Light mode palette: Forest Sage
 const vec3 L_C0 = vec3(0.953, 0.965, 0.961); // #f3f6f5 (base paper)
@@ -43,6 +22,61 @@ const vec3 D_C3 = vec3(0.141, 0.361, 0.263); // #245c43 (emerald glow)
 const vec3 D_C4 = vec3(0.239, 0.561, 0.420); // #3d8f6b (luminous pine)
 const vec3 D_C5 = vec3(0.306, 0.659, 0.498); // #4ea87f (pale emerald mist)
 const vec3 D_LINE = vec3(0.392, 0.718, 0.565); // #64b790 (contour edge)
+
+varying vec3 v_c0;
+varying vec3 v_c1;
+varying vec3 v_c2;
+varying vec3 v_c3;
+varying vec3 v_c4;
+varying vec3 v_c5;
+varying vec3 v_lineCol;
+varying vec3 v_pA;
+varying vec3 v_pB;
+
+void main() {
+    v_c0 = mix(L_C0, D_C0, u_dark);
+    v_c1 = mix(L_C1, D_C1, u_dark);
+    v_c2 = mix(L_C2, D_C2, u_dark);
+    v_c3 = mix(L_C3, D_C3, u_dark);
+    v_c4 = mix(L_C4, D_C4, u_dark);
+    v_c5 = mix(L_C5, D_C5, u_dark);
+    v_lineCol = mix(L_LINE, D_LINE, u_dark);
+
+    // Prismatic color gradient endpoints interpolated by theme
+    v_pA = mix(vec3(0.88, 0.74, 0.45), vec3(0.32, 0.95, 0.78), u_dark);
+    v_pB = mix(vec3(0.28, 0.82, 0.72), vec3(0.72, 0.96, 0.48), u_dark);
+
+    gl_Position = vec4(a_position, 0.0, 1.0);
+}
+`;
+
+const FRAGMENT_SHADER = `
+#ifdef GL_OES_standard_derivatives
+#extension GL_OES_standard_derivatives : enable
+#endif
+
+precision highp float;
+uniform vec2 u_res;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform vec2 u_velocity;
+uniform float u_seed;
+uniform float u_reducedMotion;
+
+varying vec3 v_c0;
+varying vec3 v_c1;
+varying vec3 v_c2;
+varying vec3 v_c3;
+varying vec3 v_c4;
+varying vec3 v_c5;
+varying vec3 v_lineCol;
+varying vec3 v_pA;
+varying vec3 v_pB;
+
+const float SPEED = 0.07;
+const float SCALE = 3.2;
+const float WARP = 1.25;
+const float STREAK = 1.8;
 
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -90,53 +124,6 @@ void main() {
         p += u_velocity * infl * 0.18;
     }
 
-    // 2. Wet-on-wet blue ink blooms from user clicks/taps
-    // Step A: Calculate physical disturbance of underlying green wash
-    vec2 bloomDisplace = vec2(0.0);
-    float bloomWashDisturb = 0.0;
-    float bloomThinning = 0.0;
-
-    for (int i = 0; i < MAX_BLOOMS; i++) {
-        vec4 bData = u_bloomData[i];
-        float age = bData.z;
-        if (age >= 0.0 && age < 16.0) {
-            vec2 bPos = bData.xy;
-            float maxR = bData.w;
-            vec2 rVec = (uv - bPos) * vec2(aspect, 1.0);
-
-            // Organic oblong droplet orientation and eccentricity
-            float dropAngle = hash(bPos * 43.17 + vec2(12.3, 7.9)) * 6.28318;
-            float dropStretch = 1.30 + hash(bPos * 19.83 + vec2(3.1, 9.7)) * 0.40;
-            vec2 rotVec = vec2(
-                rVec.x * cos(dropAngle) - rVec.y * sin(dropAngle),
-                (rVec.x * sin(dropAngle) + rVec.y * cos(dropAngle)) * dropStretch
-            );
-            float d = length(rotVec);
-
-            // Expansion phase: blooms out smoothly over 0.9s
-            float growProgress = min(1.0, age / 0.9);
-            float easeGrow = 1.0 - pow(1.0 - growProgress, 3.0);
-            float life = 1.0 - smoothstep(3.5, 15.0, age);
-
-            float currentRadius = maxR * easeGrow;
-
-            // Physical displacement of underlying green wash
-            vec2 pushDir = normalize(rVec + vec2(0.0001));
-            float dNorm = d / max(currentRadius, 0.001);
-            float pushMag = exp(-pow(dNorm - 0.75, 2.0) / 0.20) * (1.0 - smoothstep(1.0, 2.4, dNorm));
-            float ripple = sin(clamp((d - currentRadius) * 35.0, -3.1415, 3.1415)) * exp(-age * 1.0) * 0.5;
-            bloomDisplace += pushDir * (pushMag * 0.12 + ripple * 0.04) * life;
-
-            // Green wash excavation in drop center & accumulation ridge at rim
-            float innerHole = exp(-pow(d / max(currentRadius * 0.85, 0.001), 2.0));
-            float rimAccum = smoothstep(currentRadius * 0.60, currentRadius, d) * (1.0 - smoothstep(currentRadius, currentRadius * 1.40, d));
-            bloomThinning += innerHole * 0.25 * life;
-            bloomWashDisturb += (rimAccum * 0.22 - innerHole * 0.18) * life;
-        }
-    }
-
-    p += bloomDisplace;
-
     p.y /= (1.0 + STREAK);
     p = p * SCALE + u_seed;
 
@@ -149,130 +136,36 @@ void main() {
                   fbm(p + WARP * q + vec2(8.3, 2.8) - t * 0.11));
     float f = fbm(p + WARP * r);
 
-    // Disturb the green wash domain value itself
-    f += bloomWashDisturb;
+    // Unified grain seed computed once per fragment
+    float grainSeed = fract(floor(u_time * 12.0) * 0.1031);
 
     // Edge bleed / capillary dissolve noise
-    float eFrame = floor(u_time * 12.0);
     vec2 egp = gl_FragCoord.xy;
     egp.y /= 2.5;
-    float en = mix(hash(floor(egp) + fract(eFrame * 0.1031) * vec2(19.3, 7.7)),
+    float en = mix(hash(floor(egp) + grainSeed * vec2(19.3, 7.7)),
                    hash(floor(egp) * 0.37 + 13.7), 0.5);
     float dn = (en - 0.5) * 0.015;
 
-    // Palette interpolation
-    vec3 c0 = mix(L_C0, D_C0, u_dark);
-    vec3 c1 = mix(L_C1, D_C1, u_dark);
-    vec3 c2 = mix(L_C2, D_C2, u_dark);
-    vec3 c3 = mix(L_C3, D_C3, u_dark);
-    vec3 c4 = mix(L_C4, D_C4, u_dark);
-    vec3 c5 = mix(L_C5, D_C5, u_dark);
-    vec3 lineCol = mix(L_LINE, D_LINE, u_dark);
-
-    // Layer base green watercolor washes
+    // Layer base green watercolor washes using vertex-interpolated palette
     const float HW = 0.03;
-    vec3 col = mix(c0, c1, smoothstep(0.35 - HW, 0.35 + HW, f + dn));
-    col = mix(col, c2, smoothstep(0.55 - HW, 0.55 + HW, q.x + dn) * 0.75);
-    col = mix(col, c3, smoothstep(0.68 - HW, 0.68 + HW, r.y + dn) * 0.65);
-    col = mix(col, c4, smoothstep(0.76 - HW, 0.76 + HW, q.y * f * 1.5 + dn) * 0.50);
-    col = mix(col, c5, smoothstep(0.83 - HW, 0.83 + HW, r.x * q.x + dn) * 0.40);
+    vec3 col = mix(v_c0, v_c1, smoothstep(0.35 - HW, 0.35 + HW, f + dn));
+    col = mix(col, v_c2, smoothstep(0.55 - HW, 0.55 + HW, q.x + dn) * 0.75);
+    col = mix(col, v_c3, smoothstep(0.68 - HW, 0.68 + HW, r.y + dn) * 0.65);
+    col = mix(col, v_c4, smoothstep(0.76 - HW, 0.76 + HW, q.y * f * 1.5 + dn) * 0.50);
+    col = mix(col, v_c5, smoothstep(0.83 - HW, 0.83 + HW, r.x * q.x + dn) * 0.40);
 
-    // Green wash excavation in the bloom center (dilution back to light base paper)
-    if (bloomThinning > 0.001) {
-        vec3 basePaper = mix(c0, c1, 0.35);
-        col = mix(col, basePaper, clamp(bloomThinning * 0.40, 0.0, 0.35));
-    }
-
-    // Prismatic / Chromatic Dispersion along pigment edges
+    // Prismatic / Chromatic Dispersion along pigment edges (hardware derivatives eliminate 2 full FBMs)
+#ifdef GL_OES_standard_derivatives
+    vec2 grad = vec2(dFdx(f), dFdy(f)) * (u_res.y * 0.008);
+#else
     float fRight = fbm(p + WARP * r + vec2(0.025, 0.0));
     float fUp    = fbm(p + WARP * r + vec2(0.0, 0.025));
     vec2 grad = vec2(fRight - f, fUp - f);
+#endif
     float gradMag = length(grad);
     float prismStrength = smoothstep(0.07, 0.20, gradMag);
-    vec3 prismLight = mix(
-        vec3(0.88, 0.74, 0.45), // Warm golden rim
-        vec3(0.28, 0.82, 0.72), // Cyan/teal refraction
-        sin(f * 14.0 + u_time * 0.6) * 0.5 + 0.5
-    );
-    vec3 prismDark = mix(
-        vec3(0.32, 0.95, 0.78), // Bioluminescent cyan glow
-        vec3(0.72, 0.96, 0.48), // Aurora lime rim
-        sin(f * 14.0 + u_time * 0.6) * 0.5 + 0.5
-    );
-    vec3 prismColor = mix(prismLight, prismDark, u_dark);
+    vec3 prismColor = mix(v_pA, v_pB, sin(f * 14.0 + u_time * 0.6) * 0.5 + 0.5);
     col = mix(col, prismColor, prismStrength * 0.22);
-
-    // Step B: Blue pigment evaluation with organic morphing & absorption into background amorphous wash
-    vec3 bloomAccumColor = vec3(0.0);
-    float bloomAccumWeight = 0.0;
-
-    for (int i = 0; i < MAX_BLOOMS; i++) {
-        vec4 bData = u_bloomData[i];
-        float age = bData.z;
-        if (age >= 0.0 && age < 16.0) {
-            vec2 bPos = bData.xy;
-            float maxR = bData.w;
-            vec2 rVec = (uv - bPos) * vec2(aspect, 1.0);
-
-            // Expansion & life decay over ~15 seconds
-            float growProgress = min(1.0, age / 0.9);
-            float easeGrow = 1.0 - pow(1.0 - growProgress, 3.0);
-            float life = 1.0 - smoothstep(3.5, 15.0, age);
-
-            // Organic oblong droplet orientation and eccentricity
-            float dropAngle = hash(bPos * 43.17 + vec2(12.3, 7.9)) * 6.28318;
-            float dropStretch = 1.30 + hash(bPos * 19.83 + vec2(3.1, 9.7)) * 0.40;
-            vec2 rotVec = vec2(
-                rVec.x * cos(dropAngle) - rVec.y * sin(dropAngle),
-                (rVec.x * sin(dropAngle) + rVec.y * cos(dropAngle)) * dropStretch
-            );
-
-            // Morphing into background amorphous fluid streamlines:
-            // As the bloom ages, background flow fields (r and q) pull and stretch the pigment
-            float morph = smoothstep(0.8, 11.0, age);
-            vec2 fluidStretch = ((r - 0.5) * 1.6 + (q - 0.5) * 1.0) * maxR * 1.4;
-            vec2 morphedRVec = rotVec - fluidStretch * morph;
-
-            // Fine organic paper bleed noise
-            vec2 bleedCoord = morphedRVec * 16.0 + bPos * 6.0;
-            float bleedNoise = noise(bleedCoord) * 0.65 + noise(bleedCoord * 2.5 + vec2(1.7, 4.3)) * 0.35;
-            float currentRadius = maxR * easeGrow * (0.88 + 0.24 * bleedNoise);
-
-            // Amorphous background absorption:
-            // Pigment seeps along the FBM density ridges (f) of the background wash
-            float d = length(morphedRVec);
-            float washAffinity = (f - 0.5) * maxR * 0.65 * morph;
-            float effectiveD = d - washAffinity;
-
-            // Feathered watercolor pigment edge with diffusion that widens as it gets absorbed
-            float edgeSoftness = currentRadius * (0.40 + 0.35 * morph);
-            float pigment = 1.0 - smoothstep(currentRadius - edgeSoftness, currentRadius + 0.02, effectiveD);
-            float core = (1.0 - smoothstep(0.0, currentRadius * 0.50, effectiveD)) * (1.0 - morph * 0.55);
-            float totalPigment = clamp(pigment * 0.72 + core * 0.28, 0.0, 1.0) * life;
-
-            if (totalPigment > 0.001) {
-                vec3 bColor = u_bloomColors[i];
-                if (u_dark > 0.5) {
-                    bColor = mix(bColor, bColor * 1.25 + vec3(0.02, 0.06, 0.16), 0.50);
-                }
-                bloomAccumColor += bColor * totalPigment;
-                bloomAccumWeight += totalPigment;
-            }
-        }
-    }
-
-    // Wet-on-wet glazing: blend rich blue pigment blooms into the green watercolor wash
-    if (bloomAccumWeight > 0.001) {
-        vec3 avgBloomColor = bloomAccumColor / max(bloomAccumWeight, 1.0);
-        float bloomAlpha = clamp(bloomAccumWeight * 0.72, 0.0, 0.70);
-
-        // Clear watercolor blue wash over paper; blends with green into rich teal & oceanic hues without any browning
-        vec3 blueWash = mix(col, avgBloomColor, 0.62);
-        blueWash.r = min(blueWash.r, col.r * 0.70 + avgBloomColor.r * 0.30);
-        blueWash.b = max(blueWash.b, mix(col.b, avgBloomColor.b, 0.75));
-
-        col = mix(col, blueWash, bloomAlpha);
-    }
 
     // Drying puddle contour lines
     float e1 = 1.0 - smoothstep(0.0, 0.02, abs(f + dn - 0.35));
@@ -281,40 +174,16 @@ void main() {
     float lineM = max(max(e1, e2), e3);
     float covN = noise(p * 1.5 + vec2(31.7, 7.9));
     lineM *= 1.0 - smoothstep(0.20, 0.38, covN);
-    col = mix(col, lineCol, lineM * 0.24);
+    col = mix(v_lineCol, col, 1.0 - lineM * 0.24);
 
     // Paper grain
-    float gFrame = floor(u_time * 12.0);
     vec2 gp = floor(gl_FragCoord.xy);
-    float g = hash(gp + fract(gFrame * 0.1031) * vec2(37.7, 17.3)) - 0.5;
+    float g = hash(gp + grainSeed * vec2(37.7, 17.3)) - 0.5;
     col += g * 0.03;
 
     gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
 }
 `;
-
-const MAX_BLOOMS = 16;
-
-// Curated range of rich, pure watercolor blue tones
-const BLUE_PALETTE: [number, number, number][] = [
-    [0.08, 0.38, 0.92], // Vibrant French Ultramarine
-    [0.10, 0.46, 0.94], // Luminous Cobalt Blue
-    [0.06, 0.56, 0.96], // Pure Cerulean Wash
-    [0.04, 0.52, 0.90], // Phthalo Cyan Blue
-    [0.06, 0.32, 0.84], // Deep Lapis Lazuli
-    [0.05, 0.62, 0.95], // Mediterranean Azure
-    [0.14, 0.48, 0.92], // Cornflower Blue
-    [0.08, 0.38, 0.86], // Royal Sapphire
-    [0.04, 0.64, 0.90], // Brilliant Turquoise Blue
-];
-
-interface Bloom {
-    x: number;
-    y: number;
-    startTime: number;
-    maxRadius: number;
-    color: [number, number, number];
-}
 
 export interface WatercolorBackgroundProps {
     /** Optional additional Tailwind CSS classes for the canvas element */
@@ -331,6 +200,9 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
 
         const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl") as WebGLRenderingContext | null;
         if (!gl) return;
+
+        // Enable hardware standard derivatives if available (for zero-cost analytical gradients)
+        gl.getExtension("OES_standard_derivatives");
 
         function compileShader(type: number, source: string): WebGLShader | null {
             if (!gl) return null;
@@ -385,8 +257,6 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
         const uSeed = gl.getUniformLocation(program, "u_seed");
         const uDark = gl.getUniformLocation(program, "u_dark");
         const uReducedMotion = gl.getUniformLocation(program, "u_reducedMotion");
-        const uBloomData = gl.getUniformLocation(program, "u_bloomData[0]") || gl.getUniformLocation(program, "u_bloomData");
-        const uBloomColors = gl.getUniformLocation(program, "u_bloomColors[0]") || gl.getUniformLocation(program, "u_bloomColors");
 
         // Seed random pattern layout
         gl.uniform1f(uSeed, Math.random() * 100.0);
@@ -399,9 +269,6 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
         let lastPointerTime = performance.now();
         let lastPointerX = 0.5;
         let lastPointerY = 0.5;
-
-        // Bloom state (recycled via 15s lifespan)
-        const blooms: Bloom[] = [];
 
         // Theme tracking
         const mediaDark = window.matchMedia("(prefers-color-scheme: dark)");
@@ -421,10 +288,13 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
         };
         mediaReduced.addEventListener("change", handleReducedChange);
 
-        // Pointer move tracking with velocity estimation
+        // Viewport dimensions cache to prevent window layout thrashing on pointermove
+        let winWidth = window.innerWidth;
+        let winHeight = window.innerHeight;
+
         const handlePointerMove = (e: PointerEvent) => {
-            const x = e.clientX / window.innerWidth;
-            const y = 1.0 - e.clientY / window.innerHeight;
+            const x = e.clientX / (winWidth || 1);
+            const y = 1.0 - e.clientY / (winHeight || 1);
             const now = performance.now();
             const dt = Math.max((now - lastPointerTime) / 1000.0, 0.001);
 
@@ -441,79 +311,65 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
         };
         window.addEventListener("pointermove", handlePointerMove, { passive: true });
 
-        // Tap / Click tracking (paints wet-on-wet mineral blue blooms)
-        const handlePointerDown = (e: PointerEvent) => {
-            const x = e.clientX / window.innerWidth;
-            const y = 1.0 - e.clientY / window.innerHeight;
-            const now = performance.now();
-
-            // Random blue tone from muted curated palette
-            const randomColor = BLUE_PALETTE[Math.floor(Math.random() * BLUE_PALETTE.length)];
-            // Much smaller, delicate droplet radius
-            const maxRadius = 0.050 + Math.random() * 0.035;
-
-            // Find an expired slot (>= 15s) or recycle the oldest active one
-            let targetSlot = -1;
-            let oldestAge = -1;
-            for (let i = 0; i < MAX_BLOOMS; i++) {
-                if (!blooms[i] || (now - blooms[i].startTime) / 1000.0 >= 15.0) {
-                    targetSlot = i;
-                    break;
-                }
-                const bAge = now - blooms[i].startTime;
-                if (bAge > oldestAge) {
-                    oldestAge = bAge;
-                    targetSlot = i;
-                }
-            }
-            if (targetSlot < 0) targetSlot = 0;
-
-            blooms[targetSlot] = {
-                x,
-                y,
-                startTime: now,
-                maxRadius,
-                color: randomColor,
-            };
-        };
-        window.addEventListener("pointerdown", handlePointerDown, { passive: true });
-
-        // Responsive viewport resizing with 0.7x downsampling
+        // Responsive viewport resizing with resolution capping to preserve fill rate
         const handleResize = () => {
             if (!canvas || !gl) return;
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = Math.max(1, Math.round(window.innerWidth * dpr * 0.7));
-            canvas.height = Math.max(1, Math.round(window.innerHeight * dpr * 0.7));
+            winWidth = window.innerWidth;
+            winHeight = window.innerHeight;
+
+            // Cap internal resolution to avoid fill-rate explosion on 4K / Retina screens
+            // Soft watercolor washes look smooth when upscaled via bilinear hardware filtering
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            const maxDimension = 1920;
+            let targetWidth = Math.round(winWidth * dpr * 0.65);
+            let targetHeight = Math.round(winHeight * dpr * 0.65);
+
+            if (targetWidth > maxDimension || targetHeight > maxDimension) {
+                const scale = maxDimension / Math.max(targetWidth, targetHeight);
+                targetWidth = Math.round(targetWidth * scale);
+                targetHeight = Math.round(targetHeight * scale);
+            }
+
+            canvas.width = Math.max(1, targetWidth);
+            canvas.height = Math.max(1, targetHeight);
             gl.viewport(0, 0, canvas.width, canvas.height);
         };
         window.addEventListener("resize", handleResize, { passive: true });
         handleResize();
 
-        // Animation loop
+        // Animation loop with frame rate throttling to preserve battery
         const startTime = performance.now();
         let rafId: number | null = null;
         let isPaused = document.visibilityState === "hidden";
+        let lastFrameTime = performance.now();
 
         const handleVisibilityChange = () => {
             isPaused = document.visibilityState === "hidden";
             if (!isPaused && rafId === null) {
+                lastFrameTime = performance.now();
                 rafId = requestAnimationFrame(render);
             }
         };
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
-        // Preallocated typed arrays for bloom uniforms
-        const bloomDataArray = new Float32Array(MAX_BLOOMS * 4);
-        const bloomColorArray = new Float32Array(MAX_BLOOMS * 3);
-
-        const render = () => {
+        const render = (currentTime: number) => {
             if (isPaused) {
                 rafId = null;
                 return;
             }
 
-            const now = performance.now();
-            const elapsed = (now - startTime) / 1000.0;
+            rafId = requestAnimationFrame(render);
+
+            // Cap at 60 FPS (or 30 FPS under reduced motion) to prevent 120Hz/ProMotion battery burn
+            const targetInterval = isReducedMotion ? 33.33 : 16.66;
+            const elapsedSinceLast = currentTime - lastFrameTime;
+
+            if (elapsedSinceLast < targetInterval - 1.0) {
+                return;
+            }
+
+            lastFrameTime = currentTime - (elapsedSinceLast % targetInterval);
+            const elapsed = (currentTime - startTime) / 1000.0;
 
             // Smooth cursor coordinates
             currentMouse[0] += (targetMouse[0] - currentMouse[0]) * 0.06;
@@ -528,60 +384,18 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
             // Smooth theme interpolation
             currentDark += (targetDark - currentDark) * 0.08;
 
-            // Update bloom uniform buffer (fading gracefully over 15 seconds)
-            for (let i = 0; i < MAX_BLOOMS; i++) {
-                const b = blooms[i];
-                const dataIdx = i * 4;
-                const colIdx = i * 3;
-                if (b) {
-                    const age = (now - b.startTime) / 1000.0;
-                    if (age < 15.5) {
-                        bloomDataArray[dataIdx] = b.x;
-                        bloomDataArray[dataIdx + 1] = b.y;
-                        bloomDataArray[dataIdx + 2] = age;
-                        bloomDataArray[dataIdx + 3] = b.maxRadius;
-
-                        bloomColorArray[colIdx] = b.color[0];
-                        bloomColorArray[colIdx + 1] = b.color[1];
-                        bloomColorArray[colIdx + 2] = b.color[2];
-                    } else {
-                        bloomDataArray[dataIdx] = 0.0;
-                        bloomDataArray[dataIdx + 1] = 0.0;
-                        bloomDataArray[dataIdx + 2] = -1.0;
-                        bloomDataArray[dataIdx + 3] = 0.0;
-
-                        bloomColorArray[colIdx] = 0.0;
-                        bloomColorArray[colIdx + 1] = 0.0;
-                        bloomColorArray[colIdx + 2] = 0.0;
-                    }
-                } else {
-                    bloomDataArray[dataIdx] = 0.0;
-                    bloomDataArray[dataIdx + 1] = 0.0;
-                    bloomDataArray[dataIdx + 2] = -1.0;
-                    bloomDataArray[dataIdx + 3] = 0.0;
-
-                    bloomColorArray[colIdx] = 0.0;
-                    bloomColorArray[colIdx + 1] = 0.0;
-                    bloomColorArray[colIdx + 2] = 0.0;
-                }
-            }
-
             gl.uniform2f(uRes, canvas.width, canvas.height);
             gl.uniform1f(uTime, elapsed);
             gl.uniform2f(uMouse, currentMouse[0], currentMouse[1]);
             gl.uniform2f(uVelocity, currentVel[0], currentVel[1]);
             gl.uniform1f(uDark, currentDark);
             gl.uniform1f(uReducedMotion, isReducedMotion ? 1.0 : 0.0);
-            gl.uniform4fv(uBloomData, bloomDataArray);
-            gl.uniform3fv(uBloomColors, bloomColorArray);
 
             gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-            rafId = requestAnimationFrame(render);
         };
 
         // Trigger initial frame
-        render();
+        rafId = requestAnimationFrame(render);
         setIsLoaded(true);
 
         return () => {
@@ -589,12 +403,12 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
                 cancelAnimationFrame(rafId);
             }
             window.removeEventListener("pointermove", handlePointerMove);
-            window.removeEventListener("pointerdown", handlePointerDown);
             window.removeEventListener("resize", handleResize);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             mediaDark.removeEventListener("change", handleThemeChange);
             mediaReduced.removeEventListener("change", handleReducedChange);
 
+            gl.disableVertexAttribArray(aPosition);
             if (buffer) gl.deleteBuffer(buffer);
             if (vs) gl.deleteShader(vs);
             if (fs) gl.deleteShader(fs);
@@ -606,7 +420,7 @@ export default function WatercolorBackground({ className = "" }: WatercolorBackg
         <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className={`fixed inset-0 w-screen h-screen pointer-events-none -z-20 block transition-opacity duration-700 ease-out ${
+            className={`fixed inset-0 w-full h-full pointer-events-none -z-20 block transition-opacity duration-700 ease-out transform-gpu ${
                 isLoaded ? "opacity-100" : "opacity-0"
             } ${className}`}
         />
