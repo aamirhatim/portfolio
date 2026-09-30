@@ -2,13 +2,14 @@ import ProjectHighlight from "../molecules/projectHighlight"
 import ArrowBtn from '../atoms/ArrowBtn'
 // import LiquidWavePaperweight from "../atoms/LiquidWavePaperweight"
 // import WatercolorBackground from "../atoms/WatercolorBackground"
-import SwarmFlockBackground from "../atoms/SwarmFlockBackground"
+// import SwarmFlockBackground from "../atoms/SwarmFlockBackground"
 import { useFirebaseAppContext } from "../../context/firebaseAppContext"
 import { useEffect, useState } from "react"
 import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
+import SwarmSpriteBackground from "../atoms/SwarmSpriteBackground"
 
 export default function HomePage() {
     // Get context
@@ -51,8 +52,9 @@ export default function HomePage() {
 
     return (
         <>
-            <SwarmFlockBackground />
-            {/* <WatercolorBackground /> */}
+            <SwarmSpriteBackground />
+            {/* <WatercolorBackground className="-z-20" /> */}
+            {/* <SwarmFlockBackground className="-z-10" /> */}
             {/* <LiquidWavePaperweight /> */}
             {introTxt.length > 0 &&
                 <div className="relative z-10 box-border flex flex-col w-full gap-5">
