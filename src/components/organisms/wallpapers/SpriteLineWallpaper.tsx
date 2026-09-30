@@ -121,7 +121,7 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     personalityVariance: 0.3,
 
     spriteCount: 6,
-    groundOffsetFromBottom: 80,
+    groundOffsetFromBottom: 70,
     cursorFleeRadius: 50,
 
     showGroundLine: false,
@@ -140,8 +140,8 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     platformExcludeSelector: "nav, header, [data-no-sprite-platform]",
     platformJumpReachY: 200,
     platformJumpReachX: 20,
-    platformJumpChance: 0.2,
-    platformDropChance: 0.2,
+    platformJumpChance: 0.15,
+    platformDropChance: 0.15,
     platformShiftChance: 0.5,
     zIndex: 20,
     showPlatforms: false,
@@ -665,6 +665,7 @@ interface LineBoid {
     fallVelocity: number;
     fallingFromPlatformId?: string;
     fallStartY?: number;
+    spawnTargetPlatformId?: string; // If set, sprite is in initial spawn fall directly targeting this platform
 
     // Personality Variance Traits
     speedMod: number;
@@ -714,7 +715,7 @@ export default function SpriteLineWallpaper({
     platformTopOffset,
 }: SpriteLineWallpaperProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(true);
 
     // Merge configuration from props and config object
     const cfgRef = useRef<SpriteLineConfig>({
@@ -875,28 +876,42 @@ export default function SpriteLineWallpaper({
             const nonGround = platforms.filter((p) => !p.isGround);
             const ground = platforms.find((p) => p.isGround);
 
-            const { pageWidth } = getDocumentDimensions();
+            const { pageWidth, pageHeight } = getDocumentDimensions();
             const activeCfg = cfgRef.current;
             const baseSize = activeCfg.spriteSize;
             const estimatedHalfW = Math.max(16, (baseSize * 1.2) * 0.5);
             const boundaryMargin = estimatedHalfW + 12;
 
+            const currentScrollY = window.scrollY || window.pageYOffset || 0;
+
             if (nonGround.length === 0) {
                 // All boids to ground with even horizontal distribution
+                const groundTop = ground ? ground.top : computeGroundY(pageHeight);
                 for (let i = 0; i < boidsList.length; i++) {
                     const b = boidsList[i];
                     const minX = boundaryMargin + 20;
                     const maxX = pageWidth - boundaryMargin - 20;
                     const step = Math.max(1, (maxX - minX) / Math.max(1, boidsList.length));
-                    b.x = minX + (i + 0.2 + Math.random() * 0.6) * step;
-                    b.y = ground ? ground.top : b.y;
-                    b.hopStartX = b.x;
-                    b.hopStartY = b.y;
-                    b.hopTargetX = b.x;
-                    b.hopTargetY = b.y;
+                    const spawnX = minX + (i + 0.2 + Math.random() * 0.6) * step;
+                    const dropStartY = Math.min(groundTop - 120, currentScrollY - 30) - (i * 20 + Math.random() * 30);
+
+                    b.x = spawnX;
+                    b.y = dropStartY;
+                    b.hopStartX = spawnX;
+                    b.hopStartY = groundTop;
+                    b.hopTargetX = spawnX;
+                    b.hopTargetY = groundTop;
                     b.currentPlatformId = "ground";
-                    b.isFalling = false;
+                    b.targetPlatformId = "ground";
+                    b.isFalling = true;
+                    b.fallVelocity = 60 + Math.random() * 80;
+                    b.spawnTargetPlatformId = "ground";
+                    b.fallingFromPlatformId = undefined;
+                    b.fallStartY = dropStartY;
                     b.isHopping = false;
+                    b.direction = Math.random() < 0.5 ? 1 : -1;
+                    b.facing = b.direction > 0 ? 2 : 3;
+                    b.recoveryTimer = 0;
                 }
                 return;
             }
@@ -943,23 +958,26 @@ export default function SpriteLineWallpaper({
                 const margin = Math.min(14, targetPlat.width * 0.25);
                 const availableW = Math.max(1, targetPlat.width - margin * 2);
                 const spawnX = targetPlat.left + margin + Math.random() * availableW;
-                const spawnY = targetPlat.top;
+                const dropStartY = Math.min(targetPlat.top - 120, currentScrollY - 30) - (k * 20 + Math.random() * 30);
 
                 b.x = spawnX;
-                b.y = spawnY;
-                b.hopStartX = b.x;
-                b.hopStartY = b.y;
-                b.hopTargetX = b.x;
-                b.hopTargetY = b.y;
+                b.y = dropStartY;
+                b.hopStartX = spawnX;
+                b.hopStartY = targetPlat.top;
+                b.hopTargetX = spawnX;
+                b.hopTargetY = targetPlat.top;
                 b.currentPlatformId = targetPlat.id;
-                b.isFalling = false;
-                b.isHopping = false;
+                b.targetPlatformId = targetPlat.id;
+                b.isFalling = true;
+                b.fallVelocity = 60 + Math.random() * 80;
+                b.spawnTargetPlatformId = targetPlat.id;
                 b.fallingFromPlatformId = undefined;
-                b.fallStartY = undefined;
+                b.fallStartY = dropStartY;
+                b.isHopping = false;
 
                 b.direction = Math.random() < 0.5 ? 1 : -1;
                 b.facing = b.direction > 0 ? 2 : 3;
-                b.recoveryTimer = Math.random() * 0.5;
+                b.recoveryTimer = 0;
             }
 
             // Position ground sprite if applicable
@@ -968,23 +986,30 @@ export default function SpriteLineWallpaper({
                 if (!b.isFleeing && !b.isHopping) {
                     const minX = boundaryMargin + 20;
                     const maxX = pageWidth - boundaryMargin - 20;
-                    b.x = minX + Math.random() * Math.max(1, maxX - minX);
-                    b.y = ground.top;
-                    b.hopStartX = b.x;
-                    b.hopStartY = b.y;
-                    b.hopTargetX = b.x;
-                    b.hopTargetY = b.y;
+                    const spawnX = minX + Math.random() * Math.max(1, maxX - minX);
+                    const dropStartY = Math.min(ground.top - 120, currentScrollY - 30) - (numElevatedSprites * 20 + Math.random() * 30);
+
+                    b.x = spawnX;
+                    b.y = dropStartY;
+                    b.hopStartX = spawnX;
+                    b.hopStartY = ground.top;
+                    b.hopTargetX = spawnX;
+                    b.hopTargetY = ground.top;
                     b.currentPlatformId = "ground";
-                    b.isFalling = false;
-                    b.isHopping = false;
+                    b.targetPlatformId = "ground";
+                    b.isFalling = true;
+                    b.fallVelocity = 60 + Math.random() * 80;
+                    b.spawnTargetPlatformId = "ground";
                     b.fallingFromPlatformId = undefined;
-                    b.fallStartY = undefined;
+                    b.fallStartY = dropStartY;
+                    b.isHopping = false;
                     b.direction = Math.random() < 0.5 ? 1 : -1;
                     b.facing = b.direction > 0 ? 2 : 3;
-                    b.recoveryTimer = Math.random() * 0.5;
+                    b.recoveryTimer = 0;
                 }
             }
         };
+
 
         const scanPlatforms = () => {
             const activeCfg = cfgRef.current;
@@ -1126,6 +1151,7 @@ export default function SpriteLineWallpaper({
                     fallVelocity: 0,
                     fallingFromPlatformId: undefined,
                     fallStartY: undefined,
+                    spawnTargetPlatformId: undefined,
 
                     fleeIdleTimer: 0,
                     recoveryTimer: Math.random() * 0.4,
@@ -1222,6 +1248,35 @@ export default function SpriteLineWallpaper({
                     b.fallVelocity += 900 * dt;
                     const prevY = b.y;
                     b.y += b.fallVelocity * dt;
+
+                    // SPAWN FALL: falling straight down from the top of the screen onto its assigned platform
+                    if (b.spawnTargetPlatformId) {
+                        let target: PlatformSurface | undefined = platforms.find((p) => p.id === b.spawnTargetPlatformId);
+                        if (!target && b.spawnTargetPlatformId === "ground") {
+                            target = groundPlat || undefined;
+                        }
+                        const targetY = target ? target.top : groundYBaseline;
+
+                        if (b.y >= targetY) {
+                            b.y = targetY;
+                            b.currentPlatformId = target ? target.id : "ground";
+                            b.isFalling = false;
+                            b.spawnTargetPlatformId = undefined;
+                            b.fallVelocity = 0;
+                            b.fallingFromPlatformId = undefined;
+                            b.fallStartY = undefined;
+                            b.squashTimer = 0.16; // Deeper squash on impact from initial sky fall
+                            b.recoveryTimer = 0.12 + Math.random() * 0.2;
+                            b.hopY = 0;
+
+                            if (target) {
+                                // Clamp within platform bounds
+                                b.x = Math.max(target.left + 4, Math.min(target.right - 4, b.x));
+                            }
+                        }
+                        continue;
+                    }
+
                     b.x += b.direction * 30 * dt;
                     b.x = Math.max(boundaryMargin, Math.min(pageWidth - boundaryMargin, b.x));
 
