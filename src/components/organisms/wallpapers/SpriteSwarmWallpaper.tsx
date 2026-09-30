@@ -110,37 +110,37 @@ export interface SpriteSwarmConfig {
 export type SwarmSpriteConfig = SpriteSwarmConfig;
 
 const SPRITE_SWARM_DEFAULT_CONFIG: SpriteSwarmConfig = {
-    boidCount: 6 * 2,
-    boidSize: 10,
+    boidCount: 6,
+    boidSize: 20,
 
-    minSpeed: 0.1,
-    maxSpeed: 0.8,
-    maxForce: 0.03,
-    wanderStrength: 0.06,
-    headingPersistence: 0.8,
-    maxTurnRate: 0.01,
+    minSpeed: 0.2,
+    maxSpeed: 1,
+    maxForce: 0.3,
+    wanderStrength: 0.02,
+    headingPersistence: 0.7,
+    maxTurnRate: 0.15,
     cursorFleeMaxTurnRate: 0.22,
 
-    flockRadius: 40,
-    separationWeight: 1.2,
-    alignmentWeight: 0.5,
-    cohesionWeight: 0.05,
+    flockRadius: 30,
+    separationWeight: 2,
+    alignmentWeight: 0,
+    cohesionWeight: 0,
 
-    cursorFleeRadius: 250,
+    cursorFleeRadius: 100,
     cursorFleeForce: 5,
     cursorStillDelay: 0.5,
     cursorSwarmRampDuration: 0.8,
-    cursorAttractRadius: 450,
-    cursorAttractForce: 0.3,
+    cursorAttractRadius: 150,
+    cursorAttractForce: 5,
     cursorOrbitRadius: 60,
-    cursorOrbitStrength: 1.5,
+    cursorOrbitStrength: 5,
 
     personalityVariance: 0.25,
 
     trailLength: 5,
     trailOpacity: 0.28,
 
-    enableFlockLines: true,
+    enableFlockLines: false,
     flockLineNeighborCount: 3,
     minFlockNeighbors: 3,
     flockLineMaxDistance: 100,
@@ -841,9 +841,6 @@ export default function SpriteSwarmWallpaper({ config: customConfig, className }
             });
         }
 
-        // 2.5D visual depth order (sorted by Y position)
-        const depthOrder = new Int32Array(cfg.boidCount);
-        for (let i = 0; i < cfg.boidCount; i++) depthOrder[i] = i;
 
         // Spatial Hashing Grid for O(N) neighbor query
         const maxPerception = Math.max(
@@ -1374,12 +1371,10 @@ export default function SpriteSwarmWallpaper({ config: customConfig, className }
             // Set nearest-neighbor interpolation for crisp pixel art scaling
             ctx.imageSmoothingEnabled = false;
 
-            // Render Cats (Y-sorted for natural 2.5D floor overlapping)
-            depthOrder.sort((a, b) => boids[a].y - boids[b].y);
+            // Render Cats with constant Z-index ordering
             const baseSize = currentCfg.boidSize;
 
-            for (let k = 0; k < depthOrder.length; k++) {
-                const i = depthOrder[k];
+            for (let i = 0; i < boids.length; i++) {
                 const b = boids[i];
                 const s = b.scale;
 
