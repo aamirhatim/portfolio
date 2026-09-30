@@ -52,7 +52,12 @@ export default function HomePage() {
 
     return (
         <>
-            <SpriteLineWallpaper />
+            <SpriteLineWallpaper
+                spriteCount={6}
+                spawnDelay={500}
+                enableGroundPlatform={false}
+                showGroundLine={false}
+            />
             {/* <SpriteSwarmWallpaper /> */}
             {/* <WatercolorWallpaper className="-z-20" /> */}
             {/* <FlockSwarmWallpaper className="-z-10" /> */}

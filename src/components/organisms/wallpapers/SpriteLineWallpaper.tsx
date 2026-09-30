@@ -143,7 +143,7 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     platformShiftChance: 0.5,
     zIndex: 20,
     showPlatforms: false,
-    spawnDelay: 500,
+    spawnDelay: 1500,
     platformTopOffset: "auto",
     spawnType: "fall",
     enableGroundPlatform: true,
@@ -187,12 +187,19 @@ export interface SpriteLineWallpaperProps {
     zIndex?: number;
     showPlatforms?: boolean;
     spawnDelay?: number;
+    /** Vertical offset applied to platform surfaces relative to element bounds. "auto" aligns to visible text/chips (default: "auto") */
     platformTopOffset?: number | "auto";
+    /** Spawning visual behavior: "fall" (sky drop with squash), "fade" (smooth opacity transition), "appear" (instant) (default: "fall") */
     spawnType?: SpawnType;
+    /** Whether to register the document bottom ground line as an available platform (default: true) */
     enableGroundPlatform?: boolean;
+    /** Whether sprites can drop/fall off platform edges (default: true). Set to false to confine sprites strictly to their platform */
     enableLedgeDrop?: boolean;
+    /** Specific sprite index or array of sprite indices (0 to spriteSheetCols - 1) to use for spawned sprites, or "random" (optional) */
     spriteIndices?: number | number[] | "random";
+    /** Alias for spriteIndices */
     selectedSprites?: number | number[] | "random";
+    /** If true, randomly selects sprite breeds/palettes for each spawned instance (default: false) */
     randomizeSprites?: boolean;
 }
 
@@ -440,6 +447,17 @@ interface PlatformSurface {
     top: number;        // Document Y coordinate where feet land
     width: number;
     isGround?: boolean; // Base ground baseline across full document width
+}
+
+function shuffleArray<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+    return a;
 }
 
 function getDocumentDimensions() {
@@ -834,6 +852,9 @@ export default function SpriteLineWallpaper({
             const currentScrollY = window.scrollY || window.pageYOffset || 0;
 
             if (nonGround.length === 0) {
+                if (!ground || cfg.enableGroundPlatform === false) {
+                    return;
+                }
                 // All boids to ground with even horizontal distribution
                 const groundTop = ground ? ground.top : computeGroundY(pageHeight);
                 for (let i = 0; i < boidsList.length; i++) {
@@ -849,6 +870,7 @@ export default function SpriteLineWallpaper({
                     b.hopStartY = groundTop;
                     b.hopTargetX = spawnX;
                     b.hopTargetY = groundTop;
+                    b.hopY = 0;
                     b.currentPlatformId = "ground";
                     b.targetPlatformId = "ground";
                     b.isHopping = false;
@@ -887,7 +909,7 @@ export default function SpriteLineWallpaper({
                 .filter((idx) => idx !== groundSpriteIndex);
 
             // Shuffle elevated sprite indices so breed/personality doesn't correlate with vertical height
-            const shuffledElevatedSpriteIndices = [...elevatedSpriteIndices].sort(() => Math.random() - 0.5);
+            const shuffledElevatedSpriteIndices = shuffleArray(elevatedSpriteIndices);
             const numElevatedSprites = shuffledElevatedSpriteIndices.length;
             const usedPlatformIds = new Set<string>();
 
@@ -924,6 +946,7 @@ export default function SpriteLineWallpaper({
                 b.hopStartY = targetPlat.top;
                 b.hopTargetX = spawnX;
                 b.hopTargetY = targetPlat.top;
+                b.hopY = 0;
                 b.currentPlatformId = targetPlat.id;
                 b.targetPlatformId = targetPlat.id;
                 b.isHopping = false;
@@ -963,6 +986,7 @@ export default function SpriteLineWallpaper({
                     b.hopStartY = ground.top;
                     b.hopTargetX = spawnX;
                     b.hopTargetY = ground.top;
+                    b.hopY = 0;
                     b.currentPlatformId = "ground";
                     b.targetPlatformId = "ground";
                     b.isHopping = false;
@@ -1021,70 +1045,24 @@ export default function SpriteLineWallpaper({
             );
         };
 
-        // Resize handler
-        const handleResize = () => {
-            if (!canvas) return;
-            dpr = Math.min(window.devicePixelRatio || 1, 2);
-            screenWidth = window.innerWidth;
-            screenHeight = window.innerHeight;
-            canvas.width = Math.floor(screenWidth * dpr);
-            canvas.height = Math.floor(screenHeight * dpr);
-            scanPlatforms();
-        };
-        handleResize();
-        window.addEventListener("resize", handleResize, { passive: true });
-
-        // Observers for layout and dynamic content changes
-        const observer = new MutationObserver(() => {
-            scanPlatforms();
-        });
-        if (document.body) {
-            observer.observe(document.body, { childList: true, subtree: true });
-        }
-
-        let resizeObserver: ResizeObserver | null = null;
-        if (typeof ResizeObserver !== "undefined" && document.body) {
-            resizeObserver = new ResizeObserver(() => {
-                scanPlatforms();
-            });
-            resizeObserver.observe(document.body);
-        }
-
-        // Schedule subsequent scans to catch async data loads (Firebase) and CSS animations
-        const scanTimer1 = setTimeout(scanPlatforms, 400);
-        const scanTimer2 = setTimeout(scanPlatforms, 1000);
-        const scanTimer3 = setTimeout(scanPlatforms, 2200);
-
-        // Cursor Tracking in Viewport
-        let clientMouseX = -1000;
-        let clientMouseY = -1000;
-        let mouseActive = false;
-
-        const handlePointerMove = (e: PointerEvent) => {
-            clientMouseX = e.clientX;
-            clientMouseY = e.clientY;
-            mouseActive = true;
-        };
-
-        const handlePointerLeave = () => {
-            mouseActive = false;
-            clientMouseX = -1000;
-            clientMouseY = -1000;
-        };
-
-        window.addEventListener("pointermove", handlePointerMove, { passive: true });
-        window.addEventListener("pointerleave", handlePointerLeave, { passive: true });
-
         // Initialize Sprites across the document after entrance animation buffer
         let hasSpawned = false;
+        let spawnReady = false;
 
         const spawnBoids = () => {
-            if (hasSpawned) return;
-            hasSpawned = true;
+            if (hasSpawned || !spawnReady) return;
 
             scanPlatforms();
 
             const cfg = cfgRef.current;
+            if (platforms.length === 0 && cfg.enableGroundPlatform === false) {
+                // Platforms haven't rendered yet (e.g. async Firestore content on /resume).
+                // Do not mark hasSpawned = true, so debouncedScan will spawn once the element mounts.
+                return;
+            }
+
+            hasSpawned = true;
+
             const count = cfg.spriteCount ?? cfg.spriteSheetCols ?? 6;
             const padding = Math.max(50, cfg.spriteSize * 2.5);
             const { pageWidth: initialPageWidth, pageHeight: initialPageHeight } = docDimensions;
@@ -1092,7 +1070,7 @@ export default function SpriteLineWallpaper({
             const step = availableWidth / Math.max(1, count);
             const initialGroundY = computeGroundY(initialPageHeight);
 
-            const shuffledSlots = Array.from({ length: count }, (_, idx) => idx).sort(() => Math.random() - 0.5);
+            const shuffledSlots = shuffleArray(Array.from({ length: count }, (_, idx) => idx));
 
             // Build candidate sprite pool
             const totalCols = Math.max(1, cfg.spriteSheetCols || 6);
@@ -1111,7 +1089,7 @@ export default function SpriteLineWallpaper({
                 let currentShuffled: number[] = [];
                 for (let i = 0; i < count; i++) {
                     if (currentShuffled.length === 0) {
-                        currentShuffled = [...spritePool].sort(() => Math.random() - 0.5);
+                        currentShuffled = shuffleArray(spritePool);
                     }
                     assignedSpriteTypes.push(currentShuffled.pop()!);
                 }
@@ -1185,12 +1163,97 @@ export default function SpriteLineWallpaper({
             distributeBoidsToPlatforms(boids);
         };
 
+        // Debounced scanner to prevent layout thrashing on high-frequency DOM/Resize mutations
+        let scanDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+        const debouncedScan = () => {
+            if (scanDebounceTimer !== null) clearTimeout(scanDebounceTimer);
+            scanDebounceTimer = setTimeout(() => {
+                scanPlatforms();
+                const currentCfg = cfgRef.current;
+                if (!hasSpawned) {
+                    // Only spawn if spawnDelay has elapsed AND (ground platform is enabled or non-ground platforms are detected)
+                    if (spawnReady && (currentCfg.enableGroundPlatform !== false || platforms.some((p) => !p.isGround))) {
+                        spawnBoids();
+                    }
+                } else if (boids.length > 0 && platforms.some((p) => !p.isGround)) {
+                    // If boids exist but are stranded on ground while ground platform is disabled,
+                    // or are assigned to an obsolete platform ID, re-distribute them to the detected platform(s)
+                    const stranded = boids.some((b) =>
+                        (currentCfg.enableGroundPlatform === false && b.currentPlatformId === "ground") ||
+                        !platforms.some((p) => p.id === b.currentPlatformId)
+                    );
+                    if (stranded) {
+                        distributeBoidsToPlatforms(boids);
+                    }
+                }
+            }, 40);
+        };
+
+        // Resize handler
+        const handleResize = () => {
+            if (!canvas) return;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            screenWidth = window.innerWidth;
+            screenHeight = window.innerHeight;
+            canvas.width = Math.floor(screenWidth * dpr);
+            canvas.height = Math.floor(screenHeight * dpr);
+            debouncedScan();
+        };
+        handleResize();
+        scanPlatforms();
+        window.addEventListener("resize", handleResize, { passive: true });
+
+        // Observers for layout and dynamic content changes
+        const observer = new MutationObserver(() => {
+            debouncedScan();
+        });
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+
+        let resizeObserver: ResizeObserver | null = null;
+        if (typeof ResizeObserver !== "undefined" && document.body) {
+            resizeObserver = new ResizeObserver(() => {
+                debouncedScan();
+            });
+            resizeObserver.observe(document.body);
+        }
+
+        // Schedule subsequent scans to catch async data loads (Firebase) and CSS animations
+        const scanTimer1 = setTimeout(debouncedScan, 400);
+        const scanTimer2 = setTimeout(debouncedScan, 1000);
+        const scanTimer3 = setTimeout(debouncedScan, 2200);
+
+        // Cursor Tracking in Viewport
+        let clientMouseX = -1000;
+        let clientMouseY = -1000;
+        let mouseActive = false;
+
+        const handlePointerMove = (e: PointerEvent) => {
+            clientMouseX = e.clientX;
+            clientMouseY = e.clientY;
+            mouseActive = true;
+        };
+
+        const handlePointerLeave = () => {
+            mouseActive = false;
+            clientMouseX = -1000;
+            clientMouseY = -1000;
+        };
+
+        window.addEventListener("pointermove", handlePointerMove, { passive: true });
+        window.addEventListener("pointerleave", handlePointerLeave, { passive: true });
+
         const spawnDelay = activeCfg.spawnDelay ?? 1500;
         let spawnTimer: ReturnType<typeof setTimeout> | null = null;
         if (spawnDelay <= 0) {
+            spawnReady = true;
             spawnBoids();
         } else {
-            spawnTimer = setTimeout(spawnBoids, spawnDelay);
+            spawnTimer = setTimeout(() => {
+                spawnReady = true;
+                spawnBoids();
+            }, spawnDelay);
         }
 
         // Animation Loop
@@ -1894,6 +1957,7 @@ export default function SpriteLineWallpaper({
             clearTimeout(scanTimer1);
             clearTimeout(scanTimer2);
             clearTimeout(scanTimer3);
+            if (scanDebounceTimer !== null) clearTimeout(scanDebounceTimer);
             if (spawnTimer !== null) clearTimeout(spawnTimer);
         };
     }, [activeCfg]);

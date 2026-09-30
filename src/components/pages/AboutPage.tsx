@@ -8,6 +8,7 @@ import ParallaxWrapper from "../atoms/ParallaxWrapper"
 import { orderBy } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
 import SocialsBar from "../molecules/socialsBar"
+import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper"
 
 export default function AboutPage() {
     // Get context
@@ -94,6 +95,7 @@ export default function AboutPage() {
         <div className="px-4 flex flex-col gap-30">
             <section className={`mt-20 flex ${isMobile ? 'flex-col' : 'px-15 gap-10'}`}>
                 <div
+                    data-sprite-platform
                     className={`rounded-md overflow-clip ${isMobile ? 'w-full h-90' : 'w-[35%] min-w-90 max-w-150 h-auto shrink-0'}`}
                 >
                     <LazyImg
@@ -139,6 +141,20 @@ export default function AboutPage() {
             <div className="flex justify-center w-full pb-10">
                 <SocialsBar />
             </div>
+
+            <SpriteLineWallpaper
+                spriteCount={1}
+                selectedSprites={5}
+                platformSelector="[data-sprite-platform]"
+                spawnType="fall"
+                showGroundLine={false}
+                enableGroundPlatform={false}
+                enableLedgeDrop={false}
+                platformShiftChance={0}
+                platformTopOffset={0}
+                spawnDelay={500}
+                randomizeSprites={true}
+            />
         </div>
     )
 }

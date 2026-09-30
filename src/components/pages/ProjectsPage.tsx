@@ -9,6 +9,7 @@ import AnimateInView from "../atoms/AnimateInView";
 import GithubContributionTracker from "../organisms/GithubContributionTracker";
 import FeaturedWorkCarousel from "../organisms/FeaturedWorkCarousel";
 import lodash from "lodash";
+import SpriteLineWallpaper from "../organisms/wallpapers/SpriteLineWallpaper";
 
 export default function ProjectsPage() {
     // Get context
@@ -84,6 +85,19 @@ export default function ProjectsPage() {
             {Object.keys(projectList).length > 0 &&
                 Object.entries(projectList).reverse().map(([year, projects]) => createProjectSection(projects, year))
             }
+
+            <SpriteLineWallpaper
+                spriteCount={4}
+                platformSelector="data-sprite-platform"
+                spawnType="appear"
+                showGroundLine={true}
+                enableGroundPlatform={true}
+                enableLedgeDrop={false}
+                platformShiftChance={0}
+                platformTopOffset={0}
+                spawnDelay={300}
+                randomizeSprites={true}
+            />
         </div>
     )
 }
