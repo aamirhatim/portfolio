@@ -17,7 +17,7 @@ export default function ChipGroup({ list, size = "sm" }: ChipGroupProps) {
     const gapSize = size === "lg" ? "gap-3" : "gap-2";
 
     return (
-        <div className={`flex flex-wrap ${gapSize}`}>
+        <div className={`chip-group flex flex-wrap ${gapSize}`}>
             {list.map((s, idx) => (
                 <Chip key={idx} text={s} size={size} />
             ))}
