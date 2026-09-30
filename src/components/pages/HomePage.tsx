@@ -54,7 +54,7 @@ export default function HomePage() {
         <>
             <Sprites
                 spriteCount={6}
-                spawnDelay={300}
+                spawnDelay={800}
                 enableGroundPlatform={true}
                 showGroundLine={false}
             />
