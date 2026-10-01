@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.14.2] - 2026-10-01 16:09:11
+
+### Fixed
+- Resolved bug on the project and job edit pages in the Admin Portal where multiple skills could not be typed due to commas and spaces being swallowed on keystroke.
+- Introduced `ArrayInputField` component (`src/components/molecules/collection-manager/ArrayInputField.tsx`) with local string state, enabling smooth typing of commas, spaces, and multi-word skills (e.g., `"Tailwind CSS"`), with automatic whitespace and trailing comma cleanup on blur.
+- Updated `CollectionManager` to safely parse and synchronize both pre-parsed string arrays and raw comma-separated inputs.
+
 
 ## [9.14.1] - 2026-09-30 20:05:04
 
