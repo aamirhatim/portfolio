@@ -6,7 +6,7 @@
   "homepage": "https://aamirhusain.me",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "firebase deploy",
+    "deploy": "npm run build && firebase deploy",
     "emulators": "firebase emulators:start --import ./emulators_data --export-on-exit ./emulators_data",
     "dev": "vite --host",
     "start": "concurrently \"npm run emulators\" \"npm run dev\"",
