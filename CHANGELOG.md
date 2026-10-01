@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 
 
+## [9.14.1] - 2026-09-30 20:05:04
+
+### Fixed
+- Resolved mobile baseline offset bug where sprites and platform surfaces were displayed 5–10px lower on physical mobile devices by removing `w-screen`/`h-screen` viewport scaling distortion and enforcing 1:1 CSS-to-bitmap canvas pixel mapping in `Sprites.tsx`.
+- Added `window.visualViewport` resize listener to dynamically synchronize canvas dimensions when mobile browser address bars and toolbars collapse or expand.
+- Constrained `[role=button] > .title` in `ProjectHighlight.tsx` to `w-fit` so mobile sprite platforms hug the text rather than spanning the full width of the screen.
+
+### Changed
+- Updated the deployment script in `package.json` to automatically compile a fresh build directly before Firebase deployment.
+- Adjusted spawn delay timing for `HomePage` sprites.
+
+
 ## [9.14.0] - 2026-09-30 15:42:45
 
 ### Added
