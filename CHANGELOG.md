@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.15.0] - 2026-10-01 16:42:28
+
+### Added
+- Added project popup preview image management in the Admin Portal, enabling viewing, staging, uploading, and deleting of up to 6 preview images directly in the project edit form.
+- Introduced `ProjectPreviewsEditor` molecule (`src/components/molecules/collection-manager/ProjectPreviewsEditor.tsx`) with 4:3 aspect-ratio thumbnails matching `ProjectPopup`, a dashed add box with file picker trigger, and hover delete buttons.
+- Added Firebase Storage helper functions (`fetchProjectPreviewImages`, `uploadProjectPreviewImage`, and `deleteProjectPreviewImage`) to `src/lib/adminLib.ts`.
+- Updated `storage.rules` to permit authenticated admins (`firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid))`) write and delete access for `proj_img/{allPaths=**}`.
+
+### Changed
+- Configured `CollectionForm` and `CollectionManager` to position preview image management directly beneath the `skills` field for projects.
+- Enforced a delayed commit contract where image uploads and deletions to Firebase Cloud Storage are executed only when the user clicks Save, ensuring canceled changes discard cleanly without mutating storage.
+- Parallelized Firebase Storage upload and deletion requests concurrently using `Promise.all`.
+
+
 ## [9.14.2] - 2026-10-01 16:09:11
 
 ### Fixed
