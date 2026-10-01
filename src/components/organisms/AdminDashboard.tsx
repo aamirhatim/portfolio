@@ -8,6 +8,7 @@ export interface CollectionConfig {
     fields: FieldConfig[];
     disableAdd?: boolean;
     enableSearch?: boolean;
+    customSection?: 'project-previews';
 }
 
 export interface TabConfig {
@@ -108,6 +109,7 @@ const TAB_CONFIGS: Record<string, TabConfig> = {
             {
                 name: "projects", 
                 enableSearch: true,
+                customSection: 'project-previews',
                 fields: [
                     { name: "title", label: "Title", type: "string" },
                     { name: "subtitle", label: "Subtitle", type: "string" },
@@ -167,7 +169,14 @@ export default function AdminDashboard() {
                         <ArticleManager />
                     ) : (
                         currentConfig.collections.map(c => (
-                            <CollectionManager key={c.name} collectionName={c.name} fields={c.fields} disableAdd={c.disableAdd} enableSearch={c.enableSearch} />
+                            <CollectionManager
+                                key={c.name}
+                                collectionName={c.name}
+                                fields={c.fields}
+                                disableAdd={c.disableAdd}
+                                enableSearch={c.enableSearch}
+                                customSection={c.customSection}
+                            />
                         ))
                     )}
                 </div>

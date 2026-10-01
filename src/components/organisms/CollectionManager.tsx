@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { createDocument, deleteDocument, updateDocument } from "../../lib/adminLib";
 import { useFirebaseAppContext } from "../../context/firebaseAppContext";
 import { getDocumentsFromCollection } from "../../lib/firestoreLib";
@@ -29,27 +29,43 @@ export type FieldConfig = {
  * Props for the CollectionManager component.
  */
 interface CollectionManagerProps {
+    /** The Firestore collection name (e.g. 'projects', 'skills', 'jobs') */
     collectionName: string;
+    /** Dynamic field configurations for this collection */
     fields: FieldConfig[];
+    /** Whether creating new documents is disabled */
     disableAdd?: boolean;
+    /** Whether row expansion details table is enabled */
     showDetails?: boolean;
+    /** Whether dynamic collection text search is enabled */
     enableSearch?: boolean;
+    /** Optional custom form section identifier (e.g. 'project-previews') */
+    customSection?: 'project-previews';
 }
 
 /**
  * CollectionManager manages the fetching, display, and editing of Firestore documents for a given collection.
  * It uses dynamic `FieldConfig` arrays to generate forms and tables for document properties.
  */
-export default function CollectionManager({ collectionName, fields, disableAdd = false, showDetails = true, enableSearch = false }: CollectionManagerProps) {
+export default function CollectionManager({
+    collectionName,
+    fields,
+    disableAdd = false,
+    showDetails = true,
+    enableSearch = false,
+    customSection
+}: CollectionManagerProps) {
     const firebaseApp = useFirebaseAppContext();
     const [documents, setDocuments] = useState<FirestoreDocType[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [currentDocId, setCurrentDocId] = useState<string | null>(null);
     const [formData, setFormData] = useState<Record<string, unknown>>({});
     const [expandedDocs, setExpandedDocs] = useState<Record<string, boolean>>({});
     const [searchQuery, setSearchQuery] = useState("");
+    const previewSaveRef = useRef<((targetProjectId: string) => Promise<void>) | null>(null);
 
     const filteredDocuments = useMemo(() => {
         return documents.filter(doc => {
@@ -121,13 +137,27 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (currentDocId) {
-            await updateDocument(firebaseApp, collectionName, currentDocId, formData);
-        } else {
-            await createDocument(firebaseApp, collectionName, formData);
+        setIsSaving(true);
+        try {
+            let targetDocId = currentDocId;
+            if (currentDocId) {
+                await updateDocument(firebaseApp, collectionName, currentDocId, formData);
+            } else {
+                targetDocId = await createDocument(firebaseApp, collectionName, formData);
+            }
+
+            if (previewSaveRef.current && targetDocId) {
+                await previewSaveRef.current(targetDocId);
+            }
+
+            setIsEditing(false);
+            fetchDocs();
+        } catch (error) {
+            console.error("Save error:", error);
+            alert("Failed to save document. Please check console for details.");
+        } finally {
+            setIsSaving(false);
         }
-        setIsEditing(false);
-        fetchDocs();
     };
 
     const handleFieldChange = (fieldName: string, value: unknown, type: string) => {
@@ -157,6 +187,9 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
                 onSave={handleSave}
                 onCancel={() => setIsEditing(false)}
                 onFieldChange={handleFieldChange}
+                customSection={customSection}
+                previewSaveRef={previewSaveRef}
+                isSaving={isSaving}
             />
         );
     }

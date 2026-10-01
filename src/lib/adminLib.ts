@@ -1,6 +1,7 @@
 import { FirebaseApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { deleteObject, getDownloadURL, getStorage, listAll, ref, uploadBytes } from "firebase/storage";
 
 // --- Authentication ---
 
@@ -122,4 +123,60 @@ export async function deleteDocument(firebaseApp: FirebaseApp, collectionName: s
         console.error("Error deleting document:", error);
         throw error;
     }
+}
+
+// --- Firebase Storage Operations for Projects ---
+
+/**
+ * Fetches all preview images for a given project from Firebase Storage.
+ * @param firebaseApp The initialized Firebase application instance
+ * @param projectId The ID of the project
+ * @returns Array of preview image references with fullPath and download URL
+ */
+export async function fetchProjectPreviewImages(firebaseApp: FirebaseApp, projectId: string) {
+    const storage = getStorage(firebaseApp);
+    const folderRef = ref(storage, `proj_img/${projectId}/previews`);
+    try {
+        const res = await listAll(folderRef);
+        const items = await Promise.all(
+            res.items.map(async (itemRef) => {
+                const url = await getDownloadURL(itemRef);
+                return { fullPath: itemRef.fullPath, url };
+            })
+        );
+        return items;
+    } catch (error) {
+        console.error("Error fetching preview images:", error);
+        return [];
+    }
+}
+
+/**
+ * Uploads a preview image file for a given project to Firebase Storage.
+ * @param firebaseApp The initialized Firebase application instance
+ * @param projectId The ID of the project
+ * @param file The image File to upload
+ * @returns The storage path of the uploaded file
+ */
+export async function uploadProjectPreviewImage(firebaseApp: FirebaseApp, projectId: string, file: File) {
+    const storage = getStorage(firebaseApp);
+    const cleaned = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const sanitizedName = cleaned.replace(/^[._-]+$/, '') || 'preview_image.png';
+    const storagePath = `proj_img/${projectId}/previews/${Date.now()}_${sanitizedName}`;
+    const fileRef = ref(storage, storagePath);
+    await uploadBytes(fileRef, file);
+    return storagePath;
+}
+
+/**
+ * Deletes a preview image from Firebase Storage by its full path.
+ * @param firebaseApp The initialized Firebase application instance
+ * @param fullPath The full path of the image in Firebase Storage
+ * @returns boolean indicating success
+ */
+export async function deleteProjectPreviewImage(firebaseApp: FirebaseApp, fullPath: string) {
+    const storage = getStorage(firebaseApp);
+    const fileRef = ref(storage, fullPath);
+    await deleteObject(fileRef);
+    return true;
 }

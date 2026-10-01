@@ -3,14 +3,30 @@ import { FieldConfig } from "../../organisms/CollectionManager";
 import { getFieldValue } from "../../../lib/fieldUtils";
 import { ChevronDown } from "lucide-react";
 import ArrayInputField from "./ArrayInputField";
+import ProjectPreviewsEditor from "./ProjectPreviewsEditor";
 
+/**
+ * Props for the CollectionForm molecule component.
+ */
 interface CollectionFormProps {
+    /** The ID of the document being edited, or null if creating a new document */
     currentDocId: string | null;
+    /** The dynamic field schema for the collection */
     fields: FieldConfig[];
+    /** Current form field values mapped by field name */
     formData: Record<string, unknown>;
+    /** Submit handler triggered on form save */
     onSave: (e: FormEvent) => void;
+    /** Cancel handler to exit edit mode */
     onCancel: () => void;
+    /** Field change handler to update parent state */
     onFieldChange: (fieldName: string, value: unknown, type: string) => void;
+    /** Optional identifier for special modular sections (e.g. project preview images) */
+    customSection?: 'project-previews';
+    /** Ref callback hook to commit custom section changes (e.g. Storage uploads) upon save */
+    previewSaveRef?: React.MutableRefObject<((targetProjectId: string) => Promise<void>) | null>;
+    /** Whether the form is currently persisting changes (disables buttons and inputs) */
+    isSaving?: boolean;
 }
 
 export default function CollectionForm({
@@ -19,7 +35,10 @@ export default function CollectionForm({
     formData,
     onSave,
     onCancel,
-    onFieldChange
+    onFieldChange,
+    customSection,
+    previewSaveRef,
+    isSaving = false
 }: CollectionFormProps) {
     return (
         <div className="bg-[var(--bg-secondary-color)] p-6 rounded-lg shadow-sm border border-[var(--border-color)]">
@@ -80,11 +99,30 @@ export default function CollectionForm({
                         </div>
                     );
                 })}
+
+                {/* Optional Custom Sections (e.g. Project Popup Previews under skills) */}
+                {customSection === 'project-previews' && (
+                    <ProjectPreviewsEditor
+                        projectId={currentDocId}
+                        saveRef={previewSaveRef}
+                        disabled={isSaving}
+                    />
+                )}
+
                 <div className="flex gap-4 mt-4">
-                    <button type="submit" className="px-4 py-2 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded font-semibold transition-colors hover:opacity-90 cursor-pointer">
-                        Save
+                    <button
+                        type="submit"
+                        disabled={isSaving}
+                        className="px-4 py-2 bg-[var(--txt-title-color)] text-[var(--bg-color)] rounded font-semibold transition-colors hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                    >
+                        {isSaving ? "Saving..." : "Save"}
                     </button>
-                    <button type="button" onClick={onCancel} className="px-4 py-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-color)] transition-colors cursor-pointer">
+                    <button
+                        type="button"
+                        disabled={isSaving}
+                        onClick={onCancel}
+                        className="px-4 py-2 border border-[var(--border-color)] rounded hover:bg-[var(--bg-color)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
                         Cancel
                     </button>
                 </div>
