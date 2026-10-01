@@ -133,7 +133,13 @@ export default function CollectionManager({ collectionName, fields, disableAdd =
     const handleFieldChange = (fieldName: string, value: unknown, type: string) => {
         let parsedValue = value;
         if (type === 'number') parsedValue = Number(value);
-        if (type === 'array') parsedValue = (value as string).split(',').map((s: string) => s.trim()).filter((s: string) => s !== "");
+        if (type === 'array') {
+            parsedValue = Array.isArray(value)
+                ? value
+                : (typeof value === 'string'
+                    ? value.split(',').map((s: string) => s.trim()).filter((s: string) => s !== "")
+                    : []);
+        }
 
         setFormData(prev => setFieldValue(prev, fieldName, parsedValue));
     };

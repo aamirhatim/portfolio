@@ -2,6 +2,7 @@ import { FormEvent } from "react";
 import { FieldConfig } from "../../organisms/CollectionManager";
 import { getFieldValue } from "../../../lib/fieldUtils";
 import { ChevronDown } from "lucide-react";
+import ArrayInputField from "./ArrayInputField";
 
 interface CollectionFormProps {
     currentDocId: string | null;
@@ -45,12 +46,12 @@ export default function CollectionForm({
                                     className="w-5 h-5 accent-[var(--txt-title-color)]"
                                 />
                             ) : field.type === 'array' ? (
-                                <input
-                                    type="text"
-                                    value={((rawValue as string[]) || []).join(', ')}
-                                    onChange={(e) => onFieldChange(field.name, e.target.value, field.type)}
+                                <ArrayInputField
+                                    key={`${field.name}-${currentDocId ?? 'new'}`}
+                                    name={field.name}
+                                    value={(rawValue as string[]) || []}
+                                    onChange={(newArr) => onFieldChange(field.name, newArr, field.type)}
                                     placeholder="Comma separated values"
-                                    className="p-2 border border-[var(--border-color)] rounded bg-[var(--bg-color)]"
                                     required={field.required ?? false}
                                 />
                             ) : field.type === 'select' ? (
