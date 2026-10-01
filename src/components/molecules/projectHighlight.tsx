@@ -39,7 +39,7 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
             className={`cursor-pointer relative box-border flex items-center justify-between gap-2 py-2 border-b border-b-(--border-color) text-(--txt-body-color) hover:text-(--txt-highlight-color) transition-all duration-150 hover:pl-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-(--border-focus)`}
         >
             <ProjectPopup refDiv={highlightRef} projectId={props.project.id} />
-            <div className="title text-lg">{props.project.title}</div>
+            <div className="title text-lg w-fit">{props.project.title}</div>
             <ChipGroup list={props.project.skills} />
         </div>
     );
@@ -53,7 +53,7 @@ export default function ProjectHighlight(props: { project: ProjectType, idx: num
             role="button"
             tabIndex={0}
         >
-            <div className="title text-lg">{props.project.title}</div>
+            <div className="title text-lg w-fit">{props.project.title}</div>
         </div>
     );
 
