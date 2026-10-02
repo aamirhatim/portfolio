@@ -447,6 +447,9 @@ interface PlatformSurface {
     top: number;        // Document Y coordinate where feet land
     width: number;
     isGround?: boolean; // Base ground baseline across full document width
+    element?: HTMLElement;
+    rOffset?: number;
+    isDynamic?: boolean;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -516,7 +519,9 @@ function extractPlatformSurfaces(
         const pushSurface = (
             idSuffix: string,
             r: DOMRect | { left: number; right: number; top: number; width: number; height: number },
-            computedOffset: number
+            computedOffset: number,
+            el?: HTMLElement,
+            isDynamic?: boolean
         ) => {
             if (r.width < 24 || r.height < 1) return;
             let finalId = idSuffix;
@@ -531,6 +536,9 @@ function extractPlatformSurfaces(
                 right: r.right + scrollX,
                 top: r.top + scrollY + rOffset,
                 width: r.width,
+                element: el,
+                rOffset,
+                isDynamic,
             });
         };
 
@@ -579,14 +587,18 @@ function extractPlatformSurfaces(
                 computedOffset = platformTopOffset;
             }
 
+            const parallaxContainer = el.closest(".will-change-transform, [data-parallax]");
+            const hasTransform = (style.transform && style.transform !== "none") || (style.willChange && style.willChange.includes("transform"));
+            const isDynamic = Boolean(parallaxContainer || hasTransform);
+
             const rects = isTextElement && typeof el.getClientRects === "function" ? el.getClientRects() : null;
 
             if (rects && rects.length > 1) {
                 for (let i = 0; i < rects.length; i++) {
-                    pushSurface(`${platId}_${i}`, rects[i], computedOffset);
+                    pushSurface(`${platId}_${i}`, rects[i], computedOffset, el, isDynamic);
                 }
             } else {
-                pushSurface(platId, el.getBoundingClientRect(), computedOffset);
+                pushSurface(platId, el.getBoundingClientRect(), computedOffset, el, isDynamic);
             }
         });
     } catch {
@@ -1306,6 +1318,18 @@ export default function Sprites({
                 groundPlat.width = pageWidth;
             }
 
+            // Synchronize dynamic platforms (e.g. elements inside ScrollParallax or transform containers)
+            for (let j = 0; j < platforms.length; j++) {
+                const p = platforms[j];
+                if (p.isDynamic && p.element && p.element.isConnected) {
+                    const r = p.element.getBoundingClientRect();
+                    p.top = r.top + scrollY + (p.rOffset ?? 0);
+                    p.left = r.left + scrollX;
+                    p.right = r.right + scrollX;
+                    p.width = r.width;
+                }
+            }
+
             const baseSize = cfg.spriteSize;
             const estimatedHalfW = Math.max(16, (baseSize * 1.2) * 0.5);
             const boundaryMargin = estimatedHalfW + 12;
@@ -1458,7 +1482,9 @@ export default function Sprites({
                         const t = b.hopProgress;
                         const ease = t * t * (3 - 2 * t);
                         b.x = b.hopStartX + (b.hopTargetX - b.hopStartX) * ease;
-                        const yBase = b.hopStartY + (b.hopTargetY - b.hopStartY) * t;
+                        const targetPlat = platforms.find((p) => p.id === b.targetPlatformId);
+                        const targetY = targetPlat ? targetPlat.top : b.hopTargetY;
+                        const yBase = b.hopStartY + (targetY - b.hopStartY) * t;
                         const yArc = Math.sin(t * Math.PI) * b.hopArcPeak;
                         b.hopY = yArc;
                         b.y = yBase - yArc;

@@ -58,20 +58,20 @@ export default function HomePage() {
                 spawnDelay={800}
                 enableGroundPlatform={true}
                 showGroundLine={false}
+                showPlatforms={false}
             />
 
             <div className="relative box-border flex flex-col w-full gap-12 md:gap-20 overflow-x-clip">
                 {/* Hero Section: Intro text with square-cropped portrait positioned at bottom-right */}
                 {introTxt.length > 0 && (
                     <div className="relative w-full">
-                        <HeroPhoto isMobile={isMobile} />
+                        <HeroPhoto data-sprite-platform isMobile={isMobile} />
 
                         <div
-                            className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) relative z-10 ${
-                                isMobile
-                                    ? 'mb-16 text-5xl px-4 gap-x-3 gap-y-2'
-                                    : 'mb-36 text-6xl pl-10 pr-[24%] gap-x-4 gap-y-6'
-                            }`}
+                            className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) relative z-10 ${isMobile
+                                ? 'mb-16 text-5xl px-4 gap-x-3 gap-y-2'
+                                : 'mb-36 text-6xl pl-10 pr-[24%] gap-x-4 gap-y-6'
+                                }`}
                         >
                             {introTxt.map((word, idx) => (
                                 <div
@@ -95,7 +95,7 @@ export default function HomePage() {
                         className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
                         style={{ animationDelay: '0.5s' }}
                     >
-                        <h2 className="title text-3xl mb-4">Featured work</h2>
+                        <h2 data-sprite-platform className="w-fit title text-3xl mb-4">Featured work</h2>
 
                         {projSpotlightList.map((p, idx) => (
                             <ProjectHighlight
@@ -121,7 +121,7 @@ export default function HomePage() {
 
                 {/* Socials Bar: Centered bottom */}
                 <div className="flex justify-center w-full pt-4 pb-12">
-                    <SocialsBar />
+                    <div data-sprite-platform className="w-fit"><SocialsBar /></div>
                 </div>
             </div>
         </>

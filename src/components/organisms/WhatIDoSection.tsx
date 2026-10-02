@@ -61,7 +61,8 @@ export default function WhatIDoSection({ isMobile }: WhatIDoSectionProps) {
             aria-label="What I do"
         >
             <h2
-                className={`title text-3xl mb-6 text-(--txt-title-color) ${isMobile ? "px-4" : ""
+                data-sprite-platform
+                className={`w-fit title text-3xl mb-6 text-(--txt-title-color) ${isMobile ? "px-4" : ""
                     }`}
             >
                 What I do

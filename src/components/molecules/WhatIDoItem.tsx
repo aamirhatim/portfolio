@@ -43,7 +43,7 @@ export default function WhatIDoItem({
                         size={26}
                         className="text-(--color-accent-solid) group-hover:text-(--txt-highlight-color) transition-colors shrink-0"
                     />
-                    <h3 className="title text-xl lg:text-2xl text-(--txt-title-color) group-hover:text-(--txt-highlight-color) transition-colors leading-snug">
+                    <h3 data-sprite-platform className="title text-xl lg:text-2xl text-(--txt-title-color) group-hover:text-(--txt-highlight-color) transition-colors leading-snug">
                         {item.title}
                     </h3>
                 </div>
@@ -67,7 +67,7 @@ export default function WhatIDoItem({
                 className="text-(--color-accent-solid) group-hover:text-(--txt-highlight-color) transition-colors shrink-0 mt-0.5"
             />
             <div className="flex flex-col min-w-0 flex-1">
-                <h3 className="title !text-base font-medium text-(--txt-title-color) group-hover:text-(--txt-highlight-color) transition-colors leading-snug">
+                <h3 data-sprite-platform className="w-fit title !text-base font-medium text-(--txt-title-color) group-hover:text-(--txt-highlight-color) transition-colors leading-snug">
                     {item.title}
                 </h3>
                 {contentText && (

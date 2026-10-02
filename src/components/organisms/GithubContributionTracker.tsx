@@ -166,7 +166,7 @@ export default function GithubContributionTracker({ className = "" }: GithubCont
 
 
     return (
-        <div className={`w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'} mx-auto mb-8 select-none ${className}`}>
+        <div data-sprite-platform className={`w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'} mx-auto mb-8 select-none ${className}`}>
             <div className="w-full overflow-x-auto pb-2">
                 <div className={`mx-auto ${isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}`}>
                     {/* Month labels grid */}
