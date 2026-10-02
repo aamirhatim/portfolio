@@ -89,6 +89,12 @@ export interface SpriteLineConfig {
     platformDropChance?: number;
     /** Probability (0.0 to 1.0) of performing a lateral platform shift when at the edge of a platform with an adjacent platform available (default: 0.5) */
     platformShiftChance?: number;
+    /**
+     * Probability (0.0 to 1.0) of jumping up/down/dropping when fleeing from cursor
+     * instead of running laterally along the current platform (default: 0.25).
+     * If the sprite reaches a platform ledge or is cornered, vertical escape is always considered.
+     */
+    fleeVerticalChance?: number;
     /** Canvas container z-index. Set to 20 for sprites to walk on top of text/cards (default: 20) */
     zIndex?: number;
     /** Optional visual outline of detected platform surfaces for inspection (default: false) */
@@ -137,10 +143,11 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     platformSelector: "[data-sprite-platform], .feature > div, .chip-group, [role=button] > .title",
     platformExcludeSelector: "nav, header, [data-no-sprite-platform]",
     platformJumpReachY: 200,
-    platformJumpReachX: 70,
+    platformJumpReachX: 120,
     platformJumpChance: 0.15,
     platformDropChance: 0.15,
     platformShiftChance: 0.5,
+    fleeVerticalChance: 0.15,
     zIndex: 20,
     showPlatforms: false,
     spawnDelay: 1500,
@@ -184,6 +191,7 @@ export interface SpritesProps {
     platformJumpChance?: number;
     platformDropChance?: number;
     platformShiftChance?: number;
+    fleeVerticalChance?: number;
     zIndex?: number;
     showPlatforms?: boolean;
     spawnDelay?: number;
@@ -686,6 +694,7 @@ export default function Sprites({
     platformJumpChance,
     platformDropChance,
     platformShiftChance,
+    fleeVerticalChance,
     zIndex,
     showPlatforms,
     spawnDelay,
@@ -729,6 +738,7 @@ export default function Sprites({
         ...(platformJumpChance !== undefined ? { platformJumpChance } : {}),
         ...(platformDropChance !== undefined ? { platformDropChance } : {}),
         ...(platformShiftChance !== undefined ? { platformShiftChance } : {}),
+        ...(fleeVerticalChance !== undefined ? { fleeVerticalChance } : {}),
         ...(zIndex !== undefined ? { zIndex } : {}),
         ...(showPlatforms !== undefined ? { showPlatforms } : {}),
         ...(spawnDelay !== undefined ? { spawnDelay } : {}),
@@ -767,6 +777,7 @@ export default function Sprites({
         platformJumpChance,
         platformDropChance,
         platformShiftChance,
+        fleeVerticalChance,
         zIndex,
         showPlatforms,
         spawnDelay,
@@ -1571,9 +1582,19 @@ export default function Sprites({
                         const fleeDir: 1 | -1 = dx >= 0 ? 1 : -1;
                         let didChooseVerticalEscape = false;
 
+                        const minX = plat.isGround ? boundaryMargin : plat.left + 6;
+                        const maxX = plat.isGround ? pageWidth - boundaryMargin : plat.right - 6;
+                        const isNearLeftLedge = b.x <= plat.left + 22 && fleeDir === -1;
+                        const isNearRightLedge = b.x >= plat.right - 22 && fleeDir === 1;
+                        const isCornered = (fleeDir === 1 && b.x >= maxX - 10) || (fleeDir === -1 && b.x <= minX + 10);
+                        const isNearLedge = isNearLeftLedge || isNearRightLedge;
+
+                        const fleeVerticalChance = cfg.fleeVerticalChance ?? 0.25;
+                        const allowVertical = isNearLedge || isCornered || Math.random() < fleeVerticalChance;
+
                         // VERTICAL ESCAPE PRIORITY:
                         // Search for reachable overhead platforms, lower platforms, or ledge drops
-                        if (cfg.enablePlatforms) {
+                        if (cfg.enablePlatforms && allowVertical) {
                             const maxReachY = cfg.platformJumpReachY ?? 200;
                             const maxReachX = Math.max(cfg.platformJumpReachX ?? 20, 24);
 
@@ -1581,9 +1602,7 @@ export default function Sprites({
                             const fleeDownCandidates: PlatformSurface[] = [];
                             const fleeAcrossCandidates: PlatformSurface[] = [];
 
-                            const isNearLeftLedge = b.x <= plat.left + 22 && fleeDir === -1;
-                            const isNearRightLedge = b.x >= plat.right - 22 && fleeDir === 1;
-                            const canLedgeDrop = cfg.enableLedgeDrop !== false && !plat.isGround && (isNearLeftLedge || isNearRightLedge);
+                            const canLedgeDrop = cfg.enableLedgeDrop !== false && !plat.isGround && isNearLedge;
 
                             for (let j = 0; j < platforms.length; j++) {
                                 const q = platforms[j];
@@ -1684,11 +1703,6 @@ export default function Sprites({
 
                         // FALLBACK: Horizontal Platform Jump
                         if (!didChooseVerticalEscape) {
-                            const minX = plat.isGround ? boundaryMargin : plat.left + 6;
-                            const maxX = plat.isGround ? pageWidth - boundaryMargin : plat.right - 6;
-
-                            const isCornered = (fleeDir === 1 && b.x >= maxX - 10) || (fleeDir === -1 && b.x <= minX + 10);
-
                             if (isCornered) {
                                 if (distToCursor < 90) {
                                     // Desperation leap over the cursor
