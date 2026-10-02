@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.15.2] - 2026-10-02 00:00:50
+
+### Changed
+- Aligned "What I do" section title design pattern with "Featured work" on `HomePage.tsx`, removing explicit `--txt-title-color` override for consistent typography and theme inheritance.
+- Gated dynamic sprite platform tracking behind scroll delta checks (`hasScrolled`) in `Sprites.tsx`, eliminating continuous `getBoundingClientRect()` layout calculations on idle animation frames.
+- Introduced `fleeVerticalChance` configuration parameter (default: 0.15) to `Sprites.tsx`, enabling sprites to flee laterally along walkable platforms while reserving vertical hops and drops for platform ledges and corners.
+- Increased default `platformJumpReachX` to 120 in `Sprites.tsx` for smoother lateral gap navigation.
+
+
 ## [9.15.1] - 2026-10-01 23:44:42
 
 ### Added
