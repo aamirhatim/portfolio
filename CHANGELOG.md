@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.15.1] - 2026-10-01 23:44:42
+
+### Added
+- Introduced "What I do" section on the Home page (`WhatIDoSection.tsx`), featuring:
+  - Mobile layout: Fixed-width staggered cards (`WhatIDoItem.tsx`) anchored flush against the left viewport edge.
+  - Desktop layout: Descending staircase 4-column grid mirroring the About page skills aesthetic with title dividers and scroll parallax.
+- Added high-performance vertical scroll parallax atom (`ScrollParallax.tsx`) using `requestAnimationFrame`, direct DOM style mutations, and `IntersectionObserver` gating to eliminate scroll frame layout recalculations.
+- Introduced `HeroPhoto` molecule (`src/components/molecules/HeroPhoto.tsx`) featuring a square-cropped portrait with subtle parallax float, responsive positioning, and forwarded HTML attributes.
+- Added live platform tracking for parallax elements in `Sprites.tsx`, enabling procedural sprites to accurately stand, walk, and land on elements contained within active `ScrollParallax` containers at 60fps.
+- Configured sprite platform support (`data-sprite-platform`) across `HeroPhoto`, `WhatIDoSection`, `WhatIDoItem`, `Featured work`, `GithubContributionTracker`, and `SocialsBar`.
+
+### Changed
+- Centered `GithubContributionTracker` component across desktop and mobile layouts on `HomePage.tsx`.
+- Removed parallax scrolling from mobile "What I do" items to maintain stable, non-disorienting touch scrolling.
+
+
 ## [9.15.0] - 2026-10-01 16:42:28
 
 ### Added
