@@ -113,7 +113,7 @@ export default function HomePage() {
 
                 {/* GitHub Contributions Grid */}
                 <section
-                    className={`w-full ${isMobile ? 'px-4' : 'px-10'}`}
+                    className={`w-full flex justify-center ${isMobile ? 'px-4' : 'px-10'}`}
                     aria-label="GitHub Contributions"
                 >
                     <GithubContributionTracker />

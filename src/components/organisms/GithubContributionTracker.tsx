@@ -7,7 +7,11 @@ const CACHE_KEY = "github_contributions_cache";
 const CACHE_TIME_KEY = "github_contributions_cache_time";
 const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 hour
 
-export default function GithubContributionTracker() {
+interface GithubContributionTrackerProps {
+    className?: string;
+}
+
+export default function GithubContributionTracker({ className = "" }: GithubContributionTrackerProps) {
     const [contributions, setContributions] = useState<GitHubContributionDay[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -111,16 +115,16 @@ export default function GithubContributionTracker() {
 
     if (loading && !error) {
         return (
-            <div className="w-full animate-pulse mb-8 select-none">
-                <div className={`h-[75px] bg-(--bg-secondary-color) rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`} />
+            <div className={`w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'} mx-auto animate-pulse mb-8 select-none ${className}`}>
+                <div className="h-[75px] bg-(--bg-secondary-color) rounded-sm w-full" />
             </div>
         );
     }
 
     if (error || (!loading && filtered.length === 0)) {
         return (
-            <div className="w-full mb-8 select-none">
-                <div className={`flex items-center justify-center h-[75px] border border-(--border-color) bg-(--bg-secondary-color)/30 rounded-sm w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'}`}>
+            <div className={`w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'} mx-auto mb-8 select-none ${className}`}>
+                <div className="flex items-center justify-center h-[75px] border border-(--border-color) bg-(--bg-secondary-color)/30 rounded-sm w-full">
                     <span className="text-(--txt-subtitle-color) text-sm font-medium">Cannot fetch GitHub contributions</span>
                 </div>
                 {/* Bottom Row metadata & link */}
@@ -151,20 +155,20 @@ export default function GithubContributionTracker() {
     // Generate month labels: only output a label if the month changes in this column
     const monthLabels: string[] = weeks.map((week, idx) => {
         if (idx === 0) return ""; // Skip the very first column to avoid fragments
-        
+
         const prevWeek = weeks[idx - 1];
         const currentMonth = new Date(week[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
         const prevMonth = new Date(prevWeek[0].date + "T00:00:00").toLocaleString("default", { month: "short" });
-        
+
         return currentMonth !== prevMonth ? currentMonth : "";
     });
 
 
 
     return (
-        <div className="w-full mb-8 select-none">
+        <div className={`w-full ${isMobile ? 'max-w-[400px]' : 'max-w-[800px]'} mx-auto mb-8 select-none ${className}`}>
             <div className="w-full overflow-x-auto pb-2">
-                <div className={isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}>
+                <div className={`mx-auto ${isMobile ? "max-w-[400px] min-w-[340px]" : "max-w-[800px] min-w-[700px]"}`}>
                     {/* Month labels grid */}
                     <div className="grid gap-[2px] text-[10px] text-(--txt-subtitle-color) mb-1 h-4 relative" style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}>
                         {monthLabels.map((label, idx) => (
