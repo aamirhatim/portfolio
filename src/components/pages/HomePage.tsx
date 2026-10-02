@@ -6,10 +6,11 @@ import { FirestoreDocType, ProjectType } from "../../data/datatypes"
 import { getDocumentsFromCollection } from "../../lib/firestoreLib"
 import { orderBy, where } from "firebase/firestore"
 import useIsMobile from "../../lib/hooks/useIsMobile"
-// import SpriteSwarmWallpaper from "../organisms/wallpapers/SpriteSwarmWallpaper"
 import Sprites from "../organisms/wallpapers/Sprites"
-// import WatercolorWallpaper from "../organisms/wallpapers/WatercolorWallpaper"
-// import FlockSwarmWallpaper from "../organisms/wallpapers/FlockSwarmWallpaper"
+import HeroPhoto from "../molecules/HeroPhoto"
+import WhatIDoSection from "../organisms/WhatIDoSection"
+import GithubContributionTracker from "../organisms/GithubContributionTracker"
+import SocialsBar from "../molecules/socialsBar"
 
 export default function HomePage() {
     // Get context
@@ -59,39 +60,70 @@ export default function HomePage() {
                 showGroundLine={false}
             />
 
-            {introTxt.length > 0 &&
-                <div className="relative box-border flex flex-col w-full gap-5">
-                    <div
-                        className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) ${isMobile ? 'mb-20 text-5xl px-4 gap-x-3 gap-y-2' : 'mb-50 text-6xl pl-10 pr-[20%] gap-x-4 gap-y-6'}`}
-                    >
-                        {introTxt.map((word, idx) => (
-                            <div
-                                key={idx}
-                                className="h-min opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
-                                style={{ animationDelay: `${idx * 0.03}s` }}
-                            >
-                                {word}
-                            </div>
-                        ))}
-                    </div>
+            <div className="relative box-border flex flex-col w-full gap-12 md:gap-20 overflow-x-clip">
+                {/* Hero Section: Intro text with square-cropped portrait positioned at bottom-right */}
+                {introTxt.length > 0 && (
+                    <div className="relative w-full">
+                        <HeroPhoto isMobile={isMobile} />
 
-
-                    {projSpotlightList.length > 0 &&
-                        <section
-                            className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
-                            style={{ animationDelay: '0.5s' }}
+                        <div
+                            className={`box-border feature w-full flex flex-wrap content-start text-(--txt-feature-color) relative z-10 ${
+                                isMobile
+                                    ? 'mb-16 text-5xl px-4 gap-x-3 gap-y-2'
+                                    : 'mb-36 text-6xl pl-10 pr-[24%] gap-x-4 gap-y-6'
+                            }`}
                         >
-                            <h2 className={`title text-3xl mb-4`}>Featured work</h2>
+                            {introTxt.map((word, idx) => (
+                                <div
+                                    key={idx}
+                                    className="h-min opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
+                                    style={{ animationDelay: `${idx * 0.03}s` }}
+                                >
+                                    {word}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
-                            {projSpotlightList.map((p, idx) => <ProjectHighlight key={idx} project={{ id: p.id, ...p.data } as ProjectType} idx={idx} />)}
+                {/* Professional Expertise Section: What I Do */}
+                <WhatIDoSection isMobile={isMobile} />
 
-                            <div className={`w-full flex text-lg`}>
-                                <ArrowBtn text="See more" link="/projects" />
-                            </div>
-                        </section>
-                    }
+                {/* Featured Work Section */}
+                {projSpotlightList.length > 0 && (
+                    <section
+                        className={`flex flex-col gap-4 ${isMobile ? 'px-4' : 'px-10'} opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]`}
+                        style={{ animationDelay: '0.5s' }}
+                    >
+                        <h2 className="title text-3xl mb-4">Featured work</h2>
+
+                        {projSpotlightList.map((p, idx) => (
+                            <ProjectHighlight
+                                key={idx}
+                                project={{ id: p.id, ...p.data } as ProjectType}
+                                idx={idx}
+                            />
+                        ))}
+
+                        <div className="w-full flex text-lg">
+                            <ArrowBtn text="See more" link="/projects" />
+                        </div>
+                    </section>
+                )}
+
+                {/* GitHub Contributions Grid */}
+                <section
+                    className={`w-full ${isMobile ? 'px-4' : 'px-10'}`}
+                    aria-label="GitHub Contributions"
+                >
+                    <GithubContributionTracker />
+                </section>
+
+                {/* Socials Bar: Centered bottom */}
+                <div className="flex justify-center w-full pt-4 pb-12">
+                    <SocialsBar />
                 </div>
-            }
+            </div>
         </>
-    )
+    );
 }
