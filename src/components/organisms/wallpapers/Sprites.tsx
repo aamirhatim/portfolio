@@ -137,7 +137,7 @@ const SPRITE_LINE_DEFAULT_CONFIG: SpriteLineConfig = {
     platformSelector: "[data-sprite-platform], .feature > div, .chip-group, [role=button] > .title",
     platformExcludeSelector: "nav, header, [data-no-sprite-platform]",
     platformJumpReachY: 200,
-    platformJumpReachX: 20,
+    platformJumpReachX: 70,
     platformJumpChance: 0.15,
     platformDropChance: 0.15,
     platformShiftChance: 0.5,
@@ -1278,11 +1278,15 @@ export default function Sprites({
         let rafId: number | null = null;
         let isPaused = document.visibilityState === "hidden";
         let lastFrameTime = performance.now();
+        let lastRenderScrollX = -1;
+        let lastRenderScrollY = -1;
 
         const handleVisibility = () => {
             isPaused = document.visibilityState === "hidden";
             if (!isPaused && rafId === null) {
                 lastFrameTime = performance.now();
+                lastRenderScrollX = -1;
+                lastRenderScrollY = -1;
                 rafId = requestAnimationFrame(render);
             }
         };
@@ -1309,6 +1313,11 @@ export default function Sprites({
 
             const scrollX = window.scrollX || window.pageXOffset || 0;
             const scrollY = window.scrollY || window.pageYOffset || 0;
+            const hasScrolled = scrollX !== lastRenderScrollX || scrollY !== lastRenderScrollY;
+            if (hasScrolled) {
+                lastRenderScrollX = scrollX;
+                lastRenderScrollY = scrollY;
+            }
 
             // Synchronize ground platform
             const groundPlat = platforms.find((p) => p.isGround);
@@ -1318,15 +1327,17 @@ export default function Sprites({
                 groundPlat.width = pageWidth;
             }
 
-            // Synchronize dynamic platforms (e.g. elements inside ScrollParallax or transform containers)
-            for (let j = 0; j < platforms.length; j++) {
-                const p = platforms[j];
-                if (p.isDynamic && p.element && p.element.isConnected) {
-                    const r = p.element.getBoundingClientRect();
-                    p.top = r.top + scrollY + (p.rOffset ?? 0);
-                    p.left = r.left + scrollX;
-                    p.right = r.right + scrollX;
-                    p.width = r.width;
+            // Synchronize dynamic platforms (e.g. elements inside ScrollParallax or transform containers) only when scrolled
+            if (hasScrolled) {
+                for (let j = 0; j < platforms.length; j++) {
+                    const p = platforms[j];
+                    if (p.isDynamic && p.element && p.element.isConnected) {
+                        const r = p.element.getBoundingClientRect();
+                        p.top = r.top + scrollY + (p.rOffset ?? 0);
+                        p.left = r.left + scrollX;
+                        p.right = r.right + scrollX;
+                        p.width = r.width;
+                    }
                 }
             }
 

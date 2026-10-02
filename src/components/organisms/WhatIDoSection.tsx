@@ -62,7 +62,7 @@ export default function WhatIDoSection({ isMobile }: WhatIDoSectionProps) {
         >
             <h2
                 data-sprite-platform
-                className={`w-fit title text-3xl mb-6 text-(--txt-title-color) ${isMobile ? "px-4" : ""
+                className={`w-fit title text-3xl mb-6 ${isMobile ? "px-4" : ""
                     }`}
             >
                 What I do
